@@ -116,7 +116,7 @@ export function Player() {
       ? `Near ${labelFor(newId)}`
       : onPlaza
         ? 'Spawn Plaza'
-        : 'Resume World';
+        : 'The Meadow';
     if (useGame.getState().zoneLabel !== zone) {
       useGame.getState().setZoneLabel(zone);
     }

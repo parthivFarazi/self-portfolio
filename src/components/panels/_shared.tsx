@@ -67,7 +67,7 @@ export function P2Header({
 }
 
 export interface P2StatStripProps {
-  items: Array<{ n: ReactNode; k: ReactNode }>;
+  items: Array<[ReactNode, ReactNode]>;
   accent?: string;
   labelColor?: string;
   valueColor?: string;
@@ -82,11 +82,11 @@ export function P2StatStrip({
   valueFont = '700 22px var(--rw-serif)',
 }: P2StatStripProps) {
   return (
-    <div style={{ display: 'flex', gap: 16 }}>
-      {items.map((it, i) => (
-        <div key={i} style={{ flex: 1, paddingLeft: 12, borderLeft: `2px solid ${accent}` }}>
-          <div style={{ font: valueFont, color: valueColor, lineHeight: 1 }}>{it.n}</div>
-          <div style={{ font: '10px var(--rw-mono)', letterSpacing: '.14em', textTransform: 'uppercase', color: labelColor, marginTop: 4 }}>{it.k}</div>
+    <div style={{ display: 'grid', gridTemplateColumns: `repeat(${items.length}, 1fr)`, gap: 12 }}>
+      {items.map(([n, k], i) => (
+        <div key={i} style={{ borderLeft: `3px solid ${accent}`, paddingLeft: 10 }}>
+          <div style={{ font: valueFont, color: valueColor, lineHeight: 1 }}>{n}</div>
+          <div style={{ font: '10px var(--rw-mono)', letterSpacing: '.12em', textTransform: 'uppercase', color: labelColor, marginTop: 4 }}>{k}</div>
         </div>
       ))}
     </div>

@@ -1,6 +1,17 @@
 import type { ComponentType } from 'react';
 import { UPDTPanel, type PanelProps } from '@/components/panels/UPDTPanel';
-import { StubPanel } from '@/components/panels/StubPanel';
+import { RMAICTPanel } from '@/components/panels/RMAICTPanel';
+import { PongPanelV2 } from '@/components/panels/PongPanelV2';
+import { CollegiateTowerPanel } from '@/components/panels/CollegiateTowerPanel';
+import { TwinTowersPanel } from '@/components/panels/TwinTowersPanel';
+import { ForgePanel } from '@/components/panels/ForgePanel';
+import { LighthousePanel } from '@/components/panels/LighthousePanel';
+import { QardPanel } from '@/components/panels/QardPanel';
+import { AthleticPanel } from '@/components/panels/AthleticPanel';
+import { ArchivePanel } from '@/components/panels/ArchivePanel';
+import { SoothePanel } from '@/components/panels/SoothePanel';
+import { HeatmapPanel } from '@/components/panels/HeatmapPanel';
+import { WorkshopPanel } from '@/components/panels/WorkshopPanel';
 
 export type BuildingId =
   | 'updt'
@@ -28,8 +39,8 @@ export type Ring = 'inner' | 'mid' | 'outer';
 
 export interface BuildingDef {
   id: BuildingId;
-  name: string;             // full name for HUD + dialog title
-  shortLabel: string;       // floating world label
+  name: string;
+  shortLabel: string;
   ring: Ring;
   position: [number, number, number];
   shape: BuildingShape;
@@ -38,12 +49,6 @@ export interface BuildingDef {
   panel: ComponentType<PanelProps>;
   panelSize: { w: number; h: number };
 }
-
-const stub = (title: string, blurb: string) => {
-  const C: ComponentType<PanelProps> = (props) => StubPanel({ ...props, title, blurb });
-  C.displayName = `Stub(${title})`;
-  return C;
-};
 
 export const BUILDINGS: BuildingDef[] = [
   // ─── INNER RING ──────────────────────────────────────────────────────────
@@ -68,7 +73,7 @@ export const BUILDINGS: BuildingDef[] = [
     shape: { kind: 'box', width: 5, depth: 5, height: 14 },
     color: '#c97e58',
     triggerRadius: 6.5,
-    panel: stub('RMAICT Tower', 'AI Engineer Intern · Kuala Lumpur · May–Aug 2024.'),
+    panel: RMAICTPanel,
     panelSize: { w: 760, h: 780 },
   },
   {
@@ -80,7 +85,7 @@ export const BUILDINGS: BuildingDef[] = [
     shape: { kind: 'box', width: 10, depth: 7, height: 4.5 },
     color: '#f6f1e4',
     triggerRadius: 8.5,
-    panel: stub('Delta Upsilon — Pong', 'Pong Baseball Automation App · Nov 2025 – Jan 2026.'),
+    panel: PongPanelV2,
     panelSize: { w: 760, h: 780 },
   },
 
@@ -94,8 +99,8 @@ export const BUILDINGS: BuildingDef[] = [
     shape: { kind: 'box', width: 5, depth: 5, height: 16 },
     color: '#a8553c',
     triggerRadius: 6.5,
-    panel: stub('The Tech Tower — Education', 'Georgia Institute of Technology · B.S. Computer Science · Expected Dec 2026.'),
-    panelSize: { w: 680, h: 760 },
+    panel: CollegiateTowerPanel,
+    panelSize: { w: 720, h: 760 },
   },
   {
     id: 'petronas',
@@ -106,8 +111,8 @@ export const BUILDINGS: BuildingDef[] = [
     shape: { kind: 'twin', width: 4, depth: 4, height: 22, spacing: 8 },
     color: '#c8d4e0',
     triggerRadius: 11,
-    panel: stub('Petronas Twin Towers — About Me', 'CS @ Georgia Tech · Co-founder & CTO of UPDT · grew up between KL and Atlanta.'),
-    panelSize: { w: 720, h: 760 },
+    panel: TwinTowersPanel,
+    panelSize: { w: 760, h: 760 },
   },
   {
     id: 'forge',
@@ -118,7 +123,7 @@ export const BUILDINGS: BuildingDef[] = [
     shape: { kind: 'box', width: 8, depth: 6, height: 4 },
     color: '#7a6b5a',
     triggerRadius: 7,
-    panel: stub('The Forge — Skills', 'Languages, frameworks, AI/ML, DevOps — the full toolbelt.'),
+    panel: ForgePanel,
     panelSize: { w: 760, h: 780 },
   },
   {
@@ -130,7 +135,7 @@ export const BUILDINGS: BuildingDef[] = [
     shape: { kind: 'cylinder', radius: 2, height: 14 },
     color: '#f6f1e4',
     triggerRadius: 5.5,
-    panel: stub('The Lighthouse — Contact', 'parthivfarazi@icloud.com · +1 (404) 203-5379 · GitHub / LinkedIn / updt.pro.'),
+    panel: LighthousePanel,
     panelSize: { w: 760, h: 780 },
   },
 
@@ -144,7 +149,7 @@ export const BUILDINGS: BuildingDef[] = [
     shape: { kind: 'dome', radius: 4, baseHeight: 1.2 },
     color: '#94e2c0',
     triggerRadius: 7,
-    panel: stub('The Qard Greenhouse — Fintech Frontend', 'Founding Frontend Developer · Qard · Jun–Aug 2025.'),
+    panel: QardPanel,
     panelSize: { w: 760, h: 780 },
   },
   {
@@ -156,7 +161,7 @@ export const BUILDINGS: BuildingDef[] = [
     shape: { kind: 'cylinder', radius: 6, height: 3 },
     color: '#8e6f48',
     triggerRadius: 9,
-    panel: stub('The Athletic Stadium — College Football Valuation', 'Python · Pandas · valuation models for 60+ NCAA programs.'),
+    panel: AthleticPanel,
     panelSize: { w: 880, h: 780 },
   },
   {
@@ -168,7 +173,7 @@ export const BUILDINGS: BuildingDef[] = [
     shape: { kind: 'dome', radius: 3.5, baseHeight: 2.5 },
     color: '#a89878',
     triggerRadius: 6.5,
-    panel: stub('The Whispering Archive — Quote Retrieval', 'FAISS + Gemma-3 embeddings · 490k+ quotes · GT PACE H100 cluster.'),
+    panel: ArchivePanel,
     panelSize: { w: 820, h: 780 },
   },
   {
@@ -180,7 +185,7 @@ export const BUILDINGS: BuildingDef[] = [
     shape: { kind: 'disc', radius: 5 },
     color: '#d4c8a0',
     triggerRadius: 7,
-    panel: stub('The Zen Garden — Soothe', 'AI Mental Health App · React Native · FastAPI · GPT-4 · May–Jul 2025.'),
+    panel: SoothePanel,
     panelSize: { w: 760, h: 780 },
   },
   {
@@ -192,7 +197,7 @@ export const BUILDINGS: BuildingDef[] = [
     shape: { kind: 'disc', radius: 5 },
     color: '#e3a572',
     triggerRadius: 7,
-    panel: stub('The Heatmap Garden — xGenius', 'Off-Ball Run Impact Score (ORIS) pipeline · 1000+ player movements/game.'),
+    panel: HeatmapPanel,
     panelSize: { w: 820, h: 780 },
   },
   {
@@ -204,7 +209,7 @@ export const BUILDINGS: BuildingDef[] = [
     shape: { kind: 'box', width: 4, depth: 4, height: 3 },
     color: '#8b5a3c',
     triggerRadius: 5.5,
-    panel: stub("The Robot's Workshop", 'Litter-Picking Robot · C++ · Arduino · KL · Jan–Apr 2021. Where it all started.'),
+    panel: WorkshopPanel,
     panelSize: { w: 760, h: 780 },
   },
 ];
@@ -215,8 +220,6 @@ export function getBuilding(id: BuildingId): BuildingDef {
   return b;
 }
 
-// AABB footprint of a building for collision. Returns null for shapes the
-// player should be able to walk onto (flat discs).
 export function footprintHalfExtents(def: BuildingDef): { halfX: number; halfZ: number } | null {
   const s = def.shape;
   switch (s.kind) {
