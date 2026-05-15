@@ -10,6 +10,7 @@ export const brickRedDark = new THREE.MeshStandardMaterial({ color: '#7a3a26', r
 export const stoneWarm = new THREE.MeshStandardMaterial({ color: '#d6c5a0', roughness: 0.82 });
 export const stoneCool = new THREE.MeshStandardMaterial({ color: '#b8b3a3', roughness: 0.88 });
 export const stoneFoundation = new THREE.MeshStandardMaterial({ color: '#7a6a4f', roughness: 1 });
+export const slateBlue = new THREE.MeshStandardMaterial({ color: '#5a6878', roughness: 0.7, metalness: 0.15 });
 
 // ── Glass ────────────────────────────────────────────────────────────────
 export const glassFuturistic = new THREE.MeshStandardMaterial({

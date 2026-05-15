@@ -4,11 +4,10 @@ import { CanvasTexture, RepeatWrapping } from 'three';
 import type { BuildingDef } from '@/data/buildings';
 import {
   brickRed,
-  brickRedDark,
   stoneWarm,
   stoneCool,
+  slateBlue,
   goldEmissive,
-  woodDark,
   metalDark,
 } from '../materials';
 
@@ -210,16 +209,59 @@ export function TechTower({ def }: { def: BuildingDef }) {
         </Text3D>
       </group>
 
-      {/* Roof spike + pennant */}
-      <mesh castShadow position={[0, 0.6 + H + parapetH + 0.9, 0]} material={woodDark}>
-        <cylinderGeometry args={[0.05, 0.05, 1.8, 8]} />
-      </mesh>
-      <mesh position={[0.45, 0.6 + H + parapetH + 1.45, 0]} material={brickRedDark}>
-        <planeGeometry args={[0.9, 0.5]} />
-      </mesh>
+      {/* ── Steep slate pyramidal roof — sits on the parapet ─────────── */}
+      {/* CylinderGeometry(top=0, bottom=R, height, 4 segments) is a square
+          pyramid. Rotated 45° on Y so its faces face the cardinal directions
+          (matching the brick body), not the corners. */}
+      {(() => {
+        const roofR = 3.5; // base; flat side ≈ R*√2 ≈ 4.95 (matches parapet)
+        const roofH = 5.8; // steep, matches GT Tech Tower proportions
+        const roofY = 0.6 + H + parapetH + roofH / 2;
+        return (
+          <>
+            <mesh
+              castShadow
+              position={[0, roofY, 0]}
+              rotation={[0, Math.PI / 4, 0]}
+              material={slateBlue}
+            >
+              <cylinderGeometry args={[0, roofR, roofH, 4, 1]} />
+            </mesh>
+            {/* Gold finial at the apex */}
+            <mesh
+              castShadow
+              position={[0, roofY + roofH / 2 + 0.3, 0]}
+              material={goldEmissive}
+            >
+              <coneGeometry args={[0.13, 0.7, 12]} />
+            </mesh>
+          </>
+        );
+      })()}
 
-      {/* Floating label for navigation */}
-      <Billboard position={[0, 0.6 + H + parapetH + 4, 0]}>
+      {/* ── Four corner pinnacles — mini spires flanking the main roof ── */}
+      {([[-1, -1], [1, -1], [-1, 1], [1, 1]] as Array<[number, number]>).map(
+        ([sx, sz], i) => {
+          const px = (sx * (W + 0.5)) / 2;
+          const pz = (sz * (D + 0.5)) / 2;
+          const baseY = 0.6 + H + parapetH;
+          return (
+            <group key={i} position={[px, baseY, pz]}>
+              {/* Stone shaft */}
+              <mesh castShadow material={stoneCool} position={[0, 0.5, 0]}>
+                <cylinderGeometry args={[0.2, 0.24, 1.0, 8]} />
+              </mesh>
+              {/* Slate cap */}
+              <mesh castShadow material={slateBlue} position={[0, 1.35, 0]}>
+                <coneGeometry args={[0.26, 0.8, 8]} />
+              </mesh>
+            </group>
+          );
+        },
+      )}
+
+      {/* Floating label */}
+      <Billboard position={[0, 0.6 + H + parapetH + 8.5, 0]}>
         <Text fontSize={1.1} color="#2a2520" outlineWidth={0.06} outlineColor="#fffaee" anchorX="center" anchorY="middle">
           {def.shortLabel}
         </Text>
