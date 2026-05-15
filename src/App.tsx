@@ -1,4 +1,4 @@
-import { Scene } from './components/world/Scene';
+import { Scene } from './world/Scene';
 import { HUD } from './components/ui/HUD';
 import { InteractPrompt } from './components/ui/InteractPrompt';
 import { BuildingDialog } from './components/ui/BuildingDialog';

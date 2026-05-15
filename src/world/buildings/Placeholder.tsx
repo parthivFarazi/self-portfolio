@@ -1,7 +1,7 @@
 import { Billboard, Text } from '@react-three/drei';
 import type { BuildingDef } from '@/data/buildings';
 
-export function Building({ def }: { def: BuildingDef }) {
+export function Placeholder({ def }: { def: BuildingDef }) {
   const [x, , z] = def.position;
 
   return (
