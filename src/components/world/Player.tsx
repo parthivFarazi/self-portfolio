@@ -4,7 +4,7 @@ import { Group, Vector3 } from 'three';
 import { useGame } from '@/state/gameStore';
 import { useKeyboardControls } from '@/hooks/useKeyboardControls';
 import { nearestBuilding } from '@/hooks/useProximity';
-import { BUILDINGS } from '@/constants/buildings';
+import { BUILDINGS, footprintHalfExtents } from '@/data/buildings';
 import {
   PLAYER_SPEED,
   PLAYER_ACCEL,
@@ -22,12 +22,13 @@ function collideBuildings(nx: number, nz: number, px: number, pz: number): [numb
   let outX = nx;
   let outZ = nz;
   for (const b of BUILDINGS) {
-    const halfW = b.footprint[0] / 2 + PLAYER_RADIUS;
-    const halfD = b.footprint[1] / 2 + PLAYER_RADIUS;
+    const fp = footprintHalfExtents(b);
+    if (!fp) continue; // walk-onto shapes (gardens) don't collide
+    const halfW = fp.halfX + PLAYER_RADIUS;
+    const halfD = fp.halfZ + PLAYER_RADIUS;
     const bx = b.position[0];
     const bz = b.position[2];
     if (outX > bx - halfW && outX < bx + halfW && outZ > bz - halfD && outZ < bz + halfD) {
-      // Resolve along whichever axis we were moving most.
       const overlapX = outX > bx ? outX - (bx + halfW) : outX - (bx - halfW);
       const overlapZ = outZ > bz ? outZ - (bz + halfD) : outZ - (bz - halfD);
       const dx = Math.abs(outX - px);

@@ -1,4 +1,4 @@
-import { BUILDINGS } from '@/constants/buildings';
+import { BUILDINGS } from '@/data/buildings';
 import { Building } from './Building';
 
 export function Buildings() {

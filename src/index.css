@@ -2,6 +2,38 @@
 @tailwind components;
 @tailwind utilities;
 
+/* Resume World design tokens — mirror the original prototype's <style> block.
+   Panels reference these via inline styles; do not rename. */
+:root {
+  --rw-grass: #6db862;
+  --rw-grass-deep: #4a8a48;
+  --rw-grass-pale: #a8d49f;
+  --rw-path: #e8d5a8;
+  --rw-path-deep: #c8b585;
+  --rw-brick: #a8553c;
+  --rw-terracotta: #c97e58;
+  --rw-moss: #6e8b5a;
+  --rw-gold: #b3a369;
+  --rw-gold-bright: #d4c178;
+  --rw-sky-peach: #ffd4a3;
+  --rw-sky-lav: #e3c5e1;
+  --rw-sky-teal: #b3dfd7;
+  --rw-cyan: #6fd5e0;
+  --rw-magenta: #e07ec3;
+  --rw-mint: #94e2c0;
+  --rw-amber: #f5d97a;
+  --rw-ink: #2a2520;
+  --rw-ink-soft: #534a3e;
+  --rw-paper: #f6f1e4;
+  --rw-cream: #fffaee;
+  --rw-water: #6db9c4;
+
+  --rw-serif: "Instrument Serif", "Cormorant Garamond", Georgia, serif;
+  --rw-sans: "Geist", ui-sans-serif, system-ui, -apple-system, sans-serif;
+  --rw-mono: "JetBrains Mono", ui-monospace, monospace;
+  --rw-hand: "Caveat", "Bradley Hand", cursive;
+}
+
 html,
 body,
 #root {

@@ -1,5 +1,5 @@
 import { create } from 'zustand';
-import type { BuildingId } from '@/constants/buildings';
+import type { BuildingId } from '@/data/buildings';
 
 interface GameState {
   playerPosition: [number, number, number];

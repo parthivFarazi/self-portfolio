@@ -1,6 +1,6 @@
 import { AnimatePresence, motion } from 'framer-motion';
 import { useGame } from '@/state/gameStore';
-import { BUILDINGS } from '@/constants/buildings';
+import { BUILDINGS } from '@/data/buildings';
 
 export function InteractPrompt() {
   const nearby = useGame((s) => s.nearbyBuildingId);

@@ -1,4 +1,4 @@
-import { BUILDINGS, type BuildingId } from '@/constants/buildings';
+import { BUILDINGS, type BuildingId } from '@/data/buildings';
 
 export function nearestBuilding(x: number, z: number): { id: BuildingId; dist: number } | null {
   let best: { id: BuildingId; dist: number } | null = null;
