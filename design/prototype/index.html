@@ -1,0 +1,65 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Resume World — Visual Direction</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Geist:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&family=Caveat:wght@500;700&family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --rw-grass: #6db862;
+    --rw-grass-deep: #4a8a48;
+    --rw-grass-pale: #a8d49f;
+    --rw-path: #e8d5a8;
+    --rw-path-deep: #c8b585;
+    --rw-brick: #a8553c;
+    --rw-terracotta: #c97e58;
+    --rw-moss: #6e8b5a;
+    --rw-gold: #b3a369;
+    --rw-gold-bright: #d4c178;
+    --rw-sky-peach: #ffd4a3;
+    --rw-sky-lav: #e3c5e1;
+    --rw-sky-teal: #b3dfd7;
+    --rw-cyan: #6fd5e0;
+    --rw-magenta: #e07ec3;
+    --rw-mint: #94e2c0;
+    --rw-amber: #f5d97a;
+    --rw-ink: #2a2520;
+    --rw-ink-soft: #534a3e;
+    --rw-paper: #f6f1e4;
+    --rw-cream: #fffaee;
+    --rw-water: #6db9c4;
+
+    --rw-serif: "Instrument Serif", "Cormorant Garamond", Georgia, serif;
+    --rw-sans: "Geist", ui-sans-serif, system-ui, -apple-system, sans-serif;
+    --rw-mono: "JetBrains Mono", ui-monospace, monospace;
+    --rw-hand: "Caveat", "Bradley Hand", cursive;
+  }
+  html, body { margin: 0; padding: 0; background: #efeae0; font-family: var(--rw-sans); color: var(--rw-ink); }
+  *, *::before, *::after { box-sizing: border-box; }
+  ::selection { background: var(--rw-amber); color: var(--rw-ink); }
+</style>
+</head>
+<body>
+<div id="root"></div>
+
+<script src="https://unpkg.com/react@18.3.1/umd/react.development.js" integrity="sha384-hD6/rw4ppMLGNu3tX5cjIb+uRZ7UkRJ6BPkLpg4hAu/6onKUg4lLsHAs9EBPT82L" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/react-dom@18.3.1/umd/react-dom.development.js" integrity="sha384-u6aeetuaXnQ38mYT8rp6sbXaQe3NL9t+IBXmnYxwkUI2Hw4bsp2Wvmx4yRQF1uAm" crossorigin="anonymous"></script>
+<script src="https://unpkg.com/@babel/standalone@7.29.0/babel.min.js" integrity="sha384-m08KidiNqLdpJqLq95G/LEi8Qvjl/xUYll3QILypMoQ65QorJ9Lvtp2RXYGBFj1y" crossorigin="anonymous"></script>
+
+<script type="text/babel" src="design-canvas.jsx"></script>
+<script type="text/babel" src="tweaks-panel.jsx"></script>
+<script src="image-slot.js"></script>
+<script type="text/babel" src="character.jsx"></script>
+<script type="text/babel" src="system.jsx"></script>
+<script type="text/babel" src="panels.jsx"></script>
+<script type="text/babel" src="project-panels.jsx"></script>
+<script type="text/babel" src="project-panels-2.jsx"></script>
+<script type="text/babel" src="iso.jsx"></script>
+<script type="text/babel" src="scenes-hero.jsx"></script>
+<script type="text/babel" src="scenes-rest.jsx"></script>
+<script type="text/babel" src="app.jsx"></script>
+</body>
+</html>
