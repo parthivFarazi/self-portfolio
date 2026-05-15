@@ -1,0 +1,21 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+html,
+body,
+#root {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+  background: #efeae0;
+  color: theme('colors.rw.ink');
+  font-family: theme('fontFamily.sans');
+}
+
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
