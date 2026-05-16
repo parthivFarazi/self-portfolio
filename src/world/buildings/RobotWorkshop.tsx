@@ -86,7 +86,7 @@ export function RobotWorkshop({ def }: { def: BuildingDef }) {
       <mesh position={[0, 0.5 + 0.5, D / 2 - 0.6]} material={neonCyan}>
         <sphereGeometry args={[0.04, 8, 6]} />
       </mesh>
-      <pointLight position={[0, 0.7, D / 2 - 0.7]} intensity={0.4} distance={2.4} decay={2} color="#6fd5e0" />
+      {/* (no <pointLight> — emissive Arduino LED + bloom is enough) */}
 
       {/* Malaysian flag pinned to the wall — red/white/blue stripes */}
       <group position={[-W / 2 + 0.45, 1.8, D / 2 + 0.05]}>
@@ -107,7 +107,7 @@ export function RobotWorkshop({ def }: { def: BuildingDef }) {
       <mesh position={[W / 2 + 0.3, 1.2, D / 2 - 0.4]} material={lampAmber}>
         <boxGeometry args={[0.18, 0.3, 0.18]} />
       </mesh>
-      <pointLight position={[W / 2 + 0.3, 1.4, D / 2 - 0.4]} intensity={0.5} distance={3.5} decay={2} color="#f5d97a" />
+      {/* (no <pointLight> for the outside lantern — emissive material + bloom) */}
 
       {/* The robot — wheels + body + solar panel — roaming */}
       <group ref={robot}>

@@ -99,6 +99,51 @@ export function Athletic({ def }: { def: BuildingDef }) {
         <meshStandardMaterial color="#c5beaa" roughness={0.92} side={2} />
       </mesh>
 
+      {/* Exterior pilasters every 30° — adds vertical rhythm and depth */}
+      {Array.from({ length: 12 }).map((_, i) => {
+        const a = (i / 12) * Math.PI * 2;
+        const x = Math.cos(a) * rx * 1.01;
+        const z = Math.sin(a) * rz * 1.01;
+        const yaw = Math.atan2(x, z);
+        return (
+          <mesh key={`pi-${i}`} castShadow position={[x, 0.5 + wallH / 2, z]} rotation={[0, yaw, 0]} material={stoneFoundation}>
+            <boxGeometry args={[0.5, wallH, 0.3]} />
+          </mesh>
+        );
+      })}
+
+      {/* Top cornice — concrete cap ring above the bowl wall */}
+      <mesh castShadow position={[0, 0.5 + wallH + 0.18, 0]} scale={[rx + 0.05, 1, rz + 0.05]}>
+        <ringGeometry args={[0.98, 1.05, 64]} />
+        <meshStandardMaterial color="#a8a298" roughness={0.85} side={2} />
+      </mesh>
+      <mesh castShadow position={[0, 0.5 + wallH + 0.1, 0]} scale={[rx + 0.07, 1, rz + 0.07]}>
+        <cylinderGeometry args={[1, 1, 0.2, 64, 1, true]} />
+        <meshStandardMaterial color="#bcb6a0" roughness={0.9} side={2} />
+      </mesh>
+
+      {/* Exterior banner panels — alternating navy/red around the bowl */}
+      {[
+        { ang: Math.PI * 0.10, color: '#1a3458' },
+        { ang: Math.PI * 0.32, color: '#c44a3a' },
+        { ang: Math.PI * 0.68, color: '#1a3458' },
+        { ang: Math.PI * 0.90, color: '#c44a3a' },
+        { ang: Math.PI * 1.10, color: '#1a3458' },
+        { ang: Math.PI * 1.32, color: '#c44a3a' },
+        { ang: Math.PI * 1.68, color: '#1a3458' },
+        { ang: Math.PI * 1.90, color: '#c44a3a' },
+      ].map((b, i) => {
+        const x = Math.cos(b.ang) * (rx * 1.05);
+        const z = Math.sin(b.ang) * (rz * 1.05);
+        const yaw = Math.atan2(x, z);
+        return (
+          <mesh key={`bn-${i}`} position={[x, 3.2, z]} rotation={[0, yaw, 0]}>
+            <planeGeometry args={[1.0, 2.4]} />
+            <meshStandardMaterial color={b.color} roughness={0.7} side={2} />
+          </mesh>
+        );
+      })}
+
       {/* Two American football goalposts (the U-shape) */}
       {[-rx + 2, rx - 2].map((gx, i) => (
         <group key={i} position={[gx, 0.5, 0]}>
@@ -123,27 +168,71 @@ export function Athletic({ def }: { def: BuildingDef }) {
       <Banner x={2} label="ACC" color="#3a6a8c" />
       <Banner x={6} label="B12" color="#7a3a4a" />
 
-      {/* Magazine page hovering above 50-yard line */}
-      <group position={[0, 7.5, 0]} rotation={[-Math.PI / 6, 0, 0]}>
+      {/* "THE VALUATION ISSUE" jumbotron — mounted on the north (-z) interior
+          wall instead of floating over the field, so the pitch reads clearly
+          from the camera angle. */}
+      <group position={[0, 4.2, -rz + 0.3]} rotation={[0, 0, 0]}>
         <mesh castShadow>
-          <boxGeometry args={[3.6, 2.4, 0.06]} />
-          <meshStandardMaterial color="#fbf6e6" emissive="#f5d97a" emissiveIntensity={0.15} roughness={0.65} />
+          <boxGeometry args={[5.4, 2.4, 0.12]} />
+          <meshStandardMaterial color="#1a1410" roughness={0.55} />
         </mesh>
-        <Text position={[0, 0.6, 0.04]} fontSize={0.3} color="#1a1410" anchorX="center" anchorY="middle">
+        <mesh position={[0, 0, 0.07]}>
+          <boxGeometry args={[5.0, 2.0, 0.02]} />
+          <meshStandardMaterial color="#fbf6e6" emissive="#f5d97a" emissiveIntensity={0.18} roughness={0.55} />
+        </mesh>
+        <Text position={[0, 0.55, 0.1]} fontSize={0.36} color="#1a1410" anchorX="center" anchorY="middle">
           THE VALUATION ISSUE
         </Text>
-        <Text position={[0, -0.5, 0.04]} fontSize={0.18} color="#7a5a30" anchorX="center" anchorY="middle">
+        <Text position={[0, -0.05, 0.1]} fontSize={0.2} color="#7a5a30" anchorX="center" anchorY="middle">
           a Parthiv Farazi feature
+        </Text>
+        <Text position={[0, -0.55, 0.1]} fontSize={0.16} color="#9a7a50" anchorX="center" anchorY="middle">
+          Athletic Department · 2026
         </Text>
       </group>
 
-      {/* Small entrance ticket booth */}
-      <mesh castShadow position={[0, 1.4, rz + 0.6]}>
-        <boxGeometry args={[2.2, 2.6, 1]} />
-        <meshStandardMaterial color="#bca795" roughness={0.85} />
+      {/* Grand entrance — stepped pediment + columns + ticket booth */}
+      <mesh castShadow position={[0, 2.6, rz + 0.6]} material={stoneFoundation}>
+        <boxGeometry args={[5.6, 5.2, 1.2]} />
       </mesh>
-      <mesh position={[0, 1.6, rz + 1.12]} material={lampAmber}>
-        <boxGeometry args={[1.6, 0.6, 0.04]} />
+      {/* Stepped pediment */}
+      <mesh castShadow position={[0, 5.3, rz + 0.6]} material={stoneFoundation}>
+        <boxGeometry args={[6.4, 0.35, 1.4]} />
+      </mesh>
+      <mesh castShadow position={[0, 5.65, rz + 0.6]} material={stoneFoundation}>
+        <boxGeometry args={[5.8, 0.25, 1.4]} />
+      </mesh>
+      {/* Doorway opening — dark glass with warm glow behind */}
+      <mesh position={[0, 1.9, rz + 1.22]}>
+        <boxGeometry args={[2.8, 3.4, 0.05]} />
+        <meshStandardMaterial color="#1a1410" roughness={0.4} emissive="#f5b66a" emissiveIntensity={0.25} />
+      </mesh>
+      {/* Two flanking columns */}
+      {[-2.0, 2.0].map((cx, i) => (
+        <mesh key={`col-${i}`} castShadow position={[cx, 2.5, rz + 1.15]} material={stoneFoundation}>
+          <cylinderGeometry args={[0.22, 0.25, 4.8, 12]} />
+        </mesh>
+      ))}
+      {/* "VALUATION" lettering above the entrance */}
+      <Text
+        position={[0, 4.7, rz + 1.23]}
+        fontSize={0.42}
+        color="#fffaee"
+        outlineWidth={0.04}
+        outlineColor="#7a3a26"
+        anchorX="center"
+        anchorY="middle"
+      >
+        VALUATION
+      </Text>
+      {/* Small lamp on the right-hand column */}
+      <mesh position={[2.0, 4.0, rz + 1.4]} material={lampAmber}>
+        <boxGeometry args={[0.25, 0.45, 0.2]} />
+      </mesh>
+      {/* Side entry plaza */}
+      <mesh receiveShadow position={[0, 0.04, rz + 4]} rotation={[-Math.PI / 2, 0, 0]}>
+        <planeGeometry args={[9, 5]} />
+        <meshStandardMaterial color="#cdb582" roughness={0.85} />
       </mesh>
 
       <Billboard position={[0, wallH + 5, 0]}>

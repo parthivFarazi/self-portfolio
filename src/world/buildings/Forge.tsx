@@ -98,8 +98,12 @@ export function Forge({ def }: { def: BuildingDef }) {
         </mesh>
       ))}
 
-      {/* Warm orange interior light spilling out */}
-      <pointLight position={[0, 1.5, D / 2 - 0.6]} intensity={1.8} distance={8} decay={2} color="#f5a05a" />
+      {/* Warm orange interior glow — emissive + bloom does the visual work,
+          so no <pointLight> needed (each one taxes every fragment). */}
+      <mesh position={[0, 1.5, D / 2 - 0.6]}>
+        <sphereGeometry args={[0.3, 10, 8]} />
+        <meshStandardMaterial color="#f5a05a" emissive="#f5a05a" emissiveIntensity={1.4} roughness={0.6} />
+      </mesh>
 
       {/* Lantern on outer wall */}
       <mesh position={[W / 2 - 0.6, 2, D / 2 + 0.05]} material={lampAmber}>

@@ -59,7 +59,10 @@ export function Lighthouse({ def }: { def: BuildingDef }) {
       <mesh position={[0, 0.6 + H + 1.2, 0]} material={lampAmber}>
         <sphereGeometry args={[0.5, 16, 12]} />
       </mesh>
-      <pointLight position={[0, 0.6 + H + 1.2, 0]} intensity={4} distance={28} decay={1.6} color="#f5d97a" />
+      {/* Reduced from intensity=4/distance=28 — that single light dominated
+          the per-fragment shader cost across half the island. Emissive lamp
+          + bloom still reads as the focal beacon. */}
+      <pointLight position={[0, 0.6 + H + 1.2, 0]} intensity={1.4} distance={14} decay={2} color="#f5d97a" />
 
       {/* Sweeping beam — flat cone from the lantern */}
       <group ref={beam} position={[0, 0.6 + H + 1.2, 0]}>

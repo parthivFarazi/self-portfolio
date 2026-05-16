@@ -128,7 +128,7 @@ export function Archive({ def }: { def: BuildingDef }) {
       {[0.0, 0.7, 1.4, 2.1, 2.8, 3.5, 4.2, 4.9].map((s) => (
         <Firefly key={s} seed={s} />
       ))}
-      <pointLight position={[0, baseH + 1, 0]} intensity={1.2} distance={10} decay={2} color="#f5d97a" />
+      {/* (no central pointLight — fireflies are bloom-lit already) */}
 
       <Billboard position={[0, baseH + R + 3, 0]}>
         <Text fontSize={1} color="#2a2520" outlineWidth={0.06} outlineColor="#fffaee" anchorX="center" anchorY="middle">

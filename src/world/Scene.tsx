@@ -15,7 +15,7 @@ export function Scene() {
   return (
     <Canvas
       shadows
-      dpr={[1, 2]}
+      dpr={[1, 1.5]}
       gl={{ antialias: true, toneMapping: THREE.ACESFilmicToneMapping, toneMappingExposure: 1.05 }}
       onCreated={({ gl, scene, camera }) => {
         gl.shadowMap.type = THREE.PCFSoftShadowMap;

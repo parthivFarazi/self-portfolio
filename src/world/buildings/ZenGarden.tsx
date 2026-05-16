@@ -160,10 +160,9 @@ export function ZenGarden({ def }: { def: BuildingDef }) {
             <meshStandardMaterial color="#fffaee" emissive="#f5d97a" emissiveIntensity={0.4} roughness={0.5} />
           </mesh>
         </group>
-        <pointLight position={[0, 0.4, 0]} intensity={0.6} distance={3} decay={2} color="#f5d97a" />
       </group>
 
-      {/* 2 stone lanterns on perimeter */}
+      {/* 2 stone lanterns on perimeter — emissive + bloom, no point lights */}
       {[[-R + 0.6, R - 0.6], [R - 0.6, -R + 0.6]].map(([lx, lz], i) => (
         <group key={i} position={[lx, 0.05, lz]}>
           <mesh castShadow material={stoneCool} position={[0, 0.3, 0]}>
@@ -175,7 +174,6 @@ export function ZenGarden({ def }: { def: BuildingDef }) {
           <mesh material={stoneCool} position={[0, 0.95, 0]}>
             <cylinderGeometry args={[0.22, 0.16, 0.18, 6]} />
           </mesh>
-          <pointLight position={[0, 0.7, 0]} intensity={0.35} distance={3} decay={2} color="#f5d97a" />
         </group>
       ))}
 
