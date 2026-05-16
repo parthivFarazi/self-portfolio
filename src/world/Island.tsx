@@ -6,7 +6,6 @@ import {
   MeshStandardMaterial,
   Vector2,
   type BufferAttribute,
-  type Shader,
 } from 'three';
 import { COLORS, ISLAND_RADIUS, ISLAND_THICKNESS } from '@/constants/world';
 import { TREE_PLACEMENTS } from './decorations/placements';
@@ -107,7 +106,7 @@ function buildGrassMaterial(grass: CanvasTexture): MeshStandardMaterial {
   const WORN_COUNT = wornSpots.length;
 
   const mat = new MeshStandardMaterial({ map: grass, roughness: 0.95 });
-  mat.onBeforeCompile = (shader: Shader) => {
+  mat.onBeforeCompile = (shader) => {
     shader.uniforms.uDarkSpots = { value: darkSpots };
     shader.uniforms.uWornSpots = { value: wornSpots };
 
