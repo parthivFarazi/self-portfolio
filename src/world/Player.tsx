@@ -5,6 +5,7 @@ import { useGame } from '@/state/gameStore';
 import { useKeyboardControls } from '@/hooks/useKeyboardControls';
 import { nearestBuilding } from '@/hooks/useProximity';
 import { BUILDINGS, footprintHalfExtents } from '@/data/buildings';
+import { Audio } from '@/audio/AudioManager';
 import {
   PLAYER_SPEED,
   PLAYER_ACCEL,
@@ -59,6 +60,7 @@ export function Player() {
   const yawRef = useRef<number>(0);
   const lastNearby = useRef<string | null>(null);
   const walkPhase = useRef<number>(0);
+  const lastStepIdx = useRef<number>(-1);
 
   useFrame((_state, rawDelta) => {
     if (!group.current) return;
@@ -125,11 +127,36 @@ export function Player() {
     if (leftArm.current) leftArm.current.rotation.x = -swing * 0.7;
     if (rightArm.current) rightArm.current.rotation.x = swing * 0.7;
 
+    // Footstep audio — fire on each peak of the leg-swing oscillation while
+    // actually moving. Surface picked from path/plaza heuristic.
+    if (speed > 0.6) {
+      const phaseN = walkPhase.current / Math.PI; // half-cycles
+      const stepIdx = Math.floor(phaseN);
+      if (stepIdx !== lastStepIdx.current) {
+        lastStepIdx.current = stepIdx;
+        // Plaza or path tile? Plaza is a circle near origin; main paths run
+        // along ±X and ±Z within 1.0u of the axis lines, between plaza edge
+        // and ~14u out.
+        const onPlazaXZ = Math.hypot(pos.x, pos.z) < PLAZA_RADIUS + 0.5;
+        const onPathXZ =
+          !onPlazaXZ &&
+          ((Math.abs(pos.x) < 1.0 && Math.abs(pos.z) < PLAZA_RADIUS + 14) ||
+            (Math.abs(pos.z) < 1.0 && Math.abs(pos.x) < PLAZA_RADIUS + 14));
+        Audio.footstep(onPlazaXZ || onPathXZ ? 'stone' : 'grass');
+      }
+    } else {
+      lastStepIdx.current = -1;
+    }
+
     useGame.setState({ playerPosition: [pos.x, pos.y, pos.z], playerFacing: yawRef.current });
 
     const near = nearestBuilding(pos.x, pos.z);
     const newId = near?.id ?? null;
     if (newId !== lastNearby.current) {
+      // Crossfade the building-specific ambient zone whenever proximity changes.
+      Audio.enterZone(newId);
+      // Soft chime when a fresh interaction prompt becomes available.
+      if (newId && !lastNearby.current) Audio.uiPrompt();
       lastNearby.current = newId;
       useGame.getState().setNearbyBuilding(newId);
     }

@@ -1,12 +1,27 @@
+import { useEffect, useRef } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
 import { useGame } from '@/state/gameStore';
 import { getBuilding } from '@/data/buildings';
+import { Audio } from '@/audio/AudioManager';
 
 export function BuildingDialog() {
   const active = useGame((s) => s.activeBuildingId);
   const close = useGame((s) => s.closeBuilding);
   const def = active ? getBuilding(active) : null;
   const Panel = def?.panel;
+
+  // Fire page-turn on open, soft click on close. Sentinel tracks last known
+  // active id so we only ping on edge transitions, not re-renders.
+  const lastActive = useRef<string | null>(null);
+  useEffect(() => {
+    const current = active ?? null;
+    if (current && current !== lastActive.current) {
+      Audio.panelOpen();
+    } else if (!current && lastActive.current) {
+      Audio.panelClose();
+    }
+    lastActive.current = current;
+  }, [active]);
 
   return (
     <AnimatePresence mode="wait">
