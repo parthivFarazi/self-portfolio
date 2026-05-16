@@ -107,7 +107,9 @@ export const BUILDINGS: BuildingDef[] = [
     name: 'Petronas Twin Towers',
     shortLabel: 'Twin Towers',
     ring: 'mid',
-    position: [40, 0, -40],
+    // Phase 4: nudged ~15u further NW so its base plaza no longer reads as
+    // attached to Athletic's banners (Athletic sits at [55, 0, -20]).
+    position: [35, 0, -55],
     shape: { kind: 'twin', width: 5, depth: 5, height: 28, spacing: 8 },
     color: '#c5cdd2',
     triggerRadius: 12,
