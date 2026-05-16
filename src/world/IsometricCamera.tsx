@@ -85,7 +85,12 @@ export function IsometricCamera() {
       0,
       1,
     );
-    const targetZoom = CAMERA_ZOOM * (1 + (APPROACH_ZOOM_MULT - 1) * tZoom);
+    // Narrow viewports (mobile) zoom out a touch so buildings stay legible.
+    // Drei's OrthographicCamera renders zoom in CSS-pixel space, so a lower
+    // multiplier shows more world per pixel.
+    const narrow = size.width < 768;
+    const mobileMult = narrow ? 0.85 : 1.0;
+    const targetZoom = CAMERA_ZOOM * mobileMult * (1 + (APPROACH_ZOOM_MULT - 1) * tZoom);
     zoomCurrent.current = MathUtils.damp(
       zoomCurrent.current,
       targetZoom,

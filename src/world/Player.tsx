@@ -6,6 +6,7 @@ import { useKeyboardControls } from '@/hooks/useKeyboardControls';
 import { nearestBuilding } from '@/hooks/useProximity';
 import { BUILDINGS, footprintHalfExtents } from '@/data/buildings';
 import { Audio } from '@/audio/AudioManager';
+import { touchInput } from '@/hooks/useTouchInput';
 import {
   PLAYER_SPEED,
   PLAYER_ACCEL,
@@ -74,14 +75,22 @@ export function Player() {
     if (k.down) dirZ += 1;
     if (k.left) dirX -= 1;
     if (k.right) dirX += 1;
-    const len = Math.hypot(dirX, dirZ);
+    let len = Math.hypot(dirX, dirZ);
+    let speedScale = 1;
     if (len > 0) {
       dirX /= len;
       dirZ /= len;
+    } else if (!paused && touchInput.magnitude > 0) {
+      // Mobile joystick — magnitude already in [0,1] for variable speed.
+      const tm = Math.hypot(touchInput.dx, touchInput.dz) || 1;
+      dirX = touchInput.dx / tm;
+      dirZ = touchInput.dz / tm;
+      len = 1;
+      speedScale = touchInput.magnitude;
     }
 
-    const targetVx = dirX * PLAYER_SPEED;
-    const targetVz = dirZ * PLAYER_SPEED;
+    const targetVx = dirX * PLAYER_SPEED * speedScale;
+    const targetVz = dirZ * PLAYER_SPEED * speedScale;
     const accelStep = PLAYER_ACCEL * delta;
     const vel = velRef.current;
     vel.x += clamp(targetVx - vel.x, -accelStep, accelStep);
