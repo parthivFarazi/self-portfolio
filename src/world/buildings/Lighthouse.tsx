@@ -89,8 +89,8 @@ export function Lighthouse({ def }: { def: BuildingDef }) {
         <coneGeometry args={[0.1, 0.4, 8]} />
       </mesh>
 
-      {/* Vintage red mailbox at the base */}
-      <group position={[R + 0.6, 0.6, 0.8]}>
+      {/* Vintage red mailbox — east side, visible to camera */}
+      <group position={[R + 0.7, 0.6, 1.0]}>
         <mesh castShadow material={woodDark} position={[0, 0.3, 0]}>
           <cylinderGeometry args={[0.06, 0.06, 0.6, 8]} />
         </mesh>
@@ -103,8 +103,8 @@ export function Lighthouse({ def }: { def: BuildingDef }) {
         </mesh>
       </group>
 
-      {/* Terminal post — small glowing screen on a post */}
-      <group position={[-R - 0.8, 0.6, -0.8]}>
+      {/* Terminal post — moved to the south side so it reads from camera. */}
+      <group position={[-0.8, 0.6, R + 0.8]}>
         <mesh castShadow material={metalDark} position={[0, 0.5, 0]}>
           <cylinderGeometry args={[0.05, 0.05, 1, 6]} />
         </mesh>
@@ -113,6 +113,20 @@ export function Lighthouse({ def }: { def: BuildingDef }) {
           <meshStandardMaterial color="#0a1a14" emissive="#7cd17a" emissiveIntensity={0.7} roughness={0.4} />
         </mesh>
       </group>
+
+      {/* Small wooden entry door at the base, on the south-facing side */}
+      <mesh position={[0.6, 1.0, R + 0.05]}>
+        <boxGeometry args={[0.8, 1.6, 0.1]} />
+        <meshStandardMaterial color="#3a2410" roughness={0.7} />
+      </mesh>
+      {/* Door arch top */}
+      <mesh position={[0.6, 1.7, R + 0.08]} material={stoneCool}>
+        <cylinderGeometry args={[0.4, 0.4, 0.08, 12, 1, false, 0, Math.PI]} />
+      </mesh>
+      {/* Stone stoop in front of the door */}
+      <mesh receiveShadow position={[0.6, 0.55, R + 0.45]} material={stoneCool}>
+        <boxGeometry args={[1.2, 0.15, 0.55]} />
+      </mesh>
 
       <Billboard position={[0, H + 6, 0]}>
         <Text fontSize={1} color="#2a2520" outlineWidth={0.06} outlineColor="#fffaee" anchorX="center" anchorY="middle">

@@ -72,15 +72,41 @@ export function Forge({ def }: { def: BuildingDef }) {
         <meshStandardMaterial color="#cfc4b6" transparent opacity={0.55} roughness={1} emissive="#5a4030" emissiveIntensity={0.1} />
       </mesh>
 
-      {/* Front archway — opening on +z face */}
-      <mesh position={[0, 0.5 + 1.6, D / 2 + 0.01]}>
-        <boxGeometry args={[2.4, 3, 0.1]} />
+      {/* Front archway — bigger opening on +z face so the camera reads it */}
+      <mesh position={[0, 0.5 + 1.7, D / 2 + 0.01]}>
+        <boxGeometry args={[3.0, 3.4, 0.1]} />
         <meshStandardMaterial color="#1a1410" roughness={0.7} />
       </mesh>
       {/* Archway top */}
-      <mesh position={[0, 0.5 + 3.1, D / 2 + 0.05]}>
-        <cylinderGeometry args={[1.2, 1.2, 0.1, 16, 1, false, 0, Math.PI]} />
+      <mesh position={[0, 0.5 + 3.4, D / 2 + 0.05]}>
+        <cylinderGeometry args={[1.5, 1.5, 0.1, 16, 1, false, 0, Math.PI]} />
         <meshStandardMaterial color="#1a1410" roughness={0.7} />
+      </mesh>
+      {/* Wooden porch awning over the entrance */}
+      <mesh castShadow position={[0, 0.5 + 4.1, D / 2 + 0.9]} material={woodDark}>
+        <boxGeometry args={[3.8, 0.18, 1.8]} />
+      </mesh>
+      {/* Two support posts holding up the awning */}
+      {[-1.6, 1.6].map((sx, i) => (
+        <mesh key={`p-${i}`} castShadow position={[sx, 0.5 + 2.0, D / 2 + 1.6]} material={woodDark}>
+          <cylinderGeometry args={[0.08, 0.1, 4.0, 6]} />
+        </mesh>
+      ))}
+      {/* Stone steps in front of the door */}
+      {[0, 1, 2].map((i) => (
+        <mesh
+          key={`st-${i}`}
+          receiveShadow
+          castShadow
+          position={[0, 0.4 - i * 0.16, D / 2 + 0.55 + i * 0.45]}
+          material={stoneCool}
+        >
+          <boxGeometry args={[3.0 + i * 0.3, 0.18, 0.45]} />
+        </mesh>
+      ))}
+      {/* Hanging "FORGE" wood plank above the door */}
+      <mesh castShadow position={[0, 0.5 + 4.4, D / 2 + 0.4]} material={woodDark}>
+        <boxGeometry args={[1.6, 0.5, 0.06]} />
       </mesh>
 
       {/* Through the archway: glowing GPU anvil */}

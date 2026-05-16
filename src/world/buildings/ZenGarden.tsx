@@ -41,21 +41,35 @@ function Koi({ seed, color, r = 0.55 }: { seed: number; color: string; r?: numbe
   );
 }
 
-// Sand with raked concentric ring patterns
+// Sand with raked concentric ring patterns — dark, visible from camera angle.
 function makeRakedSandTexture() {
   const c = document.createElement('canvas');
   c.width = 512; c.height = 512;
   const ctx = c.getContext('2d')!;
   ctx.fillStyle = '#e8d5a8';
   ctx.fillRect(0, 0, c.width, c.height);
-  // Concentric rings — softer
+  // Concentric rings — readable. Multiple passes for a raked-furrow look:
+  // a soft outer band (shadow) + a sharp inner dark line + a tiny highlight.
   const cx = c.width / 2;
   const cy = c.height / 2;
-  ctx.strokeStyle = '#c8b585';
-  ctx.lineWidth = 1.4;
-  for (let r = 14; r < c.width / 2; r += 14) {
+  for (let r = 16; r < c.width / 2; r += 18) {
+    // Soft wider shadow band
+    ctx.strokeStyle = 'rgba(120, 95, 50, 0.18)';
+    ctx.lineWidth = 5.5;
     ctx.beginPath();
     ctx.arc(cx, cy, r, 0, Math.PI * 2);
+    ctx.stroke();
+    // Sharp dark furrow line
+    ctx.strokeStyle = '#8a6a3a';
+    ctx.lineWidth = 1.8;
+    ctx.beginPath();
+    ctx.arc(cx, cy, r, 0, Math.PI * 2);
+    ctx.stroke();
+    // Tiny lighter highlight just inside the furrow
+    ctx.strokeStyle = 'rgba(255, 240, 200, 0.45)';
+    ctx.lineWidth = 0.8;
+    ctx.beginPath();
+    ctx.arc(cx, cy, r - 1.6, 0, Math.PI * 2);
     ctx.stroke();
   }
   // Sand specks

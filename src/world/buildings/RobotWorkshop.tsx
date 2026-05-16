@@ -66,10 +66,46 @@ export function RobotWorkshop({ def }: { def: BuildingDef }) {
         <boxGeometry args={[W + 0.6, 0.1, 0.18]} />
       </mesh>
 
-      {/* Open doorway — dark inside */}
-      <mesh position={[0, 0.5 + 1.1, D / 2 + 0.01]}>
-        <boxGeometry args={[1.1, 2.2, 0.08]} />
+      {/* Open doorway — wider, dark inside so the workbench reads */}
+      <mesh position={[0, 0.5 + 1.2, D / 2 + 0.01]}>
+        <boxGeometry args={[1.4, 2.4, 0.08]} />
         <meshStandardMaterial color="#1a1410" roughness={0.7} />
+      </mesh>
+      {/* Wooden door frame around the opening */}
+      <mesh position={[-0.75, 0.5 + 1.2, D / 2 + 0.04]} material={woodMid}>
+        <boxGeometry args={[0.12, 2.5, 0.08]} />
+      </mesh>
+      <mesh position={[0.75, 0.5 + 1.2, D / 2 + 0.04]} material={woodMid}>
+        <boxGeometry args={[0.12, 2.5, 0.08]} />
+      </mesh>
+      <mesh position={[0, 0.5 + 2.45, D / 2 + 0.04]} material={woodMid}>
+        <boxGeometry args={[1.6, 0.12, 0.08]} />
+      </mesh>
+
+      {/* Small lit workshop window on the east (+x) face — glow visible from
+          the camera's other visible side. */}
+      <mesh position={[W / 2 + 0.01, 0.5 + 1.6, 0.5]}>
+        <boxGeometry args={[0.04, 0.85, 0.9]} />
+        <meshStandardMaterial
+          color="#f5e0a0"
+          emissive="#f5b66a"
+          emissiveIntensity={0.85}
+          roughness={0.5}
+        />
+      </mesh>
+      {/* Window cross frame */}
+      <mesh position={[W / 2 + 0.025, 0.5 + 1.6, 0.5]} material={woodMid}>
+        <boxGeometry args={[0.03, 0.85, 0.06]} />
+      </mesh>
+      <mesh position={[W / 2 + 0.025, 0.5 + 1.6, 0.5]} material={woodMid}>
+        <boxGeometry args={[0.03, 0.06, 0.9]} />
+      </mesh>
+      {/* Hanging tools / planters under the window */}
+      <mesh castShadow position={[W / 2 + 0.16, 0.5 + 0.7, 0.5]} material={metalSilverDark}>
+        <cylinderGeometry args={[0.06, 0.04, 0.22, 6]} />
+      </mesh>
+      <mesh castShadow position={[W / 2 + 0.18, 0.5 + 0.5, 0.5]} material={woodMid}>
+        <boxGeometry args={[0.08, 0.4, 0.05]} />
       </mesh>
 
       {/* Tiny workbench inside */}
