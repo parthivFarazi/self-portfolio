@@ -14,16 +14,23 @@ import {
   PLAZA_RADIUS,
 } from '@/constants/world';
 
-const HALF = Math.PI / 2;
 const tmp = new Vector3();
 const tmpVel = new Vector3();
+
+// Palette — South Asian medium-tan skin, white shirt, khaki pants, GT-gold wristband.
+const SKIN = '#b3805d';
+const HAIR = '#1f1814';
+const SHIRT = '#f6f1e4';
+const PANTS = '#bfa376';
+const SHOES = '#3a2818';
+const GT_GOLD = '#d4b86a';
 
 function collideBuildings(nx: number, nz: number, px: number, pz: number): [number, number] {
   let outX = nx;
   let outZ = nz;
   for (const b of BUILDINGS) {
     const fp = footprintHalfExtents(b);
-    if (!fp) continue; // walk-onto shapes (gardens) don't collide
+    if (!fp) continue;
     const halfW = fp.halfX + PLAYER_RADIUS;
     const halfD = fp.halfZ + PLAYER_RADIUS;
     const bx = b.position[0];
@@ -43,13 +50,18 @@ function collideBuildings(nx: number, nz: number, px: number, pz: number): [numb
 export function Player() {
   const keys = useKeyboardControls();
   const group = useRef<Group>(null);
+  const bobGroup = useRef<Group>(null); // child that bobs while walking
+  const leftLeg = useRef<Group>(null);
+  const rightLeg = useRef<Group>(null);
+  const leftArm = useRef<Group>(null);
+  const rightArm = useRef<Group>(null);
   const velRef = useRef<Vector3>(new Vector3());
   const yawRef = useRef<number>(0);
   const lastNearby = useRef<string | null>(null);
+  const walkPhase = useRef<number>(0);
 
   useFrame((_state, rawDelta) => {
     if (!group.current) return;
-    // Clamp delta so tab-throttled frames can't tunnel the player through buildings.
     const delta = Math.min(rawDelta, 0.05);
     const paused = useGame.getState().isPaused();
 
@@ -99,10 +111,22 @@ export function Player() {
       group.current.rotation.y = yawRef.current;
     }
 
-    // Sync to store (throttle via comparison would be nicer; this is fine for Phase 1).
+    // Walking animation: bob and swing limbs proportional to speed
+    const speed = Math.hypot(vel.x, vel.z);
+    const targetPhaseRate = speed * 1.6; // radians/sec
+    walkPhase.current += targetPhaseRate * delta;
+    if (bobGroup.current) {
+      const moving = speed > 0.1 ? 1 : 0;
+      bobGroup.current.position.y = Math.abs(Math.sin(walkPhase.current)) * 0.06 * moving;
+    }
+    const swing = Math.sin(walkPhase.current) * 0.6 * Math.min(1, speed / PLAYER_SPEED);
+    if (leftLeg.current) leftLeg.current.rotation.x = swing;
+    if (rightLeg.current) rightLeg.current.rotation.x = -swing;
+    if (leftArm.current) leftArm.current.rotation.x = -swing * 0.7;
+    if (rightArm.current) rightArm.current.rotation.x = swing * 0.7;
+
     useGame.setState({ playerPosition: [pos.x, pos.y, pos.z], playerFacing: yawRef.current });
 
-    // Proximity
     const near = nearestBuilding(pos.x, pos.z);
     const newId = near?.id ?? null;
     if (newId !== lastNearby.current) {
@@ -110,7 +134,6 @@ export function Player() {
       useGame.getState().setNearbyBuilding(newId);
     }
 
-    // Zone label
     const onPlaza = Math.hypot(pos.x, pos.z) < PLAZA_RADIUS + 0.5;
     const zone = newId
       ? `Near ${labelFor(newId)}`
@@ -127,31 +150,99 @@ export function Player() {
 
   return (
     <group ref={group} position={[0, 0, 0]}>
-      {/* Body */}
-      <mesh castShadow position={[0, 0.85, 0]}>
-        <capsuleGeometry args={[0.32, 0.85, 6, 12]} />
-        <meshStandardMaterial color="#f6f1e4" roughness={0.7} />
-      </mesh>
-      {/* Pants */}
-      <mesh castShadow position={[0, 0.35, 0]}>
-        <capsuleGeometry args={[0.34, 0.4, 6, 12]} />
-        <meshStandardMaterial color="#bfa376" roughness={0.85} />
-      </mesh>
-      {/* Head */}
-      <mesh castShadow position={[0, 1.7, 0]}>
-        <sphereGeometry args={[0.28, 20, 16]} />
-        <meshStandardMaterial color="#b3805d" roughness={0.6} />
-      </mesh>
-      {/* Hair */}
-      <mesh castShadow position={[0, 1.85, -0.02]}>
-        <sphereGeometry args={[0.3, 20, 16, 0, Math.PI * 2, 0, HALF * 1.1]} />
-        <meshStandardMaterial color="#1f1814" roughness={0.5} />
-      </mesh>
-      {/* Facing indicator: tiny nose, helps you see rotation */}
-      <mesh position={[0, 1.7, 0.28]}>
-        <sphereGeometry args={[0.04, 8, 8]} />
-        <meshStandardMaterial color="#9a6a4a" roughness={0.6} />
-      </mesh>
+      <group ref={bobGroup}>
+        {/* Legs — pivot at the hip, swing about X */}
+        <group ref={leftLeg} position={[-0.16, 0.7, 0]}>
+          <mesh castShadow position={[0, -0.35, 0]}>
+            <cylinderGeometry args={[0.12, 0.11, 0.7, 12]} />
+            <meshStandardMaterial color={PANTS} roughness={0.85} />
+          </mesh>
+          {/* Shoe */}
+          <mesh castShadow position={[0, -0.74, 0.06]}>
+            <boxGeometry args={[0.18, 0.1, 0.32]} />
+            <meshStandardMaterial color={SHOES} roughness={0.6} />
+          </mesh>
+        </group>
+        <group ref={rightLeg} position={[0.16, 0.7, 0]}>
+          <mesh castShadow position={[0, -0.35, 0]}>
+            <cylinderGeometry args={[0.12, 0.11, 0.7, 12]} />
+            <meshStandardMaterial color={PANTS} roughness={0.85} />
+          </mesh>
+          <mesh castShadow position={[0, -0.74, 0.06]}>
+            <boxGeometry args={[0.18, 0.1, 0.32]} />
+            <meshStandardMaterial color={SHOES} roughness={0.6} />
+          </mesh>
+        </group>
+
+        {/* Torso — white button-down shirt */}
+        <mesh castShadow position={[0, 1.0, 0]}>
+          <boxGeometry args={[0.5, 0.65, 0.32]} />
+          <meshStandardMaterial color={SHIRT} roughness={0.7} />
+        </mesh>
+        {/* Belt */}
+        <mesh position={[0, 0.66, 0]}>
+          <boxGeometry args={[0.54, 0.06, 0.34]} />
+          <meshStandardMaterial color="#2a1a10" roughness={0.6} />
+        </mesh>
+
+        {/* Arms — pivot at shoulder */}
+        <group ref={leftArm} position={[-0.32, 1.28, 0]}>
+          <mesh castShadow position={[0, -0.3, 0]}>
+            <cylinderGeometry args={[0.085, 0.08, 0.6, 12]} />
+            <meshStandardMaterial color={SHIRT} roughness={0.7} />
+          </mesh>
+          {/* Forearm (rolled-up sleeve — skin) */}
+          <mesh castShadow position={[0, -0.66, 0]}>
+            <cylinderGeometry args={[0.08, 0.075, 0.18, 12]} />
+            <meshStandardMaterial color={SKIN} roughness={0.55} />
+          </mesh>
+          {/* GT-gold wristband on left wrist */}
+          <mesh position={[0, -0.76, 0]}>
+            <cylinderGeometry args={[0.085, 0.085, 0.04, 12]} />
+            <meshStandardMaterial color={GT_GOLD} roughness={0.4} metalness={0.5} emissive={GT_GOLD} emissiveIntensity={0.25} />
+          </mesh>
+        </group>
+        <group ref={rightArm} position={[0.32, 1.28, 0]}>
+          <mesh castShadow position={[0, -0.3, 0]}>
+            <cylinderGeometry args={[0.085, 0.08, 0.6, 12]} />
+            <meshStandardMaterial color={SHIRT} roughness={0.7} />
+          </mesh>
+          <mesh castShadow position={[0, -0.66, 0]}>
+            <cylinderGeometry args={[0.08, 0.075, 0.18, 12]} />
+            <meshStandardMaterial color={SKIN} roughness={0.55} />
+          </mesh>
+        </group>
+
+        {/* Neck */}
+        <mesh position={[0, 1.4, 0]}>
+          <cylinderGeometry args={[0.09, 0.1, 0.1, 12]} />
+          <meshStandardMaterial color={SKIN} roughness={0.6} />
+        </mesh>
+        {/* Head */}
+        <mesh castShadow position={[0, 1.62, 0]}>
+          <sphereGeometry args={[0.22, 20, 16]} />
+          <meshStandardMaterial color={SKIN} roughness={0.6} />
+        </mesh>
+        {/* Hair — half-sphere cap, neat sides */}
+        <mesh castShadow position={[0, 1.7, -0.015]}>
+          <sphereGeometry args={[0.235, 20, 16, 0, Math.PI * 2, 0, Math.PI / 2 * 0.95]} />
+          <meshStandardMaterial color={HAIR} roughness={0.5} />
+        </mesh>
+        {/* Beard — short, framing the chin */}
+        <mesh position={[0, 1.5, 0.16]}>
+          <sphereGeometry args={[0.18, 16, 12, 0, Math.PI * 2, Math.PI / 2.4, Math.PI / 3]} />
+          <meshStandardMaterial color={HAIR} roughness={0.55} />
+        </mesh>
+        {/* Eyes — tiny dark spheres */}
+        <mesh position={[-0.07, 1.62, 0.18]}>
+          <sphereGeometry args={[0.022, 8, 6]} />
+          <meshStandardMaterial color="#1a1410" roughness={0.4} />
+        </mesh>
+        <mesh position={[0.07, 1.62, 0.18]}>
+          <sphereGeometry args={[0.022, 8, 6]} />
+          <meshStandardMaterial color="#1a1410" roughness={0.4} />
+        </mesh>
+      </group>
     </group>
   );
 }
