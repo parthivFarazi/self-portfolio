@@ -102,14 +102,16 @@ export function TechTower({ def }: { def: BuildingDef }) {
   const brickTex = useMemo(makeBrickTexture, []);
   const clockTex = useMemo(makeClockTexture, []);
 
-  // Spec: 4×4 base, ~22 units tall (per Phase 3 prompt)
+  // Phase 4: -25% overall so the gold "TECH" letters land inside the default
+  // camera frame when the player walks up. Brick body 22 → 14. Parapet, roof,
+  // finial, clock face — all unchanged per the spec.
   const W = 4.4;
   const D = 4.4;
-  const H = 22;
+  const H = 14;
   const parapetH = 1.8;
-  const beltY1 = 0.9; // base belt
-  const beltY2 = H * 0.55; // mid belt
-  const beltY3 = H - 0.4; // top belt (just below parapet)
+  const beltY1 = 0.7;
+  const beltY2 = H * 0.55;
+  const beltY3 = H - 0.3;
 
   // Brick body — clone the material so the canvas map binds to it without
   // polluting the shared singleton.
@@ -141,8 +143,8 @@ export function TechTower({ def }: { def: BuildingDef }) {
         </mesh>
       ))}
 
-      {/* Arched window slits — 4 per side, two faces shown for clarity */}
-      {[3.2, 7, 10.8, 14.6].map((y) => (
+      {/* Arched window slits — 3 per side at the new shorter height */}
+      {[2.4, 5.8, 9.2].map((y) => (
         <group key={y}>
           {/* Front face windows */}
           <mesh position={[0, 0.6 + y, D / 2 + 0.01]} material={metalDark}>

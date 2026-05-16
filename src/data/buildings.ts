@@ -96,7 +96,7 @@ export const BUILDINGS: BuildingDef[] = [
     shortLabel: 'Tech Tower',
     ring: 'mid',
     position: [-30, 0, -30],
-    shape: { kind: 'box', width: 4.4, depth: 4.4, height: 22 },
+    shape: { kind: 'box', width: 4.4, depth: 4.4, height: 14 },
     color: '#a8553c',
     triggerRadius: 7,
     panel: CollegiateTowerPanel,
