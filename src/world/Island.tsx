@@ -191,7 +191,7 @@ export function Island() {
 
   return (
     <group>
-      {/* Grassy top with gentle undulation + shader-driven color variation */}
+      {/* Grassy top with undulation + shader color variation */}
       <mesh
         receiveShadow
         castShadow

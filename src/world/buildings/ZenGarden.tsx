@@ -1,9 +1,83 @@
 import { Billboard, Text } from '@react-three/drei';
 import { useMemo, useRef } from 'react';
 import { useFrame } from '@react-three/fiber';
-import { CanvasTexture, type Group } from 'three';
+import { DoubleSide, type Group, type Mesh } from 'three';
+import { CanvasTexture } from 'three';
 import type { BuildingDef } from '@/data/buildings';
 import { sand, water, stoneCool, woodDark, lampAmber } from '../materials';
+
+// ── Falling petal cloud ────────────────────────────────────────────────
+// 16 plain <mesh> petals around the cherry tree. Each owns its own ref
+// + state; we update positions in a single useFrame on the parent.
+const PETAL_COUNT = 16;
+
+interface PetalState {
+  x: number;
+  z: number;
+  y: number;
+  fallSpeed: number;
+  driftX: number;
+  driftZ: number;
+  rotZ: number;
+  spinSpeed: number;
+}
+
+function makePetalState(seed: number): PetalState {
+  const r = (n: number) => Math.sin(seed * 11.3 + n * 7.7) * 0.5 + 0.5;
+  return {
+    x: (r(1) - 0.5) * 3.5,
+    z: (r(2) - 0.5) * 3.5,
+    y: 3.0 + r(3) * 2.5,
+    fallSpeed: 0.22 + r(4) * 0.25,
+    driftX: (r(5) - 0.5) * 0.18,
+    driftZ: (r(6) - 0.5) * 0.18,
+    rotZ: r(7) * Math.PI * 2,
+    spinSpeed: (r(8) - 0.5) * 1.6,
+  };
+}
+
+function PetalCloud({ origin }: { origin: [number, number, number] }) {
+  const meshRefs = useRef<Array<Mesh | null>>([]);
+  const petals = useMemo<PetalState[]>(
+    () => Array.from({ length: PETAL_COUNT }, (_, i) => makePetalState(i)),
+    [],
+  );
+
+  useFrame((_state, dt) => {
+    const delta = Math.min(dt, 0.05);
+    for (let i = 0; i < petals.length; i++) {
+      const p = petals[i];
+      const m = meshRefs.current[i];
+      if (!m) continue;
+      p.y -= p.fallSpeed * delta;
+      p.x += p.driftX * delta;
+      p.z += p.driftZ * delta;
+      p.rotZ += p.spinSpeed * delta;
+      if (p.y < 0.1) {
+        const fresh = makePetalState(i + Math.floor(Math.random() * 1000));
+        Object.assign(p, fresh);
+        p.y = 4 + Math.random() * 1.5;
+      }
+      m.position.set(origin[0] + p.x, origin[1] + p.y, origin[2] + p.z);
+      m.rotation.z = p.rotZ;
+    }
+  });
+
+  return (
+    <>
+      {petals.map((_, i) => (
+        <mesh
+          key={i}
+          ref={(el) => { meshRefs.current[i] = el; }}
+          position={[origin[0], origin[1] + 3, origin[2]]}
+        >
+          <planeGeometry args={[0.18, 0.12]} />
+          <meshBasicMaterial color="#f5b6da" transparent opacity={0.85} side={DoubleSide} fog={false} />
+        </mesh>
+      ))}
+    </>
+  );
+}
 
 function Koi({ seed, color, r = 0.55 }: { seed: number; color: string; r?: number }) {
   const g = useRef<Group>(null);
@@ -91,6 +165,18 @@ export function ZenGarden({ def }: { def: BuildingDef }) {
     return m;
   }, [sandTex]);
 
+  // Pond surface ripple — gentle vertical bob on the water disc so it doesn't
+  // read as a solid painted shape.
+  const pondSurface = useRef<Mesh>(null);
+  useFrame(({ clock }) => {
+    if (!pondSurface.current) return;
+    const t = clock.getElapsedTime();
+    pondSurface.current.position.y = 0.07 + Math.sin(t * 1.6) * 0.012;
+    // Subtle XY scale wobble simulates a slow ripple
+    const s = 1 + Math.sin(t * 0.9) * 0.012;
+    pondSurface.current.scale.set(s, s, 1);
+  });
+
   return (
     <group position={[px, 0, pz]}>
       {/* Sand circle */}
@@ -106,7 +192,8 @@ export function ZenGarden({ def }: { def: BuildingDef }) {
 
       {/* Koi pond — to one side */}
       <group position={[-R + 1.4, 0, R - 1.4]}>
-        <mesh receiveShadow position={[0, 0.07, 0]} rotation={[-Math.PI / 2, 0, 0]} material={water}>
+        {/* Water surface — animated bob + scale wobble gives ripple read */}
+        <mesh ref={pondSurface} receiveShadow position={[0, 0.07, 0]} rotation={[-Math.PI / 2, 0, 0]} material={water}>
           <circleGeometry args={[1.1, 32]} />
         </mesh>
         {/* Stone rim around pond */}
@@ -191,6 +278,9 @@ export function ZenGarden({ def }: { def: BuildingDef }) {
         </group>
       ))}
 
+      {/* Falling petal cloud — origin sits under the cherry tree canopy */}
+      <PetalCloud origin={[R - 1.6, 0, -R + 1.6]} />
+
       <Billboard position={[0, 5, 0]}>
         <Text fontSize={0.95} color="#2a2520" outlineWidth={0.06} outlineColor="#fffaee" anchorX="center" anchorY="middle">
           {def.shortLabel}
@@ -199,3 +289,4 @@ export function ZenGarden({ def }: { def: BuildingDef }) {
     </group>
   );
 }
+
