@@ -24,8 +24,10 @@ export const COLORS = {
   path: '#e8d5a8',
   plaza: '#d8c498',
   sign: '#8b5a3c',
-  skyTop: '#ffd4a3',
-  skyMid: '#e3c5e1',
-  skyBottom: '#b3dfd7',
+  // Phase 4 palette: peach at horizon → lavender at mid → soft teal at zenith.
+  // (CanvasTexture maps top-of-canvas to the zenith, so skyTop = zenith color.)
+  skyTop: '#9dcfd1',
+  skyMid: '#c9a4d4',
+  skyBottom: '#f4b87a',
   gold: '#b3a369',
 } as const;
