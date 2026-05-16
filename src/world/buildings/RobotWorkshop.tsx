@@ -1,7 +1,7 @@
 import { Billboard, Text } from '@react-three/drei';
-import { useRef } from 'react';
+import { useMemo, useRef } from 'react';
 import { useFrame } from '@react-three/fiber';
-import type { Group } from 'three';
+import { Shape, ExtrudeGeometry, type Group } from 'three';
 import type { BuildingDef } from '@/data/buildings';
 import { woodDark, woodMid, metalSilverDark, neonCyan, brickRed, lampAmber } from '../materials';
 
@@ -10,6 +10,17 @@ export function RobotWorkshop({ def }: { def: BuildingDef }) {
   const W = 3;
   const D = 3;
   const H = 3;
+
+  // Small gable roof
+  const roofGeo = useMemo(() => {
+    const s = new Shape();
+    const halfD = D / 2 + 0.25;
+    s.moveTo(-halfD, 0);
+    s.lineTo(halfD, 0);
+    s.lineTo(0, 1.4);
+    s.closePath();
+    return new ExtrudeGeometry(s, { depth: W + 0.5, bevelEnabled: false });
+  }, []);
 
   // Robot roams in a small loop around the shed
   const robot = useRef<Group>(null);
@@ -40,10 +51,19 @@ export function RobotWorkshop({ def }: { def: BuildingDef }) {
         </mesh>
       ))}
 
-      {/* Corrugated metal roof — zigzag using a few overlapping triangular prisms */}
-      <mesh castShadow position={[0, 0.5 + H + 0.4, 0]} rotation={[0, 0, 0]}>
-        <cylinderGeometry args={[1.6, 1.6, D + 0.6, 3, 1]} />
-        <meshStandardMaterial color="#5a6068" roughness={0.55} metalness={0.5} />
+      {/* Corrugated metal gable roof */}
+      <mesh
+        castShadow
+        receiveShadow
+        geometry={roofGeo}
+        position={[-(W + 0.5) / 2, 0.5 + H, 0]}
+        rotation={[0, Math.PI / 2, 0]}
+      >
+        <meshStandardMaterial color="#5a6068" roughness={0.5} metalness={0.5} />
+      </mesh>
+      {/* Roof ridge cap */}
+      <mesh castShadow position={[0, 0.5 + H + 1.4, 0]} material={metalSilverDark}>
+        <boxGeometry args={[W + 0.6, 0.1, 0.18]} />
       </mesh>
 
       {/* Open doorway — dark inside */}

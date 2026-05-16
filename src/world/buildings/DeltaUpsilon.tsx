@@ -1,7 +1,8 @@
 import { Text3D, Billboard, Text } from '@react-three/drei';
 import type { BuildingDef } from '@/data/buildings';
-import { woodLight, woodDark, brickRed, stoneCool, tinted } from '../materials';
+import { woodLight, woodDark, brickRed, tinted } from '../materials';
 import { useMemo } from 'react';
+import { Shape, ExtrudeGeometry } from 'three';
 
 const FONT_URL = '/fonts/helvetiker_regular.typeface.json';
 
@@ -10,10 +11,37 @@ export function DeltaUpsilon({ def }: { def: BuildingDef }) {
   const W = 10;
   const D = 7;
   const H = 6;
+  const roofPeak = 2.6;
+  const porchD = 2.8;
 
   const wallMat = useMemo(() => tinted(woodLight, '#f4ecd9'), []);
   const trimMat = useMemo(() => tinted(woodLight, '#fffaf0'), []);
+  const slateMat = useMemo(() => tinted(woodLight, '#3a4858'), []);
   const greekLetterMat = useMemo(() => tinted(woodLight, '#1a3458'), []);
+
+  // Gable roof: triangle in XY plane, extruded along Z so the gable runs
+  // front-to-back. The +Z (front) face shows the triangular pediment.
+  const roofGeo = useMemo(() => {
+    const s = new Shape();
+    const halfW = W / 2 + 0.3;
+    s.moveTo(-halfW, 0);
+    s.lineTo(halfW, 0);
+    s.lineTo(0, roofPeak);
+    s.closePath();
+    // Roof depth extends past the porch
+    return new ExtrudeGeometry(s, { depth: D + porchD + 0.6, bevelEnabled: false });
+  }, []);
+
+  const pedimentGeo = useMemo(() => {
+    const s = new Shape();
+    const halfW = W / 2 + 0.3;
+    s.moveTo(-halfW, 0);
+    s.lineTo(halfW, 0);
+    s.lineTo(0, roofPeak);
+    s.closePath();
+    // Thin triangular plate — the pediment face on the porch end
+    return new ExtrudeGeometry(s, { depth: 0.1, bevelEnabled: false });
+  }, []);
 
   return (
     <group position={[px, 0, pz]}>
@@ -50,18 +78,30 @@ export function DeltaUpsilon({ def }: { def: BuildingDef }) {
         </group>
       ))}
 
-      {/* Triangular pediment above the porch (Greek Revival hallmark) */}
-      <mesh castShadow position={[0, 0.6 + H + 1.4, D / 2 + 2]} rotation={[0, 0, 0]}>
-        <cylinderGeometry args={[1.8, 1.8, 1.4, 3, 1]} />
-        <meshStandardMaterial color="#fffaf0" roughness={0.7} />
-      </mesh>
-      {/* Pediment cornice strip */}
-      <mesh castShadow position={[0, 0.6 + H + 0.5, D / 2 + 2]} material={trimMat}>
-        <boxGeometry args={[8, 0.4, 0.6]} />
+      {/* Cornice strip above the porch (under the pediment) */}
+      <mesh castShadow position={[0, 0.6 + H + 0.1, D / 2 + porchD / 2]} material={trimMat}>
+        <boxGeometry args={[W + 0.3, 0.4, porchD + 0.4]} />
       </mesh>
 
+      {/* Slate gable roof — covers main body + porch */}
+      <mesh
+        castShadow
+        receiveShadow
+        geometry={roofGeo}
+        material={slateMat}
+        position={[0, 0.6 + H + 0.3, -D / 2 - 0.3]}
+      />
+
+      {/* Pediment trim plate on the front face — the visible triangle */}
+      <mesh
+        castShadow
+        geometry={pedimentGeo}
+        material={trimMat}
+        position={[0, 0.6 + H + 0.3, D / 2 + porchD + 0.31]}
+      />
+
       {/* ΔΥ letters on the pediment — extruded, dark blue */}
-      <group position={[0, 0.6 + H + 1.4, D / 2 + 2.5]}>
+      <group position={[0, 0.6 + H + 1.3, D / 2 + porchD + 0.42]}>
         <Text3D
           font={FONT_URL}
           size={0.9}
@@ -73,7 +113,6 @@ export function DeltaUpsilon({ def }: { def: BuildingDef }) {
           castShadow
           position={[-1.05, -0.35, 0]}
         >
-          {/* Helvetiker doesn't have the actual Greek glyphs, so render as DU which reads cleanly */}
           DU
           <primitive object={greekLetterMat} attach="material" />
         </Text3D>
@@ -94,16 +133,6 @@ export function DeltaUpsilon({ def }: { def: BuildingDef }) {
           <meshStandardMaterial color="#1a2832" emissive="#1f3344" emissiveIntensity={0.3} roughness={0.4} />
         </mesh>
       ))}
-
-      {/* Slate gable roof — sloped */}
-      <mesh castShadow position={[0, 0.6 + H + 1.2, 0]} material={stoneCool}>
-        <boxGeometry args={[W + 0.4, 0.2, D + 0.4]} />
-      </mesh>
-      {/* Roof crown — pediment-style on top */}
-      <mesh castShadow position={[0, 0.6 + H + 2, 0]} rotation={[Math.PI / 2, 0, 0]}>
-        <cylinderGeometry args={[1.8, 1.8, D + 0.4, 3, 1]} />
-        <meshStandardMaterial color="#3a4858" roughness={0.85} />
-      </mesh>
 
       {/* Solo cups on porch railing — three red cups */}
       {[-2.2, 0, 2.2].map((cx, i) => (

@@ -3,47 +3,53 @@ import { useMemo } from 'react';
 import type { BuildingDef } from '@/data/buildings';
 import { stoneCool, woodDark } from '../materials';
 
-// Heatmap color palette: red (hot) → orange → yellow → green → blue (cool)
+// Heatmap palette — saturated, vivid stops so the data viz reads from across
+// the island. Hot end gets emissive boost via getHeat() below.
 function heatColor(t: number): string {
-  // t in [0, 1], 0 = blue cool, 1 = red hot
-  if (t < 0.25) return '#3a6ec8';      // blue
-  if (t < 0.45) return '#5aa454';      // green
-  if (t < 0.65) return '#e3c572';      // yellow
-  if (t < 0.85) return '#d97c3a';      // orange
-  return '#c44a3a';                     // red
+  if (t < 0.2) return '#1f5fd4';       // deep blue (cool)
+  if (t < 0.35) return '#3aa0e0';      // cyan-blue
+  if (t < 0.5) return '#3acf6a';       // bright green
+  if (t < 0.65) return '#f5d72a';      // saturated yellow
+  if (t < 0.8) return '#f59020';       // saturated orange
+  return '#e8261e';                     // hot red
+}
+
+function heatEmissive(t: number): number {
+  // Hot zone glows; cool zone is matte
+  return t > 0.55 ? 0.4 + (t - 0.55) * 1.4 : 0.1;
 }
 
 export function HeatmapGarden({ def }: { def: BuildingDef }) {
   const [px, , pz] = def.position;
   const R = 5;
 
-  // Place ~140 flower dots distributed within the disc with a heat gradient
-  // that has its hot zone at the +x side (the "high-impact" cluster) and cools
-  // toward -x.
+  // ~260 flower dots distributed within the disc with a heat gradient that
+  // has its hot zone offset toward +x.
   const flowers = useMemo(() => {
-    const arr: Array<{ x: number; z: number; t: number }> = [];
+    const arr: Array<{ x: number; z: number; t: number; h: number }> = [];
     const rng = (n: number) => Math.sin(n * 12.97 + 7.13) * 0.5 + 0.5;
-    for (let i = 0; i < 140; i++) {
+    const N = 260;
+    for (let i = 0; i < N; i++) {
       const a = rng(i) * Math.PI * 2;
       const r = Math.sqrt(rng(i * 1.7)) * (R - 0.4);
       const fx = Math.cos(a) * r;
       const fz = Math.sin(a) * r;
-      // Heat value falls off radially from a hot zone offset toward +x
-      const hotX = 2.2;
-      const hotZ = -1;
+      const hotX = 2.0;
+      const hotZ = -0.5;
       const dHot = Math.hypot(fx - hotX, fz - hotZ);
-      const t = Math.max(0, Math.min(1, 1 - dHot / (R * 1.1)));
-      arr.push({ x: fx, z: fz, t });
+      const t = Math.max(0, Math.min(1, 1 - dHot / (R * 0.95)));
+      const h = 0.16 + rng(i * 2.3) * 0.18; // varied bloom heights
+      arr.push({ x: fx, z: fz, t, h });
     }
     return arr;
   }, []);
 
   return (
     <group position={[px, 0, pz]}>
-      {/* Garden bed — flat oval slightly raised */}
+      {/* Garden bed — deeper soil tone so the bright blooms pop */}
       <mesh receiveShadow position={[0, 0.05, 0]} rotation={[-Math.PI / 2, 0, 0]}>
         <circleGeometry args={[R, 48]} />
-        <meshStandardMaterial color="#5a3a22" roughness={0.95} />
+        <meshStandardMaterial color="#3a2410" roughness={0.95} />
       </mesh>
       {/* Stone border */}
       <mesh receiveShadow position={[0, 0.04, 0]} rotation={[-Math.PI / 2, 0, 0]}>
@@ -51,18 +57,26 @@ export function HeatmapGarden({ def }: { def: BuildingDef }) {
         <meshStandardMaterial color="#7a6a52" roughness={0.95} />
       </mesh>
 
-      {/* Heatmap flowers — tiny cylinders + sphere top, color by heat */}
+      {/* Hot-zone glow underneath the red cluster — paints warmth on the dirt */}
+      <mesh position={[2.0, 0.055, -0.5]} rotation={[-Math.PI / 2, 0, 0]}>
+        <circleGeometry args={[1.8, 32]} />
+        <meshStandardMaterial color="#c44a3a" emissive="#e8261e" emissiveIntensity={0.5} roughness={0.7} transparent opacity={0.5} />
+      </mesh>
+      <pointLight position={[2.0, 0.6, -0.5]} intensity={1.4} distance={4.5} decay={2} color="#ff7a3a" />
+
+      {/* Heatmap flowers — slightly bigger blooms with stronger emissive on hot */}
       {flowers.map((f, i) => {
         const c = heatColor(f.t);
+        const e = heatEmissive(f.t);
         return (
           <group key={i} position={[f.x, 0.06, f.z]}>
             <mesh>
-              <cylinderGeometry args={[0.025, 0.025, 0.18, 6]} />
+              <cylinderGeometry args={[0.025, 0.025, f.h, 6]} />
               <meshStandardMaterial color="#3a5a2a" roughness={0.95} />
             </mesh>
-            <mesh position={[0, 0.18, 0]} castShadow>
-              <sphereGeometry args={[0.08, 8, 6]} />
-              <meshStandardMaterial color={c} emissive={c} emissiveIntensity={0.25} roughness={0.6} />
+            <mesh position={[0, f.h, 0]} castShadow>
+              <sphereGeometry args={[0.11, 8, 6]} />
+              <meshStandardMaterial color={c} emissive={c} emissiveIntensity={e} roughness={0.55} />
             </mesh>
           </group>
         );

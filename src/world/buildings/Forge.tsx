@@ -1,7 +1,7 @@
 import { Billboard, Text } from '@react-three/drei';
-import { useRef } from 'react';
+import { useMemo, useRef } from 'react';
 import { useFrame } from '@react-three/fiber';
-import type { Mesh } from 'three';
+import { Shape, ExtrudeGeometry, type Mesh } from 'three';
 import type { BuildingDef } from '@/data/buildings';
 import { stoneCool, woodDark, neonCyan, lampAmber, brickRedDark } from '../materials';
 
@@ -10,6 +10,18 @@ export function Forge({ def }: { def: BuildingDef }) {
   const W = 8;
   const D = 6;
   const H = 4;
+
+  // Gable roof: triangular prism extruded along X. Triangle cross-section in
+  // the YZ plane with base = D+0.4, peak height = 2.4.
+  const roofGeo = useMemo(() => {
+    const s = new Shape();
+    const halfD = D / 2 + 0.2;
+    s.moveTo(-halfD, 0);
+    s.lineTo(halfD, 0);
+    s.lineTo(0, 2.4);
+    s.closePath();
+    return new ExtrudeGeometry(s, { depth: W + 0.6, bevelEnabled: false });
+  }, []);
 
   const smoke = useRef<Mesh>(null);
   useFrame(({ clock }) => {
@@ -32,15 +44,19 @@ export function Forge({ def }: { def: BuildingDef }) {
         <boxGeometry args={[W, H, D]} />
       </mesh>
 
-      {/* Sloped wooden shingled roof — two slanted boxes forming a gable */}
-      <mesh castShadow position={[0, 0.5 + H + 1.4, 0]} rotation={[0, 0, 0]}>
-        <cylinderGeometry args={[2.4, 2.4, D + 0.6, 3, 1]} />
+      {/* Wooden shingled gable roof — triangular prism running along X */}
+      <mesh
+        castShadow
+        receiveShadow
+        geometry={roofGeo}
+        position={[-(W + 0.6) / 2, 0.5 + H, 0]}
+        rotation={[0, Math.PI / 2, 0]}
+      >
         <meshStandardMaterial color="#5a3a22" roughness={0.85} />
       </mesh>
-      {/* Roof rotated to align gable — Lay along X axis: rotate 90° on Y */}
-      <mesh castShadow position={[0, 0.5 + H + 1.4, 0]} rotation={[Math.PI / 2, 0, Math.PI / 2]}>
-        <cylinderGeometry args={[2.4, 2.4, W + 0.6, 3, 1, false, 0, Math.PI]} />
-        <meshStandardMaterial color="#5a3a22" roughness={0.85} />
+      {/* Roof ridge cap */}
+      <mesh castShadow position={[0, 0.5 + H + 2.4, 0]} material={woodDark}>
+        <boxGeometry args={[W + 0.7, 0.18, 0.3]} />
       </mesh>
 
       {/* Stone chimney on left side */}

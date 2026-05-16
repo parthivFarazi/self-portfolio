@@ -1,8 +1,45 @@
 import { Billboard, Text } from '@react-three/drei';
-import { useMemo } from 'react';
-import { CanvasTexture } from 'three';
+import { useMemo, useRef } from 'react';
+import { useFrame } from '@react-three/fiber';
+import { CanvasTexture, type Group } from 'three';
 import type { BuildingDef } from '@/data/buildings';
 import { sand, water, stoneCool, woodDark, lampAmber } from '../materials';
+
+function Koi({ seed, color, r = 0.55 }: { seed: number; color: string; r?: number }) {
+  const g = useRef<Group>(null);
+  useFrame(({ clock }) => {
+    if (!g.current) return;
+    const t = clock.getElapsedTime() * 0.35 + seed;
+    g.current.position.x = Math.cos(t) * r;
+    g.current.position.z = Math.sin(t) * r;
+    // Vertical tail wiggle
+    g.current.position.y = 0.1 + Math.sin(t * 4) * 0.005;
+    g.current.rotation.y = -t - Math.PI / 2;
+  });
+  return (
+    <group ref={g}>
+      {/* Body — elongated ellipsoid, sized so it reads from a few units away */}
+      <mesh scale={[0.5, 0.08, 0.22]}>
+        <sphereGeometry args={[1, 14, 10]} />
+        <meshStandardMaterial color={color} emissive={color} emissiveIntensity={0.6} roughness={0.4} />
+      </mesh>
+      {/* Tail fin */}
+      <mesh position={[-0.46, 0, 0]} scale={[0.18, 0.06, 0.16]}>
+        <sphereGeometry args={[1, 10, 8]} />
+        <meshStandardMaterial color={color} emissive={color} emissiveIntensity={0.5} roughness={0.5} />
+      </mesh>
+      {/* Side fins */}
+      <mesh position={[0.05, 0, 0.18]} scale={[0.1, 0.04, 0.12]} rotation={[0, 0.6, 0]}>
+        <sphereGeometry args={[1, 8, 6]} />
+        <meshStandardMaterial color={color} emissive={color} emissiveIntensity={0.4} roughness={0.5} />
+      </mesh>
+      <mesh position={[0.05, 0, -0.18]} scale={[0.1, 0.04, 0.12]} rotation={[0, -0.6, 0]}>
+        <sphereGeometry args={[1, 8, 6]} />
+        <meshStandardMaterial color={color} emissive={color} emissiveIntensity={0.4} roughness={0.5} />
+      </mesh>
+    </group>
+  );
+}
 
 // Sand with raked concentric ring patterns
 function makeRakedSandTexture() {
@@ -62,6 +99,19 @@ export function ZenGarden({ def }: { def: BuildingDef }) {
         <mesh receiveShadow position={[0, 0.06, 0]} rotation={[-Math.PI / 2, 0, 0]}>
           <ringGeometry args={[1.1, 1.3, 32]} />
           <meshStandardMaterial color="#6a6058" roughness={0.95} />
+        </mesh>
+        {/* Three koi fish swimming at different radii */}
+        <Koi seed={0} color="#f57228" r={0.55} />
+        <Koi seed={2.5} color="#ffd97a" r={0.35} />
+        <Koi seed={4.5} color="#fffaee" r={0.7} />
+        {/* Lily pad */}
+        <mesh position={[0.5, 0.085, 0.2]} rotation={[-Math.PI / 2, 0, 0]}>
+          <circleGeometry args={[0.18, 16]} />
+          <meshStandardMaterial color="#4a8a48" roughness={0.85} />
+        </mesh>
+        <mesh position={[-0.4, 0.085, -0.4]} rotation={[-Math.PI / 2, 0, 0]}>
+          <circleGeometry args={[0.14, 16]} />
+          <meshStandardMaterial color="#5fa854" roughness={0.85} />
         </mesh>
         {/* Tiny stone bridge */}
         <mesh castShadow position={[0, 0.18, 0]} material={stoneCool}>

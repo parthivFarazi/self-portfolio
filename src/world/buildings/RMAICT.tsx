@@ -1,8 +1,9 @@
-import { useMemo } from 'react';
+import { useMemo, useRef } from 'react';
+import { useFrame } from '@react-three/fiber';
 import { Billboard, Text } from '@react-three/drei';
-import { CanvasTexture, RepeatWrapping } from 'three';
+import { CanvasTexture, RepeatWrapping, type Mesh } from 'three';
 import type { BuildingDef } from '@/data/buildings';
-import { stoneWarm, glassFuturistic, metalSilverDark, neonCyan } from '../materials';
+import { stoneWarm, glassFuturistic, metalSilverDark, neonCyan, lampAmber, woodDark } from '../materials';
 
 // Songket-pattern tilework texture wrapping the lower 1/4 of the tower.
 function makeSongketTexture() {
@@ -113,6 +114,16 @@ export function RMAICT({ def }: { def: BuildingDef }) {
     return m;
   }, [glassTex]);
 
+  // OCR scan beam — vertical cyan line that fades up the tower
+  const scanBeam = useRef<Mesh>(null);
+  useFrame(({ clock }) => {
+    if (!scanBeam.current) return;
+    const t = clock.getElapsedTime();
+    scanBeam.current.position.y = 0.4 + baseH + 0.5 + ((t * 1.4) % (upperH - 1));
+    const mat = scanBeam.current.material as { opacity: number };
+    mat.opacity = 0.55 + Math.sin(t * 4) * 0.15;
+  });
+
   return (
     <group position={[px, 0, pz]}>
       {/* Slight stone foundation step */}
@@ -124,11 +135,90 @@ export function RMAICT({ def }: { def: BuildingDef }) {
       <mesh castShadow receiveShadow position={[0, 0.4 + baseH / 2, 0]} material={songketMat}>
         <boxGeometry args={[W, baseH, D]} />
       </mesh>
+      {/* Stone cornice between base and glass tower */}
+      <mesh castShadow position={[0, 0.4 + baseH + 0.1, 0]} material={stoneWarm}>
+        <boxGeometry args={[W + 0.3, 0.2, D + 0.3]} />
+      </mesh>
+
+      {/* Entrance — dark wooden door on the +z (south) face of the songket base */}
+      <mesh position={[0, 0.4 + 1.4, D / 2 + 0.01]} material={woodDark}>
+        <boxGeometry args={[1.3, 2.4, 0.08]} />
+      </mesh>
+      {/* Gold door frame */}
+      <mesh position={[0, 0.4 + 1.4, D / 2 + 0.06]}>
+        <boxGeometry args={[1.45, 2.55, 0.04]} />
+        <meshStandardMaterial color="#d4b86a" emissive="#9a7a40" emissiveIntensity={0.3} metalness={0.7} roughness={0.4} />
+      </mesh>
+      {/* Two flanking amber lanterns */}
+      <mesh position={[-1.2, 0.4 + 1.6, D / 2 + 0.08]} material={lampAmber}>
+        <boxGeometry args={[0.22, 0.5, 0.18]} />
+      </mesh>
+      <mesh position={[1.2, 0.4 + 1.6, D / 2 + 0.08]} material={lampAmber}>
+        <boxGeometry args={[0.22, 0.5, 0.18]} />
+      </mesh>
+      <pointLight position={[0, 1.4, D / 2 + 0.4]} intensity={0.7} distance={6} decay={2} color="#f5b15a" />
+      {/* Entrance step */}
+      <mesh receiveShadow position={[0, 0.2, D / 2 + 0.6]} material={stoneWarm}>
+        <boxGeometry args={[2.2, 0.3, 0.8]} />
+      </mesh>
+
+      {/* Marquee signage above the door — "RMAICT" in mono on a dark plaque */}
+      <group position={[0, 0.4 + baseH - 0.3, D / 2 + 0.08]}>
+        <mesh material={woodDark}>
+          <boxGeometry args={[2.6, 0.45, 0.04]} />
+        </mesh>
+        <Text fontSize={0.32} color="#f5d97a" anchorX="center" anchorY="middle" position={[0, 0, 0.04]} letterSpacing={0.12}>
+          RMAICT
+        </Text>
+      </group>
 
       {/* Glass tower body */}
       <mesh castShadow receiveShadow position={[0, 0.4 + baseH + upperH / 2, 0]} material={glassMat}>
         <boxGeometry args={[W - 0.3, upperH, D - 0.3]} />
       </mesh>
+
+      {/* Floor seam lines on the glass tower — thin metal bands every 1.5u */}
+      {Array.from({ length: Math.floor(upperH / 1.5) }).map((_, i) => {
+        const y = 0.4 + baseH + (i + 1) * 1.5;
+        return (
+          <mesh key={i} position={[0, y, 0]} material={metalSilverDark}>
+            <boxGeometry args={[W - 0.2, 0.06, D - 0.2]} />
+          </mesh>
+        );
+      })}
+
+      {/* OCR scan beam — sweeps vertically through the glass */}
+      <mesh ref={scanBeam} position={[0, 0.4 + baseH + 1, D / 2 - 0.05]}>
+        <boxGeometry args={[W - 0.4, 0.08, 0.04]} />
+        <meshStandardMaterial color="#6fd5e0" emissive="#6fd5e0" emissiveIntensity={1.5} transparent opacity={0.7} />
+      </mesh>
+      {/* Ghostly receipt — small white rectangle drifting inside the tower */}
+      <mesh position={[0, 0.4 + baseH + 4, 0]}>
+        <boxGeometry args={[0.6, 0.9, 0.02]} />
+        <meshStandardMaterial color="#fffaee" emissive="#fffaee" emissiveIntensity={0.5} transparent opacity={0.6} />
+      </mesh>
+      <mesh position={[-0.3, 0.4 + baseH + 6.5, 0]} rotation={[0, 0, -0.15]}>
+        <boxGeometry args={[0.6, 0.9, 0.02]} />
+        <meshStandardMaterial color="#fffaee" emissive="#fffaee" emissiveIntensity={0.45} transparent opacity={0.5} />
+      </mesh>
+
+      {/* Crown — neural-diagram halo (small ring + dots) above the roof */}
+      <mesh position={[0, 0.4 + H + 0.4, 0]} material={metalSilverDark}>
+        <boxGeometry args={[W - 0.2, 0.25, D - 0.2]} />
+      </mesh>
+      <group position={[0, 0.4 + H + 1.2, 0]}>
+        <mesh rotation={[Math.PI / 2, 0, 0]} material={neonCyan}>
+          <torusGeometry args={[1.4, 0.04, 6, 32]} />
+        </mesh>
+        {Array.from({ length: 6 }).map((_, i) => {
+          const a = (i / 6) * Math.PI * 2;
+          return (
+            <mesh key={i} position={[Math.cos(a) * 1.4, 0, Math.sin(a) * 1.4]} material={neonCyan}>
+              <sphereGeometry args={[0.08, 8, 6]} />
+            </mesh>
+          );
+        })}
+      </group>
 
       {/* Inner amber column visible through glass (warm lit interior) */}
       <mesh position={[0, 0.4 + baseH + upperH / 2, 0]}>
@@ -141,22 +231,15 @@ export function RMAICT({ def }: { def: BuildingDef }) {
         />
       </mesh>
 
-      {/* Antenna / spire on the crown */}
-      <mesh castShadow position={[0, 0.4 + H + 1, 0]} material={metalSilverDark}>
-        <cylinderGeometry args={[0.04, 0.12, 2, 8]} />
+      {/* Antenna / spire above the halo */}
+      <mesh castShadow position={[0, 0.4 + H + 2.4, 0]} material={metalSilverDark}>
+        <cylinderGeometry args={[0.04, 0.12, 2.2, 8]} />
       </mesh>
-      <mesh position={[0, 0.4 + H + 2.1, 0]} material={neonCyan}>
+      <mesh position={[0, 0.4 + H + 3.6, 0]} material={neonCyan}>
         <sphereGeometry args={[0.12, 12, 8]} />
       </mesh>
 
-      {/* Amber lantern at the entrance */}
-      <mesh position={[0, 1.2, D / 2 + 0.4]}>
-        <boxGeometry args={[0.5, 0.6, 0.2]} />
-        <meshStandardMaterial color="#3a2410" emissive="#f5d97a" emissiveIntensity={0.6} roughness={0.5} />
-      </mesh>
-      <pointLight position={[0, 1.4, D / 2 + 0.5]} intensity={0.4} distance={4} decay={2} color="#f5d97a" />
-
-      <Billboard position={[0, H + 4, 0]}>
+      <Billboard position={[0, H + 5, 0]}>
         <Text fontSize={1} color="#2a2520" outlineWidth={0.06} outlineColor="#fffaee" anchorX="center" anchorY="middle">
           {def.shortLabel}
         </Text>
