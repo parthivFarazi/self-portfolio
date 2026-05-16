@@ -5,11 +5,68 @@ import { CanvasTexture, RepeatWrapping, type Group } from 'three';
 import type { BuildingDef } from '@/data/buildings';
 import {
   metalSilverDark,
+  metalDark,
   stoneFoundation,
   goldEmissive,
   neonCyan,
   lampAmber,
 } from '../materials';
+
+// ── Drones ─────────────────────────────────────────────────────────────────
+// 5 small drones in slow elliptical orbits over the pitch. Each has 4 rotors
+// that spin much faster than the orbit period for a subtle motion read.
+interface DroneOrbit {
+  rx: number;       // ellipse x-radius
+  rz: number;       // ellipse z-radius
+  altitude: number;
+  speed: number;    // angular speed
+  phase: number;    // start offset
+  bobAmp: number;
+}
+
+const DRONE_ORBITS: DroneOrbit[] = [
+  { rx: 11, rz: 8, altitude: 13.0, speed: 0.40, phase: 0,             bobAmp: 0.35 },
+  { rx: 13, rz: 7, altitude: 14.2, speed: 0.40, phase: Math.PI,        bobAmp: 0.40 },
+  { rx: 10, rz: 9, altitude: 13.6, speed: 0.32, phase: Math.PI * 0.5,  bobAmp: 0.30 },
+  { rx: 12, rz: 8, altitude: 12.4, speed: 0.46, phase: Math.PI * 1.5,  bobAmp: 0.45 },
+  { rx: 9,  rz: 7, altitude: 15.0, speed: 0.36, phase: Math.PI * 0.75, bobAmp: 0.32 },
+];
+
+function Drone({ onMount, onRotorMount }: {
+  onMount: (el: Group | null) => void;
+  onRotorMount: (i: number, el: Group | null) => void;
+}) {
+  return (
+    <group ref={onMount}>
+      {/* Main body — dark, slightly larger than the previous version */}
+      <mesh material={metalDark}>
+        <boxGeometry args={[0.5, 0.12, 0.5]} />
+      </mesh>
+      {/* Faint blue LED on the underside */}
+      <mesh position={[0, -0.09, 0]} material={neonCyan}>
+        <sphereGeometry args={[0.05, 8, 6]} />
+      </mesh>
+      {/* 4 rotor arms + spinning rotor discs */}
+      {[
+        [-0.32, 0.32], [0.32, 0.32], [-0.32, -0.32], [0.32, -0.32],
+      ].map(([rx, rz], i) => (
+        <group key={i} position={[rx, 0.05, rz]}>
+          {/* Rotor mount */}
+          <mesh material={metalSilverDark}>
+            <cylinderGeometry args={[0.04, 0.04, 0.08, 6]} />
+          </mesh>
+          {/* Spinning disc — child rotates fast */}
+          <group ref={(el) => onRotorMount(i, el)} position={[0, 0.06, 0]}>
+            <mesh>
+              <cylinderGeometry args={[0.18, 0.18, 0.012, 12]} />
+              <meshStandardMaterial color="#1a1a1a" roughness={0.4} transparent opacity={0.6} />
+            </mesh>
+          </group>
+        </group>
+      ))}
+    </group>
+  );
+}
 
 const FONT_URL = '/fonts/helvetiker_regular.typeface.json';
 
@@ -68,21 +125,31 @@ function Floodlight({ pos }: { pos: [number, number, number] }) {
 export function UPDT({ def }: { def: BuildingDef }) {
   const [px, , pz] = def.position;
   const pitchTex = useMemo(makePitchTexture, []);
-  const droneA = useRef<Group>(null);
-  const droneB = useRef<Group>(null);
+
+  // One group ref per drone + per-drone array of 4 rotor refs.
+  const droneRefs = useRef<(Group | null)[]>(Array(DRONE_ORBITS.length).fill(null));
+  const rotorRefs = useRef<(Group | null)[][]>(
+    DRONE_ORBITS.map(() => [null, null, null, null]),
+  );
 
   useFrame(({ clock }) => {
     const t = clock.getElapsedTime();
-    if (droneA.current) {
-      droneA.current.position.x = Math.cos(t * 0.4) * 11;
-      droneA.current.position.z = Math.sin(t * 0.4) * 8;
-      droneA.current.position.y = 13 + Math.sin(t * 1.2) * 0.4;
-    }
-    if (droneB.current) {
-      droneB.current.position.x = Math.cos(t * 0.4 + Math.PI) * 13;
-      droneB.current.position.z = Math.sin(t * 0.4 + Math.PI) * 6;
-      droneB.current.position.y = 14 + Math.sin(t * 1.4 + 1) * 0.4;
-    }
+    DRONE_ORBITS.forEach((o, i) => {
+      const g = droneRefs.current[i];
+      if (!g) return;
+      const a = t * o.speed + o.phase;
+      g.position.x = Math.cos(a) * o.rx;
+      g.position.z = Math.sin(a) * o.rz;
+      g.position.y = o.altitude + Math.sin(t * 1.2 + o.phase) * o.bobAmp;
+      // Drone faces direction of travel — tangent to the ellipse.
+      g.rotation.y = -a - Math.PI / 2;
+      // Spin rotors much faster than the orbit.
+      const rotors = rotorRefs.current[i];
+      const spin = t * 22 + o.phase;
+      rotors.forEach((r, k) => {
+        if (r) r.rotation.y = spin + k * 0.3;
+      });
+    });
   });
 
   // Half dimensions for the oval stadium
@@ -184,23 +251,14 @@ export function UPDT({ def }: { def: BuildingDef }) {
         </Text3D>
       </group>
 
-      {/* Two circling drones */}
-      <group ref={droneA}>
-        <mesh material={metalSilverDark}>
-          <boxGeometry args={[0.4, 0.1, 0.4]} />
-        </mesh>
-        <mesh position={[0, -0.1, 0]} material={neonCyan}>
-          <sphereGeometry args={[0.06, 8, 6]} />
-        </mesh>
-      </group>
-      <group ref={droneB}>
-        <mesh material={metalSilverDark}>
-          <boxGeometry args={[0.4, 0.1, 0.4]} />
-        </mesh>
-        <mesh position={[0, -0.1, 0]} material={neonCyan}>
-          <sphereGeometry args={[0.06, 8, 6]} />
-        </mesh>
-      </group>
+      {/* Five circling drones with rotors */}
+      {DRONE_ORBITS.map((_, i) => (
+        <Drone
+          key={i}
+          onMount={(el) => { droneRefs.current[i] = el; }}
+          onRotorMount={(rIdx, el) => { rotorRefs.current[i][rIdx] = el; }}
+        />
+      ))}
 
       {/* Hologram glow over pitch — magenta/cyan ground spotlights */}
       <pointLight position={[-4, 1.5, 0]} intensity={1.8} distance={10} decay={2} color="#6fd5e0" />
