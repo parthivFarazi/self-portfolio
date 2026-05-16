@@ -3,6 +3,7 @@ import { AnimatePresence, motion } from 'framer-motion';
 import { useGame } from '@/state/gameStore';
 import { getBuilding } from '@/data/buildings';
 import { Audio } from '@/audio/AudioManager';
+import { ResponsivePanel } from './ResponsivePanel';
 
 export function BuildingDialog() {
   const active = useGame((s) => s.activeBuildingId);
@@ -44,14 +45,17 @@ export function BuildingDialog() {
             className="relative shadow-[0_30px_80px_rgba(0,0,0,0.55)]"
             onClick={(e) => e.stopPropagation()}
           >
-            <Panel width={def.panelSize.w} height={def.panelSize.h} />
+            <ResponsivePanel width={def.panelSize.w} height={def.panelSize.h}>
+              <Panel width={def.panelSize.w} height={def.panelSize.h} />
+            </ResponsivePanel>
           </motion.div>
 
+          {/* Close button — 44px min for mobile tap target */}
           <button
             type="button"
             aria-label="Close"
             onClick={close}
-            className="absolute right-6 top-6 grid h-10 w-10 place-items-center rounded-full bg-white/10 text-white/90 ring-1 ring-white/20 backdrop-blur hover:bg-white/20 transition"
+            className="absolute right-4 top-4 grid h-11 w-11 place-items-center rounded-full bg-white/10 text-white/90 ring-1 ring-white/20 backdrop-blur hover:bg-white/20 transition"
           >
             <span className="text-xl leading-none">×</span>
           </button>

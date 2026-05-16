@@ -4,6 +4,7 @@ import { getBuilding, type BuildingId } from '@/data/buildings';
 import { AvatarFront } from './Avatar';
 import { Thumb, type ThumbKind } from './Thumb';
 import { Audio } from '@/audio/AudioManager';
+import { ResponsivePanel } from '../ui/ResponsivePanel';
 import './quick-view.css';
 
 type DashboardGroup = 'work' | 'projects' | 'about';
@@ -412,7 +413,9 @@ function DashboardPanelOverlay({ id, onClose, onHome }: { id: BuildingId; onClos
         transition={{ duration: 0.28, ease: [0.22, 1, 0.36, 1] }}
         onClick={(event) => event.stopPropagation()}
       >
-        <Panel width={def.panelSize.w} height={def.panelSize.h} />
+        <ResponsivePanel width={def.panelSize.w} height={def.panelSize.h}>
+          <Panel width={def.panelSize.w} height={def.panelSize.h} />
+        </ResponsivePanel>
       </motion.div>
       <button type="button" className="qv-panel-close" aria-label="Close panel" onClick={onClose}>
         x
