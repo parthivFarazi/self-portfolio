@@ -6,6 +6,7 @@ import {
   InstancedMesh,
   MeshBasicMaterial,
   Object3D,
+  DoubleSide,
 } from 'three';
 
 // 1-3 birds cross the upper sky at staggered intervals. We render a fixed
@@ -80,6 +81,7 @@ export function Birds() {
         color: '#3a2e3a',
         transparent: true,
         opacity: 0.85,
+        side: DoubleSide,
         fog: false,
       }),
     [],
