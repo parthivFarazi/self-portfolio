@@ -1,20 +1,20 @@
 import { useMemo, useRef } from 'react';
 import { useFrame } from '@react-three/fiber';
-import { type Mesh, type PointLight } from 'three';
+import { type Mesh } from 'three';
 import { stoneCool, woodDark } from '../materials';
 import type { LanternPlacement } from './placements';
 
-// Lanterns total ~22 — keeping each as its own component is cheap and lets
-// the warm amber glass + small point light read individually.
+// Lanterns total ~22. We deliberately do NOT add a per-lantern <pointLight>:
+// MeshStandardMaterial evaluates every light per fragment, so 22 dynamic
+// lights would dominate the frame cost. The emissive amber material + the
+// scene's existing Bloom pass deliver the "lit" visual without that cost.
 
 const PULSE_FREQ = 0.5;       // Hz
 const PULSE_AMPLITUDE = 0.10; // ±10% intensity
-const LIGHT_BASE_INTENSITY = 0.45;
-const EMISSIVE_BASE = 1.2;
+const EMISSIVE_BASE = 1.4;    // slightly higher to compensate for no light
 
 function Lantern({ placement, seed }: { placement: LanternPlacement; seed: number }) {
   const glassRef = useRef<Mesh>(null);
-  const lightRef = useRef<PointLight>(null);
 
   useFrame(({ clock }) => {
     const t = clock.getElapsedTime();
@@ -22,11 +22,9 @@ function Lantern({ placement, seed }: { placement: LanternPlacement; seed: numbe
     const pulse = Math.sin(t * PULSE_FREQ * 2 * Math.PI + phase);
     const k = 1 + pulse * PULSE_AMPLITUDE;
     if (glassRef.current) {
-      // Update emissiveIntensity on the cloned material (set in JSX below).
       const mat = glassRef.current.material as any;
       if (mat.emissiveIntensity !== undefined) mat.emissiveIntensity = EMISSIVE_BASE * k;
     }
-    if (lightRef.current) lightRef.current.intensity = LIGHT_BASE_INTENSITY * k;
   });
 
   return (
@@ -59,15 +57,6 @@ function Lantern({ placement, seed }: { placement: LanternPlacement; seed: numbe
       <mesh castShadow material={woodDark} position={[0, 1.82, 0]}>
         <coneGeometry args={[0.18, 0.16, 4]} />
       </mesh>
-      {/* Point light — small radius so we don't oversaturate the scene */}
-      <pointLight
-        ref={lightRef}
-        position={[0, 1.6, 0]}
-        intensity={LIGHT_BASE_INTENSITY}
-        distance={5}
-        decay={2}
-        color="#f5d97a"
-      />
     </group>
   );
 }

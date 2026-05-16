@@ -8,8 +8,19 @@ import {
   type BufferAttribute,
 } from 'three';
 import { COLORS, ISLAND_RADIUS, ISLAND_THICKNESS } from '@/constants/world';
-import { TREE_PLACEMENTS } from './decorations/placements';
 import { BUILDINGS, footprintHalfExtents } from '@/data/buildings';
+
+// Hand-picked grove centers — 7 "dark patches" under future tree clusters.
+// Keeping this small caps the per-fragment loop count in the grass shader.
+const GROVE_CENTERS: [number, number][] = [
+  [-35, -21],   // NW Tech Tower frame grove
+  [0, -48],     // N UPDT pine stand
+  [53, -43],    // NE Petronas backdrop
+  [-62, 0],     // W Archive/Qard fringe
+  [55, 38],     // E Lighthouse cove
+  [-50, 56],    // SW Zen Garden surround
+  [24, 64],     // S Heatmap/Workshop fringe
+];
 
 function makeGrassTexture() {
   const c = document.createElement('canvas');
@@ -85,9 +96,10 @@ function makeTopGeometry() {
 //  • building entrance fronts get a worn lighter tint
 // Implemented via onBeforeCompile so we keep MeshStandardMaterial's lighting.
 function buildGrassMaterial(grass: CanvasTexture): MeshStandardMaterial {
-  // Collect a handful of "dark spots" (tree groves) and "worn spots"
-  // (building entrance fronts), packed into vec2 uniforms.
-  const darkSpots: Vector2[] = TREE_PLACEMENTS.map((t) => new Vector2(t.pos[0], t.pos[1]));
+  // Dark spots = grove CENTERS (7), not individual trees (24+) — keeps the
+  // fragment shader's per-pixel loop short. Worn spots = building entrance
+  // fronts derived from footprints.
+  const darkSpots: Vector2[] = GROVE_CENTERS.map(([x, z]) => new Vector2(x, z));
   const wornSpots: Vector2[] = [];
   for (const b of BUILDINGS) {
     const fp = footprintHalfExtents(b);
@@ -146,25 +158,25 @@ function buildGrassMaterial(grass: CanvasTexture): MeshStandardMaterial {
          vec2 wp = vWorldPos.xz;
          // Broad low-freq variation — natural patchy color.
          float n = vnoise(wp * 0.045) * 0.7 + vnoise(wp * 0.18) * 0.3;
-         float varMul = 0.86 + n * 0.28;
+         float varMul = 0.90 + n * 0.18;
          diffuseColor.rgb *= varMul;
 
-         // Darken under tree canopies — gaussian falloff per dark spot.
+         // Subtle darkening under tree-grove centers.
          float darkBoost = 0.0;
          for (int i = 0; i < ${DARK_COUNT}; i++) {
            float d = distance(wp, uDarkSpots[i]);
-           darkBoost += exp(-d * d * 0.08);
+           darkBoost += exp(-d * d * 0.05);
          }
-         diffuseColor.rgb *= 1.0 - clamp(darkBoost * 0.18, 0.0, 0.35);
+         diffuseColor.rgb *= 1.0 - clamp(darkBoost * 0.09, 0.0, 0.18);
 
-         // Worn lighter patches in front of building entrances.
+         // Worn lighter grass near building entrances — narrow, subtle.
          float wornBoost = 0.0;
          for (int i = 0; i < ${WORN_COUNT}; i++) {
            float d = distance(wp, uWornSpots[i]);
-           wornBoost += exp(-d * d * 0.20);
+           wornBoost += exp(-d * d * 0.45);
          }
-         diffuseColor.rgb = mix(diffuseColor.rgb, vec3(0.92, 0.84, 0.66),
-                                clamp(wornBoost * 0.35, 0.0, 0.45));`,
+         diffuseColor.rgb = mix(diffuseColor.rgb, vec3(0.78, 0.76, 0.52),
+                                clamp(wornBoost * 0.12, 0.0, 0.20));`,
       );
   };
   // Force recompile if the material is reused.

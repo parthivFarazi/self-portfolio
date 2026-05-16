@@ -17,7 +17,12 @@ export function Scene() {
       shadows
       dpr={[1, 2]}
       gl={{ antialias: true, toneMapping: THREE.ACESFilmicToneMapping, toneMappingExposure: 1.05 }}
-      onCreated={({ gl }) => { gl.shadowMap.type = THREE.PCFSoftShadowMap; }}
+      onCreated={({ gl, scene, camera }) => {
+        gl.shadowMap.type = THREE.PCFSoftShadowMap;
+        if (import.meta.env.DEV) {
+          (window as any).__r3f = { gl, scene, camera };
+        }
+      }}
     >
       <IsometricCamera />
       <Lighting />
