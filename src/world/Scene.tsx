@@ -5,6 +5,7 @@ import { Sky } from './Sky';
 import { Island } from './Island';
 import { Plaza } from './Plaza';
 import { Buildings } from './buildings/Buildings';
+import { Decorations } from './decorations/Decorations';
 import { Player } from './Player';
 import { IsometricCamera } from './IsometricCamera';
 import { Lighting } from './lighting';
@@ -25,6 +26,7 @@ export function Scene() {
       <Island />
       <Plaza />
       <Buildings />
+      <Decorations />
       <Player />
 
       <EffectComposer>
