@@ -1,7 +1,7 @@
 import type { ReactNode } from 'react';
 import type { PanelProps } from './UPDTPanel';
 
-export function HeatmapPanel({ width = 820, height = 780 }: PanelProps) {
+export function HeatmapPanel({ width = 820, height = 880 }: PanelProps) {
   return (
     <div style={{
       width, height, position: 'relative', overflow: 'hidden',
@@ -79,12 +79,15 @@ export function HeatmapPanel({ width = 820, height = 780 }: PanelProps) {
           </div>
 
           {/* ── Tactical chalkboard diagram ──────────────────────────── */}
-          <div style={{ position: 'relative', height: 220, border: '1px dashed rgba(244,236,214,.25)', padding: 10 }}>
+          {/* 340 tall keeps the 720×360 viewBox close to its native 2:1
+              aspect, so the center circle is round and the penalty boxes
+              don't read as squished. */}
+          <div style={{ position: 'relative', height: 340, border: '1px dashed rgba(244,236,214,.25)', padding: 10 }}>
             <ChalkPitch/>
-            <div style={{ position: 'absolute', top: 16, right: 28, font: '20px "Caveat", cursive', color: '#fffaee', transform: 'rotate(-4deg)' }}>
+            <div style={{ position: 'absolute', top: 24, right: 38, font: '22px "Caveat", cursive', color: '#fffaee', transform: 'rotate(-4deg)' }}>
               decoy run →
             </div>
-            <div style={{ position: 'absolute', bottom: 22, left: 50, font: '18px "Caveat", cursive', color: '#f5d97a', transform: 'rotate(2deg)' }}>
+            <div style={{ position: 'absolute', bottom: 32, left: 60, font: '20px "Caveat", cursive', color: '#f5d97a', transform: 'rotate(2deg)' }}>
               third-man.
             </div>
           </div>
