@@ -108,7 +108,7 @@ export const BUILDINGS: BuildingDef[] = [
     shortLabel: 'Twin Towers',
     ring: 'mid',
     position: [40, 0, -40],
-    shape: { kind: 'twin', width: 5, depth: 5, height: 45, spacing: 8 },
+    shape: { kind: 'twin', width: 5, depth: 5, height: 28, spacing: 8 },
     color: '#c5cdd2',
     triggerRadius: 12,
     panel: TwinTowersPanel,
@@ -218,6 +218,20 @@ export function getBuilding(id: BuildingId): BuildingDef {
   const b = BUILDINGS.find((x) => x.id === id);
   if (!b) throw new Error(`Unknown building: ${id}`);
   return b;
+}
+
+// Approximate top-of-mesh height in world units. Used by the camera to bias
+// look-at Y so tall structures (Petronas, Tech Tower) stay in frame when the
+// player walks up to them.
+export function getVisualTopY(def: BuildingDef): number {
+  const s = def.shape;
+  switch (s.kind) {
+    case 'cylinder': return s.height + 1.5;
+    case 'box': return s.height + 8;            // covers parapet + roof + finial
+    case 'twin': return s.height + 10;          // covers spires + tip light
+    case 'dome': return s.baseHeight + s.radius + 1;
+    case 'disc': return 1;
+  }
 }
 
 export function footprintHalfExtents(def: BuildingDef): { halfX: number; halfZ: number } | null {

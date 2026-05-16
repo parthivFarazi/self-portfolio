@@ -33,11 +33,13 @@ function useStarGeometry(radius: number, height: number) {
 }
 
 function Tower({ x }: { x: number }) {
-  // Stepped silhouette: each segment slightly smaller than the one below.
-  const seg1 = useStarGeometry(2.4, 16);  // base
-  const seg2 = useStarGeometry(2.0, 12);  // mid-low (sky-bridge level)
-  const seg3 = useStarGeometry(1.7, 10);  // upper
-  const seg4 = useStarGeometry(1.35, 7);  // crown
+  // Stepped silhouette — total stack ~28u (was 45u). Tech Tower is ~30u, so
+  // Petronas reads as the tallest on the island but stays in-frustum when the
+  // player walks up to it.
+  const seg1 = useStarGeometry(2.4, 10); // base
+  const seg2 = useStarGeometry(2.0, 8);  // mid-low (sky-bridge level)
+  const seg3 = useStarGeometry(1.7, 6);  // upper
+  const seg4 = useStarGeometry(1.35, 4); // crown — total stack 10+8+6+4 = 28
 
   // Vertical ribs — 16 thin slats around each segment
   const ribs = (radius: number, h: number, yBase: number) =>
@@ -52,33 +54,31 @@ function Tower({ x }: { x: number }) {
 
   return (
     <group>
-      {/* Stack — extrude was Y-up after rotation. Three's ExtrudeGeometry extrudes
-          along +Z by default; rotate -90° on X to stand it up. */}
       <mesh castShadow receiveShadow geometry={seg1} rotation={[-Math.PI / 2, 0, 0]} position={[x, 0, 0]} material={metalSilver} />
-      <mesh castShadow receiveShadow geometry={seg2} rotation={[-Math.PI / 2, 0, 0]} position={[x, 16, 0]} material={metalSilver} />
-      <mesh castShadow receiveShadow geometry={seg3} rotation={[-Math.PI / 2, 0, 0]} position={[x, 28, 0]} material={metalSilver} />
-      <mesh castShadow receiveShadow geometry={seg4} rotation={[-Math.PI / 2, 0, 0]} position={[x, 38, 0]} material={metalSilver} />
+      <mesh castShadow receiveShadow geometry={seg2} rotation={[-Math.PI / 2, 0, 0]} position={[x, 10, 0]} material={metalSilver} />
+      <mesh castShadow receiveShadow geometry={seg3} rotation={[-Math.PI / 2, 0, 0]} position={[x, 18, 0]} material={metalSilver} />
+      <mesh castShadow receiveShadow geometry={seg4} rotation={[-Math.PI / 2, 0, 0]} position={[x, 24, 0]} material={metalSilver} />
 
       {/* Glass bands between steps — slight inset reads as windows wrapping */}
-      <mesh position={[x, 8, 0]} material={glassFuturistic}>
-        <cylinderGeometry args={[2.3, 2.3, 14, 8]} />
+      <mesh position={[x, 5, 0]} material={glassFuturistic}>
+        <cylinderGeometry args={[2.3, 2.3, 9, 8]} />
       </mesh>
-      <mesh position={[x, 22, 0]} material={glassFuturistic}>
-        <cylinderGeometry args={[1.9, 1.9, 10, 8]} />
+      <mesh position={[x, 14, 0]} material={glassFuturistic}>
+        <cylinderGeometry args={[1.9, 1.9, 7, 8]} />
       </mesh>
-      <mesh position={[x, 33, 0]} material={glassFuturistic}>
-        <cylinderGeometry args={[1.6, 1.6, 8, 8]} />
+      <mesh position={[x, 21, 0]} material={glassFuturistic}>
+        <cylinderGeometry args={[1.6, 1.6, 5, 8]} />
       </mesh>
 
       {/* Vertical ribs on the largest segment for cladding texture */}
-      {ribs(2.4, 16, 0)}
+      {ribs(2.4, 10, 0)}
 
-      {/* Spire — taller pinnacle, ~6u */}
-      <mesh castShadow position={[x, 45 + 3, 0]} material={metalSilverDark}>
-        <cylinderGeometry args={[0.06, 0.55, 6, 16]} />
+      {/* Spire — shorter (~4u), starting at the crown top y=28 */}
+      <mesh castShadow position={[x, 30, 0]} material={metalSilverDark}>
+        <cylinderGeometry args={[0.06, 0.5, 4, 16]} />
       </mesh>
       {/* Aviation light dot atop spire */}
-      <mesh position={[x, 45 + 6.2, 0]} material={lampAmber}>
+      <mesh position={[x, 32.2, 0]} material={lampAmber}>
         <sphereGeometry args={[0.18, 16, 12]} />
       </mesh>
     </group>
@@ -100,29 +100,29 @@ export function PetronasTowers({ def }: { def: BuildingDef }) {
       <Tower x={-spacing / 2} />
       <Tower x={spacing / 2} />
 
-      {/* ── Sky bridge at ~60% height (27u) — double-decker ────────────── */}
+      {/* ── Sky bridge at ~60% height (16-18u) — double-decker ────────── */}
       {/* Lower deck */}
-      <mesh castShadow position={[0, 26, 0]} material={metalSilver}>
-        <boxGeometry args={[spacing - 0.6, 0.8, 1.8]} />
+      <mesh castShadow position={[0, 16, 0]} material={metalSilver}>
+        <boxGeometry args={[spacing - 0.6, 0.7, 1.6]} />
       </mesh>
       {/* Upper deck */}
-      <mesh castShadow position={[0, 28.4, 0]} material={metalSilver}>
-        <boxGeometry args={[spacing - 0.6, 0.8, 1.8]} />
+      <mesh castShadow position={[0, 17.8, 0]} material={metalSilver}>
+        <boxGeometry args={[spacing - 0.6, 0.7, 1.6]} />
       </mesh>
       {/* Glass walls between decks */}
-      <mesh position={[0, 27.2, 0]} material={glassFuturistic}>
-        <boxGeometry args={[spacing - 0.6, 1.6, 1.7]} />
+      <mesh position={[0, 16.9, 0]} material={glassFuturistic}>
+        <boxGeometry args={[spacing - 0.6, 1.2, 1.5]} />
       </mesh>
       {/* Diagonal support struts from base of bridge to each tower */}
       {[-1, 1].map((sign) => (
         <mesh
           key={sign}
           castShadow
-          position={[sign * (spacing / 2 - 1.3), 22.5, 0]}
+          position={[sign * (spacing / 2 - 1.3), 13.5, 0]}
           rotation={[0, 0, sign * Math.PI / 6]}
           material={metalSilverDark}
         >
-          <cylinderGeometry args={[0.18, 0.18, 7.4, 8]} />
+          <cylinderGeometry args={[0.16, 0.16, 5.6, 8]} />
         </mesh>
       ))}
 
@@ -171,7 +171,7 @@ export function PetronasTowers({ def }: { def: BuildingDef }) {
       <pointLight position={[4, 1.2, 4]} intensity={1.0} distance={9} decay={2} color="#f5d97a" />
 
       {/* Floating label */}
-      <Billboard position={[0, 53, 0]}>
+      <Billboard position={[0, 36, 0]}>
         <Text fontSize={1.4} color="#2a2520" outlineWidth={0.08} outlineColor="#fffaee" anchorX="center" anchorY="middle">
           {def.shortLabel}
         </Text>
