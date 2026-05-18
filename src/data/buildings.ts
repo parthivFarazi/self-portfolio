@@ -229,7 +229,7 @@ export const BUILDINGS: BuildingDef[] = [
     color: '#7E6CBC',
     triggerRadius: 4.5,
     panel: CartridgePanel,
-    panelSize: { w: 820, h: 760 },
+    panelSize: { w: 820, h: 920 },
   },
 ];
 
