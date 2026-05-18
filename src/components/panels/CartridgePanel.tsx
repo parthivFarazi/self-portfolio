@@ -124,7 +124,7 @@ export function CartridgePanel({ width = 820, height = 760 }: PanelProps) {
               <Stat n="5+" k="entities" />
             </div>
             <a
-              href="https://github.com/parthivFarazi"
+              href="https://github.com/parthivFarazi/GameBoyCGame"
               target="_blank"
               rel="noopener noreferrer"
               style={{
