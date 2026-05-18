@@ -20,7 +20,7 @@ const OFF_WHITE = '#fffaee';
 const PIXEL_FONT = '"Press Start 2P", "Pixelify Sans", "VT323", ui-monospace, monospace';
 const PIXEL_BODY = '"VT323", "Pixelify Sans", ui-monospace, monospace';
 
-export function CartridgePanel({ width = 820, height = 920 }: PanelProps) {
+export function CartridgePanel({ width = 820, height = 860 }: PanelProps) {
   return (
     <div style={{
       width, height, position: 'relative', overflow: 'hidden',
@@ -120,58 +120,58 @@ export function CartridgePanel({ width = 820, height = 920 }: PanelProps) {
             <BuildFacts />
           </div>
 
-          {/* ── Stats row ───────────────────────────────────────────── */}
-          <div style={{ display: 'flex', gap: 18, flexWrap: 'wrap' }}>
-            <Stat n="240×160" k="screen res" />
-            <Stat n="60 FPS" k="DMA render" />
-            <Stat n="4" k="states" />
-            <Stat n="2" k="lives" />
-            <Stat n="5+" k="entities" />
-          </div>
-
-          {/* ── Prominent GitHub CTA ────────────────────────────────── */}
-          <a
-            href="https://github.com/parthivFarazi/GameBoyCGame"
-            target="_blank"
-            rel="noopener noreferrer"
-            style={{
-              marginTop: 'auto',
-              display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 14,
-              padding: '14px 20px',
-              background: `linear-gradient(90deg, ${NEON_AMBER} 0%, #ffe9a0 50%, ${NEON_AMBER} 100%)`,
-              color: '#0e1a2e',
-              textDecoration: 'none',
-              borderRadius: 3,
-              border: `1px solid #b39440`,
-              boxShadow: `0 0 22px rgba(245,217,122,.7), 0 4px 0 #b39440, inset 0 0 0 1px rgba(255,255,255,.45)`,
-              transition: 'transform .12s ease, box-shadow .15s ease',
-            }}
-            onMouseEnter={(e) => {
-              e.currentTarget.style.transform = 'translateY(-2px)';
-              e.currentTarget.style.boxShadow = `0 0 30px rgba(245,217,122,.95), 0 6px 0 #b39440, inset 0 0 0 1px rgba(255,255,255,.55)`;
-            }}
-            onMouseLeave={(e) => {
-              e.currentTarget.style.transform = 'translateY(0)';
-              e.currentTarget.style.boxShadow = `0 0 22px rgba(245,217,122,.7), 0 4px 0 #b39440, inset 0 0 0 1px rgba(255,255,255,.45)`;
-            }}
-          >
-            <span style={{ display: 'flex', alignItems: 'center', gap: 14 }}>
-              <span style={{
-                width: 30, height: 30, borderRadius: '50%',
-                background: '#0e1a2e', color: NEON_AMBER,
-                display: 'grid', placeItems: 'center',
-                font: `12px ${PIXEL_FONT}`,
-                boxShadow: 'inset 0 0 4px rgba(255,255,255,.25)',
-              }}>▶</span>
-              <span style={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
-                <span style={{ font: `13px ${PIXEL_FONT}`, letterSpacing: '.22em' }}>VIEW ON GITHUB</span>
-                <span style={{ font: `12px ${PIXEL_BODY}`, letterSpacing: '.04em', color: 'rgba(14,26,46,.7)' }}>
-                  github.com/parthivFarazi/GameBoyCGame
-                </span>
+          {/* ── Stats row + inline GitHub button ────────────────────── */}
+          <div style={{
+            marginTop: 'auto',
+            display: 'flex',
+            alignItems: 'stretch',
+            justifyContent: 'space-between',
+            gap: 18,
+          }}>
+            <div style={{ display: 'flex', gap: 18, flexWrap: 'wrap', alignItems: 'center' }}>
+              <Stat n="240×160" k="screen res" />
+              <Stat n="60 FPS" k="DMA render" />
+              <Stat n="4" k="states" />
+              <Stat n="2" k="lives" />
+              <Stat n="5+" k="entities" />
+            </div>
+            <a
+              href="https://github.com/parthivFarazi/GameBoyCGame"
+              target="_blank"
+              rel="noopener noreferrer"
+              style={{
+                display: 'flex',
+                flexDirection: 'column',
+                alignItems: 'flex-start',
+                justifyContent: 'center',
+                gap: 2,
+                padding: '10px 18px',
+                background: `linear-gradient(180deg, #ffe9a0 0%, ${NEON_AMBER} 100%)`,
+                color: '#0e1a2e',
+                textDecoration: 'none',
+                border: `1px solid #b39440`,
+                boxShadow: `0 0 14px rgba(245,217,122,.55), 0 3px 0 #b39440, inset 0 0 0 1px rgba(255,255,255,.45)`,
+                transition: 'transform .12s ease, box-shadow .15s ease',
+                whiteSpace: 'nowrap',
+              }}
+              onMouseEnter={(e) => {
+                e.currentTarget.style.transform = 'translateY(-2px)';
+                e.currentTarget.style.boxShadow = `0 0 22px rgba(245,217,122,.85), 0 5px 0 #b39440, inset 0 0 0 1px rgba(255,255,255,.55)`;
+              }}
+              onMouseLeave={(e) => {
+                e.currentTarget.style.transform = 'translateY(0)';
+                e.currentTarget.style.boxShadow = `0 0 14px rgba(245,217,122,.55), 0 3px 0 #b39440, inset 0 0 0 1px rgba(255,255,255,.45)`;
+              }}
+            >
+              <span style={{ display: 'inline-flex', alignItems: 'center', gap: 8, font: `11px ${PIXEL_FONT}`, letterSpacing: '.2em' }}>
+                <span>▶ VIEW ON GITHUB</span>
+                <span>→</span>
               </span>
-            </span>
-            <span style={{ font: `18px ${PIXEL_FONT}`, color: '#0e1a2e' }}>→</span>
-          </a>
+              <span style={{ font: `11px ${PIXEL_BODY}`, color: 'rgba(14,26,46,.72)', letterSpacing: '.02em' }}>
+                /parthivFarazi/GameBoyCGame
+              </span>
+            </a>
+          </div>
         </div>
       </div>
 
