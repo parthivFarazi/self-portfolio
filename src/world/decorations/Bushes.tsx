@@ -1,13 +1,13 @@
 import { useEffect, useMemo, useRef } from 'react';
 import {
-  IcosahedronGeometry,
   InstancedMesh,
   MeshStandardMaterial,
   Object3D,
+  SphereGeometry,
 } from 'three';
 import type { BushPlacement } from './placements';
 
-// Each bush = 3 overlapping low-poly icospheres. To keep it to one draw call
+// Each bush = 3 overlapping smooth spheres. To keep it to one draw call
 // per "layer," we render 3 InstancedMeshes (one per cluster slot) — total
 // across the whole island: 6 bushes × 3 spheres = 18 instances.
 
@@ -16,17 +16,17 @@ export function Bushes({ bushes }: { bushes: BushPlacement[] }) {
   const bRef = useRef<InstancedMesh>(null);
   const cRef = useRef<InstancedMesh>(null);
 
-  const geom = useMemo(() => new IcosahedronGeometry(0.5, 0), []);
+  const geom = useMemo(() => new SphereGeometry(0.5, 14, 10), []);
   const matA = useMemo(
-    () => new MeshStandardMaterial({ color: '#3a6b3a', roughness: 0.9 }),
+    () => new MeshStandardMaterial({ color: '#3d733a', roughness: 0.9, emissive: '#1c3318', emissiveIntensity: 0.08 }),
     [],
   );
   const matB = useMemo(
-    () => new MeshStandardMaterial({ color: '#4a8a48', roughness: 0.88 }),
+    () => new MeshStandardMaterial({ color: '#4f914a', roughness: 0.88, emissive: '#203d1c', emissiveIntensity: 0.08 }),
     [],
   );
   const matC = useMemo(
-    () => new MeshStandardMaterial({ color: '#5a9a52', roughness: 0.86 }),
+    () => new MeshStandardMaterial({ color: '#60a257', roughness: 0.86, emissive: '#274720', emissiveIntensity: 0.08 }),
     [],
   );
   const dummy = useMemo(() => new Object3D(), []);
@@ -72,9 +72,9 @@ export function Bushes({ bushes }: { bushes: BushPlacement[] }) {
   if (bushes.length === 0) return null;
   return (
     <group>
-      <instancedMesh ref={aRef} args={[geom, matA, bushes.length]} castShadow />
-      <instancedMesh ref={bRef} args={[geom, matB, bushes.length]} castShadow />
-      <instancedMesh ref={cRef} args={[geom, matC, bushes.length]} castShadow />
+      <instancedMesh ref={aRef} args={[geom, matA, bushes.length]} />
+      <instancedMesh ref={bRef} args={[geom, matB, bushes.length]} />
+      <instancedMesh ref={cRef} args={[geom, matC, bushes.length]} />
     </group>
   );
 }

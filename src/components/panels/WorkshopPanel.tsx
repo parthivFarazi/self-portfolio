@@ -1,6 +1,7 @@
 import type { ReactNode } from 'react';
 import { Slot } from './_shared';
 import type { PanelProps } from './UPDTPanel';
+import { panelImages } from './panelImages';
 
 export function WorkshopPanel({ width = 760, height = 780 }: PanelProps) {
   return (
@@ -36,13 +37,13 @@ export function WorkshopPanel({ width = 760, height = 780 }: PanelProps) {
 
         <div style={{ position: 'relative', marginTop: 22, display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: 14 }}>
           <BluprintView label="Front" callouts={[['solar panel', '↑'], ['sensor', '→']]}>
-            <Slot id="robot-view-front" w={120} h={140} placeholder="robot · front photo" shape="rect"/>
+            <Slot id="robot-view-front" w={120} h={140} placeholder="robot · front photo" shape="rect" fit="contain" src={panelImages.robot.frontView}/>
           </BluprintView>
           <BluprintView label="Side" callouts={[['drive wheel', '↓'], ['arm', '→']]}>
-            <Slot id="robot-view-side" w={120} h={140} placeholder="robot · side photo" shape="rect"/>
+            <Slot id="robot-view-side" w={120} h={140} placeholder="robot · side photo" shape="rect" fit="contain" src={panelImages.robot.sideView}/>
           </BluprintView>
-          <BluprintView label="Top" callouts={[['frame · Al', '↑'], ['MCU', '→']]}>
-            <Slot id="robot-view-top" w={120} h={140} placeholder="robot · top photo" shape="rect"/>
+          <BluprintView label="Circuit" callouts={[['frame · Al', '↑'], ['MCU', '→']]}>
+            <Slot id="robot-view-top" w={120} h={140} placeholder="robot · top photo" shape="rect" fit="contain" src={panelImages.robot.circuitDiagram}/>
           </BluprintView>
         </div>
 
@@ -57,8 +58,8 @@ export function WorkshopPanel({ width = 760, height = 780 }: PanelProps) {
       <div style={{ position: 'absolute', right: 36, top: 110, width: 240, display: 'flex', flexDirection: 'column', gap: 14 }}>
         <div style={{ padding: '10px 10px 32px', background: '#fffaee', boxShadow: '0 8px 16px rgba(0,0,0,.4)', transform: 'rotate(3deg)', position: 'relative' }}>
           <Pin x="center"/>
-          <Slot id="robot-action" w={220} h={220} placeholder="robot on the field · photo" shape="rect"/>
-          <div style={{ font: '15px "Caveat", cursive', color: '#2a1a0e', textAlign: 'center', marginTop: 4 }}>field tests · weekend 03</div>
+          <Slot id="robot-action" w={220} h={220} placeholder="robot on the field · photo" shape="rect" fit="contain" src={panelImages.robot.action}/>
+          <div style={{ font: '15px "Caveat", cursive', color: '#2a1a0e', textAlign: 'center', marginTop: 4 }}>demo  · weekend 01</div>
         </div>
 
         <div style={{ padding: '16px 14px', background: '#fbf6e6', boxShadow: '0 8px 16px rgba(0,0,0,.35)', transform: 'rotate(-2deg)', font: '12px/1.4 "JetBrains Mono", monospace', color: '#2a1a0e', position: 'relative' }}>

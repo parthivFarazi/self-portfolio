@@ -27,6 +27,7 @@ function labelHeight(def: BuildingDef): number {
   const s = def.shape;
   switch (s.kind) {
     case 'cylinder': return s.height;
+    case 'oval': return s.height;
     case 'box': return s.height;
     case 'twin': return s.height;
     case 'dome': return s.baseHeight + s.radius;
@@ -41,6 +42,13 @@ function Geometry({ def }: { def: BuildingDef }) {
       return (
         <mesh castShadow receiveShadow position={[0, s.height / 2, 0]}>
           <cylinderGeometry args={[s.radius, s.radius, s.height, 48]} />
+          <meshStandardMaterial color={def.color} roughness={0.7} />
+        </mesh>
+      );
+    case 'oval':
+      return (
+        <mesh castShadow receiveShadow position={[0, s.height / 2, 0]} scale={[s.radiusX, 1, s.radiusZ]}>
+          <cylinderGeometry args={[1, 1, s.height, 48]} />
           <meshStandardMaterial color={def.color} roughness={0.7} />
         </mesh>
       );

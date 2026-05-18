@@ -8,8 +8,8 @@ export function Lighting() {
         position={[35, 40, 22]}
         intensity={1.0}
         color="#ffd9a0"
-        shadow-mapSize-width={2048}
-        shadow-mapSize-height={2048}
+        shadow-mapSize-width={1024}
+        shadow-mapSize-height={1024}
         shadow-camera-left={-90}
         shadow-camera-right={90}
         shadow-camera-top={90}

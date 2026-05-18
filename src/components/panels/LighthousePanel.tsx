@@ -50,11 +50,11 @@ export function LighthousePanel({ width = 760, height = 780 }: PanelProps) {
         </div>
 
         <div style={{ marginTop: 18, padding: '14px 16px', background: 'rgba(255,255,255,.45)', border: '1px dashed #c8b585', display: 'flex', flexDirection: 'column', gap: 8 }}>
-          <ContactLine icon="✉" label="Write to" value="parthiv@updt.pro"/>
-          <ContactLine icon="☎" label="Call" value="(+1) 470 · 555 · 0142"/>
+          <ContactLine icon="✉" label="Write to" value="parthivfarazi@icloud.com"/>
+          <ContactLine icon="☎" label="Call" value="(+1) 404 · 203 · 5379"/>
           <ContactLine icon="◐" label="Find on the web" value="updt.pro"/>
           <ContactLine icon="✦" label="GitHub" value="github.com/parthivFarazi"/>
-          <ContactLine icon="❖" label="LinkedIn" value="linkedin.com/in/parthiv-farazi"/>
+          <ContactLine icon="❖" label="LinkedIn" value="linkedin.com/in/parthiv-farazi-1aba8b223"/>
         </div>
 
         <div style={{ position: 'absolute', inset: 0, pointerEvents: 'none', background: 'radial-gradient(ellipse at 100% 0%, rgba(120,70,20,.1), transparent 30%), radial-gradient(ellipse at 0% 100%, rgba(120,70,20,.1), transparent 30%)' }}/>
@@ -81,8 +81,8 @@ export function LighthousePanel({ width = 760, height = 780 }: PanelProps) {
           <div style={{ position: 'absolute', inset: 0, backgroundImage: 'repeating-linear-gradient(0deg, transparent 0 2px, rgba(0,0,0,.18) 2px 3px)', pointerEvents: 'none' }}/>
           <div style={{ color: '#94e2c0' }}>$ contact --who parthiv</div>
           <div style={{ color: 'rgba(124,209,122,.65)', marginTop: 6 }}>{'>'} resolving handles…</div>
-          <div style={{ marginTop: 8 }}><span style={{ color: '#f5d97a' }}>email</span>  parthiv@updt.pro</div>
-          <div><span style={{ color: '#f5d97a' }}>phone</span>  +1 470 555 0142</div>
+          <div style={{ marginTop: 8 }}><span style={{ color: '#f5d97a' }}>email</span>  parthivfarazi@icloud.com</div>
+          <div><span style={{ color: '#f5d97a' }}>phone</span>  +1 404 203 5379</div>
           <div><span style={{ color: '#f5d97a' }}>web  </span>  updt.pro</div>
           <div><span style={{ color: '#f5d97a' }}>gh   </span>  parthivFarazi</div>
           <div><span style={{ color: '#f5d97a' }}>in   </span>  parthiv-farazi</div>

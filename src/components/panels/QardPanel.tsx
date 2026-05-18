@@ -1,6 +1,7 @@
 import type { ReactNode } from 'react';
 import { Slot } from './_shared';
 import type { PanelProps } from './UPDTPanel';
+import { panelImages } from './panelImages';
 
 export function QardPanel({ width = 760, height = 780 }: PanelProps) {
   return (
@@ -19,7 +20,7 @@ export function QardPanel({ width = 760, height = 780 }: PanelProps) {
 
         <div style={{ marginTop: 22, alignSelf: 'center', position: 'relative' }}>
           <div style={{ width: 320, height: 200, padding: 8, background: 'linear-gradient(135deg, rgba(148,226,192,.18), rgba(111,213,224,.18))', border: '1px solid rgba(148,226,192,.4)', borderRadius: 18, boxShadow: '0 0 32px rgba(148,226,192,.25), inset 0 0 0 1px rgba(255,255,255,.05)', transform: 'rotateY(-6deg)' }}>
-            <Slot id="qard-hero" w={304} h={184} placeholder="Three.js card · hero shot" shape="rounded" radius={12}/>
+            <Slot id="qard-hero" w={304} h={184} placeholder="Three.js card · hero shot" shape="rounded" radius={12} src={panelImages.qard.hero}/>
           </div>
           <div style={{ position: 'absolute', left: '50%', top: '100%', width: 2, height: 32, background: '#3e6a3c', transform: 'translateX(-50%)' }}/>
           <div style={{ position: 'absolute', left: '50%', top: '100%', width: 12, height: 6, background: '#5a9558', borderRadius: 6, transform: 'translate(-50%, 14px) rotate(20deg)' }}/>
@@ -27,10 +28,10 @@ export function QardPanel({ width = 760, height = 780 }: PanelProps) {
 
         <div style={{ marginTop: 28, display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 16 }}>
           <CardBloom>
-            <Slot id="qard-detail-1" w={300} h={170} placeholder="landing page · screenshot" shape="rounded" radius={8}/>
+            <Slot id="qard-detail-1" w={300} h={170} placeholder="landing page · screenshot" shape="rounded" radius={8} src={panelImages.qard.detailLandingPage}/>
           </CardBloom>
           <CardBloom hueShift>
-            <Slot id="qard-detail-2" w={300} h={170} placeholder="card interaction · screenshot" shape="rounded" radius={8}/>
+            <Slot id="qard-detail-2" w={300} h={170} placeholder="card interaction · screenshot" shape="rounded" radius={8} src={panelImages.qard.detailInteraction}/>
           </CardBloom>
         </div>
 

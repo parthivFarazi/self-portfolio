@@ -1,0 +1,9 @@
+{
+  "qard-detail-1": { "s": 1.15, "x": 0, "y": 0 },
+  "qard-detail-2": { "s": 1.3, "x": 0, "y": 0 },
+  "updt-cv": { "s": 1, "x": 0, "y": 5 },
+  "updt-tactics": { "s": 1.1, "x": 0, "y": 0 },
+  "athletic-stadium": { "s": 1, "x": 0, "y": 10 },
+  "athletic-chart": { "s": 1.2, "x": 0, "y": 0 },
+  "athletic-pipeline": { "s": 1.2, "x": 0, "y": -5 }
+}

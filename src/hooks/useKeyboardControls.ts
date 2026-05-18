@@ -1,5 +1,6 @@
 import { useEffect, useRef } from 'react';
 import { useGame } from '@/state/gameStore';
+import { Audio } from '@/audio/AudioManager';
 
 type KeyMap = {
   up: boolean;
@@ -40,6 +41,7 @@ export function useKeyboardControls() {
     const onDown = (e: KeyboardEvent) => {
       const action = KEYS[e.code];
       if (!action) return;
+      Audio.ensureStart();
       e.preventDefault();
       if (keys.current[action]) return;
       keys.current[action] = true;

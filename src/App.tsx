@@ -6,6 +6,7 @@ import { BuildingDialog } from './components/ui/BuildingDialog';
 import { TouchControls } from './components/ui/TouchControls';
 import { LandingPage, QuickViewDashboard } from './components/quick-view/QuickView';
 import { useGame } from './state/gameStore';
+import { Audio } from './audio/AudioManager';
 
 type AppMode = 'landing' | 'quick-view' | 'world';
 
@@ -29,8 +30,13 @@ export default function App() {
     };
   }, []);
 
+  useEffect(() => {
+    if (mode !== 'world') Audio.enterZone(null);
+  }, [mode]);
+
   const showMode = (next: AppMode) => {
     closeBuilding();
+    if (next !== 'world') Audio.enterZone(null);
     setMode(next);
     const nextHash = next === 'landing' ? window.location.pathname + window.location.search : `#${next === 'quick-view' ? 'quick-view' : 'explore'}`;
     window.history.pushState(null, '', nextHash);

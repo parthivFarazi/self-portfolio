@@ -124,7 +124,7 @@ export function IsometricCamera() {
       makeDefault
       zoom={CAMERA_ZOOM}
       near={0.1}
-      far={500}
+      far={1200}
       position={[OFFSET.x, OFFSET.y, OFFSET.z]}
     />
   );

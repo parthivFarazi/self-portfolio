@@ -23,12 +23,12 @@ export function HeatmapGarden({ def }: { def: BuildingDef }) {
   const [px, , pz] = def.position;
   const R = 5;
 
-  // ~260 flower dots distributed within the disc with a heat gradient that
+  // Flower dots distributed within the disc with a heat gradient that
   // has its hot zone offset toward +x.
   const flowers = useMemo(() => {
     const arr: Array<{ x: number; z: number; t: number; h: number }> = [];
     const rng = (n: number) => Math.sin(n * 12.97 + 7.13) * 0.5 + 0.5;
-    const N = 260;
+    const N = 160;
     for (let i = 0; i < N; i++) {
       const a = rng(i) * Math.PI * 2;
       const r = Math.sqrt(rng(i * 1.7)) * (R - 0.4);

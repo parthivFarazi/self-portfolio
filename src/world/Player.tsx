@@ -4,7 +4,7 @@ import { Group, Vector3 } from 'three';
 import { useGame } from '@/state/gameStore';
 import { useKeyboardControls } from '@/hooks/useKeyboardControls';
 import { nearestBuilding } from '@/hooks/useProximity';
-import { BUILDINGS, footprintHalfExtents } from '@/data/buildings';
+import { BUILDINGS, type BuildingDef, type BuildingId } from '@/data/buildings';
 import { Audio } from '@/audio/AudioManager';
 import { touchInput } from '@/hooks/useTouchInput';
 import {
@@ -31,22 +31,87 @@ function collideBuildings(nx: number, nz: number, px: number, pz: number): [numb
   let outX = nx;
   let outZ = nz;
   for (const b of BUILDINGS) {
-    const fp = footprintHalfExtents(b);
-    if (!fp) continue;
-    const halfW = fp.halfX + PLAYER_RADIUS;
-    const halfD = fp.halfZ + PLAYER_RADIUS;
-    const bx = b.position[0];
-    const bz = b.position[2];
-    if (outX > bx - halfW && outX < bx + halfW && outZ > bz - halfD && outZ < bz + halfD) {
-      const overlapX = outX > bx ? outX - (bx + halfW) : outX - (bx - halfW);
-      const overlapZ = outZ > bz ? outZ - (bz + halfD) : outZ - (bz - halfD);
-      const dx = Math.abs(outX - px);
-      const dz = Math.abs(outZ - pz);
-      if (dx > dz) outX -= overlapX;
-      else outZ -= overlapZ;
-    }
+    [outX, outZ] = collideBuilding(outX, outZ, px, pz, b);
   }
   return [outX, outZ];
+}
+
+function collideBuilding(nx: number, nz: number, px: number, pz: number, b: BuildingDef): [number, number] {
+  const s = b.shape;
+  const bx = b.position[0];
+  const bz = b.position[2];
+  switch (s.kind) {
+    case 'cylinder':
+      return collideEllipse(nx, nz, px, pz, bx, bz, s.radius, s.radius);
+    case 'oval':
+      return collideEllipse(nx, nz, px, pz, bx, bz, s.radiusX, s.radiusZ);
+    case 'dome':
+      return collideEllipse(nx, nz, px, pz, bx, bz, s.radius, s.radius);
+    case 'box':
+      return collideBox(nx, nz, px, pz, bx, bz, s.width / 2, s.depth / 2);
+    case 'twin':
+      return collideBox(nx, nz, px, pz, bx, bz, (s.spacing + s.width) / 2, s.depth / 2);
+    case 'disc':
+      return [nx, nz];
+  }
+}
+
+function collideEllipse(
+  nx: number,
+  nz: number,
+  px: number,
+  pz: number,
+  cx: number,
+  cz: number,
+  radiusX: number,
+  radiusZ: number,
+): [number, number] {
+  const rx = radiusX + PLAYER_RADIUS;
+  const rz = radiusZ + PLAYER_RADIUS;
+  let dx = nx - cx;
+  let dz = nz - cz;
+  let norm = Math.hypot(dx / rx, dz / rz);
+  if (norm >= 1) return [nx, nz];
+
+  if (norm < 0.0001) {
+    dx = px - cx;
+    dz = pz - cz;
+    norm = Math.hypot(dx / rx, dz / rz) || 1;
+  }
+
+  const scale = 1 / norm;
+  return [cx + dx * scale, cz + dz * scale];
+}
+
+function collideBox(
+  nx: number,
+  nz: number,
+  px: number,
+  pz: number,
+  cx: number,
+  cz: number,
+  halfX: number,
+  halfZ: number,
+): [number, number] {
+  const hw = halfX + PLAYER_RADIUS;
+  const hd = halfZ + PLAYER_RADIUS;
+  if (nx <= cx - hw || nx >= cx + hw || nz <= cz - hd || nz >= cz + hd) {
+    return [nx, nz];
+  }
+
+  const wasInsideX = px > cx - hw && px < cx + hw;
+  const wasInsideZ = pz > cz - hd && pz < cz + hd;
+  const penX = hw - Math.abs(nx - cx);
+  const penZ = hd - Math.abs(nz - cz);
+  const pushX = (!wasInsideX && wasInsideZ) || (wasInsideX === wasInsideZ && penX < penZ);
+
+  if (pushX) {
+    const sign = Math.sign(nx - cx || px - cx) || 1;
+    return [cx + sign * hw, nz];
+  }
+
+  const sign = Math.sign(nz - cz || pz - cz) || 1;
+  return [nx, cz + sign * hd];
 }
 
 export function Player() {
@@ -161,9 +226,9 @@ export function Player() {
 
     const near = nearestBuilding(pos.x, pos.z);
     const newId = near?.id ?? null;
+    const zoneIntensity = near ? proximityAudioIntensity(near.id, near.dist) : 0;
+    Audio.enterZone(newId, zoneIntensity);
     if (newId !== lastNearby.current) {
-      // Crossfade the building-specific ambient zone whenever proximity changes.
-      Audio.enterZone(newId);
       // Soft chime when a fresh interaction prompt becomes available.
       if (newId && !lastNearby.current) Audio.uiPrompt();
       lastNearby.current = newId;
@@ -264,17 +329,17 @@ export function Player() {
           <sphereGeometry args={[0.235, 20, 16, 0, Math.PI * 2, 0, Math.PI / 2 * 0.95]} />
           <meshStandardMaterial color={HAIR} roughness={0.5} />
         </mesh>
-        {/* Beard — short, framing the chin */}
-        <mesh position={[0, 1.5, 0.16]}>
-          <sphereGeometry args={[0.18, 16, 12, 0, Math.PI * 2, Math.PI / 2.4, Math.PI / 3]} />
+        {/* Beard — flattened against the lower face so it stays attached in isometric view. */}
+        <mesh position={[0, 1.5, 0.18]} scale={[1, 0.7, 0.28]}>
+          <sphereGeometry args={[0.13, 14, 10]} />
           <meshStandardMaterial color={HAIR} roughness={0.55} />
         </mesh>
         {/* Eyes — tiny dark spheres */}
-        <mesh position={[-0.07, 1.62, 0.18]}>
+        <mesh position={[-0.07, 1.62, 0.17]}>
           <sphereGeometry args={[0.022, 8, 6]} />
           <meshStandardMaterial color="#1a1410" roughness={0.4} />
         </mesh>
-        <mesh position={[0.07, 1.62, 0.18]}>
+        <mesh position={[0.07, 1.62, 0.17]}>
           <sphereGeometry args={[0.022, 8, 6]} />
           <meshStandardMaterial color="#1a1410" roughness={0.4} />
         </mesh>
@@ -297,4 +362,28 @@ function lerpAngle(a: number, b: number, t: number) {
 function labelFor(id: string) {
   const b = BUILDINGS.find((x) => x.id === id);
   return b ? b.shortLabel : id;
+}
+
+function proximityAudioIntensity(id: BuildingId, distFromCenter: number): number {
+  const b = BUILDINGS.find((x) => x.id === id);
+  if (!b) return 0;
+  const bodyRadius = audioBodyRadius(b);
+  const fadeDistance = Math.max(1, b.triggerRadius - bodyRadius);
+  return clamp((b.triggerRadius - distFromCenter) / fadeDistance, 0, 1);
+}
+
+function audioBodyRadius(def: BuildingDef): number {
+  const s = def.shape;
+  switch (s.kind) {
+    case 'cylinder':
+    case 'dome':
+    case 'disc':
+      return s.radius;
+    case 'oval':
+      return Math.max(s.radiusX, s.radiusZ);
+    case 'box':
+      return Math.hypot(s.width / 2, s.depth / 2);
+    case 'twin':
+      return Math.hypot((s.spacing + s.width) / 2, s.depth / 2);
+  }
 }

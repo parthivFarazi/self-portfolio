@@ -32,6 +32,8 @@
   --rw-sans: "Geist", ui-sans-serif, system-ui, -apple-system, sans-serif;
   --rw-mono: "JetBrains Mono", ui-monospace, monospace;
   --rw-hand: "Caveat", "Bradley Hand", cursive;
+  --rw-pixel: "Pixelify Sans", "Instrument Serif", Georgia, serif;
+  --rw-term: "VT323", "JetBrains Mono", ui-monospace, monospace;
 }
 
 html,

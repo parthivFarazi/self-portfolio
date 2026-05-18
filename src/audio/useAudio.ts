@@ -11,7 +11,10 @@ export function useAudio() {
 
   return {
     muted,
-    toggleMute: () => Audio.setMuted(!Audio.isMuted()),
+    toggleMute: () => {
+      Audio.ensureStart();
+      Audio.setMuted(!Audio.isMuted());
+    },
     audio: Audio,
   };
 }

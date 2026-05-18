@@ -2,29 +2,36 @@
 
 ## Current implementation
 
-**No external audio files are bundled.** Every sound in this build is
-synthesized at runtime via the Web Audio API in `AudioManager.ts`:
+Most sounds in this build are synthesized at runtime via the Web Audio API
+in `AudioManager.ts`. The human-voice proximity zones use bundled Mixkit
+MP3 samples because procedural voice synthesis did not read as human.
 
-- **Wind** — pink noise → lowpass filter with slow LFO modulation
-- **Golden-hour pad** — 3 detuned sine/triangle oscillators at 110/220/330 Hz
 - **Sporadic birds** — short sine sweeps at 2.2–3.6 kHz, fired every 6–14 sec
+- **Background music** — bundled Mixkit stock music loop, played at low volume
+  across the full site after the first user gesture
 - **Grass footstep** — short pink-noise burst → lowpass 900 Hz
 - **Stone footstep** — short white-noise burst → bandpass 2.2 kHz
 - **UI prompt** — two-tone chime 880 → 1320 Hz
 - **Panel open** — filtered noise sweep + 140 → 80 Hz sine "thud"
 - **Panel close** — 280 → 180 Hz sine pop
 - **Tile hover** — 2.4 kHz triangle tick
-- **Per-building zones** — filtered pink noise variants per kind
-  (`crowd`, `waves`, `whisper`, `city`, `chatter`, `glass-wind`, `server-hum`)
-  and short event-driven tones (`hammer`, `water`, `bell`)
+- **Per-building proximity zones** — distance-faded ambience:
+  Mixkit sampled crowd, chatter, and whisper loops; synthesized forge hammer
+  strikes, waves, water trickles, city bed, bell chimes, glass chimes,
+  data pulses, heatmap tones, and robot-workshop servo clicks.
 
-This satisfies the Phase 5 audio brief without bundling licensed samples.
+Bundled voice/crowd samples:
 
-## Why no sample files
+| Use | File | Source |
+|---|---|---|
+| Background music | `public/audio/mixkit-smooth-meditation-324.mp3` | Mixkit “Smooth Meditation” by Arulo |
+| Stadium crowd | `public/audio/mixkit-huge-crowd-cheering-victory.mp3` | Mixkit “Huge crowd cheering victory” |
+| Conversational chatter | `public/audio/mixkit-people-indoors-ambience.mp3` | Mixkit “People indoors ambience” |
+| Archive whispers | `public/audio/mixkit-male-conspiracy-voices-whispers.mp3` | Mixkit “Male conspiracy voices whispers” |
 
-Procuring CC0 / royalty-free samples for 10+ unique sounds is out of scope
-for this iteration and would inflate the bundle by ~1–3 MB. Web Audio
-synthesis is zero-asset and fully offline.
+Mixkit stock music and sound effects are published under their respective
+Mixkit Free Licenses. Mixkit describes these assets as royalty-free for
+commercial and personal projects, with no attribution required.
 
 ## How to upgrade to real samples (future)
 

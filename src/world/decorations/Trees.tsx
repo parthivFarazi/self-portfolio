@@ -2,12 +2,11 @@ import { useEffect, useMemo, useRef } from 'react';
 import { useFrame } from '@react-three/fiber';
 import {
   CylinderGeometry,
-  IcosahedronGeometry,
   ConeGeometry,
   InstancedMesh,
   MeshStandardMaterial,
   Object3D,
-  type BufferAttribute,
+  SphereGeometry,
 } from 'three';
 import type { TreePlacement } from './placements';
 
@@ -16,26 +15,6 @@ import type { TreePlacement } from './placements';
 const SWAY_FREQ = 0.3;            // Hz
 const SWAY_AMPLITUDE_DEG = 2;     // ±2 degrees
 const SWAY_RAD = (SWAY_AMPLITUDE_DEG * Math.PI) / 180;
-
-// Subtly displace icosahedron vertices for organic canopy silhouettes —
-// shared deformation across all canopy instances is fine (it reads as "leafy"
-// not "identical") and costs nothing per-frame.
-function jitterIco(geo: IcosahedronGeometry, amount: number): IcosahedronGeometry {
-  const pos = geo.attributes.position as BufferAttribute;
-  const arr = pos.array as Float32Array;
-  for (let i = 0; i < arr.length; i += 3) {
-    const seed = i * 0.137;
-    const dx = (Math.sin(seed) * 0.5 + Math.sin(seed * 2.3) * 0.3) * amount;
-    const dy = (Math.sin(seed * 1.7) * 0.5 + Math.cos(seed * 3.1) * 0.3) * amount;
-    const dz = (Math.cos(seed * 1.3) * 0.5 + Math.sin(seed * 4.1) * 0.3) * amount;
-    arr[i] += dx;
-    arr[i + 1] += dy;
-    arr[i + 2] += dz;
-  }
-  pos.needsUpdate = true;
-  geo.computeVertexNormals();
-  return geo;
-}
 
 export function Trees({ trees }: { trees: TreePlacement[] }) {
   // Split by kind so pines and oaks use different geometries.
@@ -57,18 +36,18 @@ function OakForest({ trees }: { trees: TreePlacement[] }) {
   const canopyBRef = useRef<InstancedMesh>(null);
 
   const trunkGeo = useMemo(() => new CylinderGeometry(0.18, 0.32, 1.6, 8), []);
-  const canopyAGeo = useMemo(() => jitterIco(new IcosahedronGeometry(1, 1), 0.12), []);
-  const canopyBGeo = useMemo(() => jitterIco(new IcosahedronGeometry(1, 1), 0.15), []);
+  const canopyAGeo = useMemo(() => new SphereGeometry(1, 14, 10), []);
+  const canopyBGeo = useMemo(() => new SphereGeometry(1, 14, 10), []);
   const trunkMat = useMemo(
     () => new MeshStandardMaterial({ color: '#6b4a2e', roughness: 0.92 }),
     [],
   );
   const canopyMatA = useMemo(
-    () => new MeshStandardMaterial({ color: '#4a8a48', roughness: 0.88 }),
+    () => new MeshStandardMaterial({ color: '#4f9349', roughness: 0.88, emissive: '#23451f', emissiveIntensity: 0.08 }),
     [],
   );
   const canopyMatB = useMemo(
-    () => new MeshStandardMaterial({ color: '#5fa854', roughness: 0.86 }),
+    () => new MeshStandardMaterial({ color: '#66a85a', roughness: 0.86, emissive: '#2d5126', emissiveIntensity: 0.08 }),
     [],
   );
 
@@ -132,12 +111,10 @@ function OakForest({ trees }: { trees: TreePlacement[] }) {
       <instancedMesh
         ref={canopyARef}
         args={[canopyAGeo, canopyMatA, trees.length]}
-        castShadow
       />
       <instancedMesh
         ref={canopyBRef}
         args={[canopyBGeo, canopyMatB, trees.length]}
-        castShadow
       />
     </group>
   );
@@ -211,12 +188,10 @@ function PineForest({ trees }: { trees: TreePlacement[] }) {
       <instancedMesh
         ref={coneARef}
         args={[coneAGeo, needleMat, trees.length]}
-        castShadow
       />
       <instancedMesh
         ref={coneBRef}
         args={[coneBGeo, needleMat, trees.length]}
-        castShadow
       />
     </group>
   );

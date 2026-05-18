@@ -3,8 +3,8 @@ export const ISLAND_THICKNESS = 2;
 export const ISLAND_EDGE_MARGIN = 1.5;
 
 export const PLAYER_HEIGHT = 1.8;
-export const PLAYER_SPEED = 6.5;
-export const PLAYER_ACCEL = 20;
+export const PLAYER_SPEED = 9.5;
+export const PLAYER_ACCEL = 30;
 export const PLAYER_RADIUS = 0.45;
 
 export const CAMERA_ZOOM = 28;

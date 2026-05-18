@@ -11,10 +11,13 @@ export interface SlotProps {
   placeholder?: string;
   shape?: 'rect' | 'rounded' | 'circle' | 'pill';
   radius?: number | string;
+  fit?: 'cover' | 'contain' | 'fill';
+  position?: string;
+  src?: string;
   style?: CSSProperties;
 }
 
-export function Slot({ id, w, h, placeholder, shape = 'rect', radius, style }: SlotProps) {
+export function Slot({ id, w, h, placeholder, shape = 'rect', radius, fit, position, src, style }: SlotProps) {
   const props: Record<string, unknown> = {
     id,
     placeholder,
@@ -22,6 +25,9 @@ export function Slot({ id, w, h, placeholder, shape = 'rect', radius, style }: S
   };
   if (shape) props.shape = shape;
   if (radius != null) props.radius = String(radius);
+  if (fit) props.fit = fit;
+  if (position) props.position = position;
+  if (src) props.src = src;
   return createElement('image-slot', props);
 }
 

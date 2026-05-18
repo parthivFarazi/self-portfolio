@@ -15,6 +15,7 @@ import {
   useIsNarrowViewport,
 } from '@/hooks/useTouchInput';
 import { useGame } from '@/state/gameStore';
+import { Audio } from '@/audio/AudioManager';
 
 const STICK_SIZE = 96;
 const THUMB_SIZE = 44;
@@ -70,6 +71,7 @@ function Joystick() {
 
     const onDown = (e: PointerEvent) => {
       if (activePointer.current !== null) return;
+      Audio.ensureStart();
       activePointer.current = e.pointerId;
       el.setPointerCapture(e.pointerId);
       e.preventDefault();
@@ -171,6 +173,7 @@ function InteractButton() {
   const closeBuilding = useGame((s) => s.closeBuilding);
 
   const onTap = () => {
+    Audio.ensureStart();
     const state = useGame.getState();
     if (state.activeBuildingId) {
       closeBuilding();

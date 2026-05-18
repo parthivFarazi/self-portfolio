@@ -211,8 +211,10 @@ function IllustratedJSON() {
         background: 'linear-gradient(180deg, #0a141c, #050a10)',
         border: '1px solid rgba(111,213,224,.5)',
         boxShadow: '0 0 24px rgba(111,213,224,.18), inset 0 0 0 1px rgba(255,255,255,.04)',
-        padding: '10px 12px',
-        font: '9.5px/1.5 "JetBrains Mono", monospace',
+        boxSizing: 'border-box',
+        overflow: 'hidden',
+        padding: '8px 10px',
+        font: '8.2px/1.34 "JetBrains Mono", monospace',
         color: '#cdf3e2',
       }}>
         <span style={{ position: 'absolute', top: -1, left: -1, width: 8, height: 8, borderTop: '2px solid #6fd5e0', borderLeft: '2px solid #6fd5e0' }}/>
@@ -220,15 +222,14 @@ function IllustratedJSON() {
         <span style={{ position: 'absolute', bottom: -1, left: -1, width: 8, height: 8, borderBottom: '2px solid #6fd5e0', borderLeft: '2px solid #6fd5e0' }}/>
         <span style={{ position: 'absolute', bottom: -1, right: -1, width: 8, height: 8, borderBottom: '2px solid #6fd5e0', borderRight: '2px solid #6fd5e0' }}/>
 
-        <div style={{ color: '#6fd5e0', letterSpacing: '.12em', marginBottom: 6, fontSize: 8 }}>RECEIPT · JSON</div>
+        <div style={{ color: '#6fd5e0', letterSpacing: '.12em', marginBottom: 5, fontSize: 7.6 }}>RECEIPT · JSON</div>
         <span style={{ color: '#e07ec3' }}>{'{'}</span><br/>
         <span style={{ paddingLeft: 8 }}><span style={{ color: '#94e2c0' }}>"merchant"</span>: <span style={{ color: '#f5d97a' }}>"Kedai Makan"</span>,</span><br/>
         <span style={{ paddingLeft: 8 }}><span style={{ color: '#94e2c0' }}>"date"</span>: <span style={{ color: '#f5d97a' }}>"2024-07-13"</span>,</span><br/>
         <span style={{ paddingLeft: 8 }}><span style={{ color: '#94e2c0' }}>"items"</span>: [</span><br/>
-        <span style={{ paddingLeft: 16, fontSize: 8.5 }}>{`{ "n": "nasi lemak", "p": 8.50 },`}</span><br/>
-        <span style={{ paddingLeft: 16, fontSize: 8.5 }}>{`{ "n": "teh tarik", "p": 3.00 },`}</span><br/>
-        <span style={{ paddingLeft: 16, fontSize: 8.5 }}>{`{ "n": "roti canai", "p": 2.50 },`}</span><br/>
-        <span style={{ paddingLeft: 16, color: 'rgba(205,243,226,.45)', fontSize: 8.5 }}>{`/* + 2 more */`}</span><br/>
+        <span style={{ paddingLeft: 16, fontSize: 7.8 }}>{`{"n":"nasi lemak","p":8.50},`}</span><br/>
+        <span style={{ paddingLeft: 16, fontSize: 7.8 }}>{`{"n":"teh tarik","p":3.00},`}</span><br/>
+        <span style={{ paddingLeft: 16, color: 'rgba(205,243,226,.48)', fontSize: 7.8 }}>{`"... 3 more rows"`}</span><br/>
         <span style={{ paddingLeft: 8 }}>],</span><br/>
         <span style={{ paddingLeft: 8 }}><span style={{ color: '#94e2c0' }}>"subtotal"</span>: <span style={{ color: '#e07ec3' }}>17.80</span>,</span><br/>
         <span style={{ paddingLeft: 8 }}><span style={{ color: '#94e2c0' }}>"tax"</span>: <span style={{ color: '#e07ec3' }}>1.07</span>,</span><br/>

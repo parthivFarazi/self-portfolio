@@ -1,5 +1,6 @@
 import { Slot } from './_shared';
 import type { PanelProps } from './UPDTPanel';
+import { panelImages } from './panelImages';
 
 export function SoothePanel({ width = 760, height = 780 }: PanelProps) {
   return (
@@ -44,16 +45,16 @@ export function SoothePanel({ width = 760, height = 780 }: PanelProps) {
 
             <div style={{ position: 'relative', height: 'calc(100% - 24px)', marginTop: 14 }}>
               <div style={{ position: 'absolute', top: 0, left: 4, padding: '10px 10px 30px', background: '#fffaee', boxShadow: '0 6px 12px rgba(0,0,0,.3)', transform: 'rotate(-5deg)' }}>
-                <Slot id="soothe-screen-1" w={120} h={210} placeholder="Soothe · home" shape="rounded" radius={6}/>
-                <div style={{ font: '13px "Caveat", cursive', color: '#2a1a0e', textAlign: 'center', marginTop: 4 }}>morning prompt</div>
+                <Slot id="soothe-screen-1" w={120} h={210} placeholder="Soothe · home" shape="rounded" radius={6} fit="contain" src={panelImages.soothe.morningCheckIn}/>
+                <div style={{ font: '13px "Caveat", cursive', color: '#2a1a0e', textAlign: 'center', marginTop: 4 }}>journal</div>
               </div>
               <div style={{ position: 'absolute', top: 30, right: 12, padding: '10px 10px 30px', background: '#fffaee', boxShadow: '0 6px 12px rgba(0,0,0,.3)', transform: 'rotate(6deg)' }}>
-                <Slot id="soothe-screen-2" w={120} h={210} placeholder="Soothe · mood graph" shape="rounded" radius={6}/>
-                <div style={{ font: '13px "Caveat", cursive', color: '#2a1a0e', textAlign: 'center', marginTop: 4 }}>mood arc</div>
+                <Slot id="soothe-screen-2" w={120} h={210} placeholder="Soothe · mood graph" shape="rounded" radius={6} fit="contain" src={panelImages.soothe.moodArc}/>
+                <div style={{ font: '13px "Caveat", cursive', color: '#2a1a0e', textAlign: 'center', marginTop: 4 }}>mood tracker</div>
               </div>
               <div style={{ position: 'absolute', bottom: 0, left: '20%', padding: '10px 10px 30px', background: '#fffaee', boxShadow: '0 6px 12px rgba(0,0,0,.3)', transform: 'rotate(-2deg)' }}>
-                <Slot id="soothe-screen-3" w={120} h={210} placeholder="Soothe · check-in" shape="rounded" radius={6}/>
-                <div style={{ font: '13px "Caveat", cursive', color: '#2a1a0e', textAlign: 'center', marginTop: 4 }}>evening check-in</div>
+                <Slot id="soothe-screen-3" w={120} h={210} placeholder="Soothe · check-in" shape="rounded" radius={6} fit="contain" src={panelImages.soothe.eveningCheckIn}/>
+                <div style={{ font: '13px "Caveat", cursive', color: '#2a1a0e', textAlign: 'center', marginTop: 4 }}>entree logs</div>
               </div>
               <div style={{ position: 'absolute', top: 4, left: 30, width: 60, height: 18, background: 'rgba(220,205,160,.7)', border: '1px dashed rgba(140,110,40,.5)', transform: 'rotate(-12deg)' }}/>
               <div style={{ position: 'absolute', top: 24, right: 32, width: 60, height: 18, background: 'rgba(220,205,160,.7)', border: '1px dashed rgba(140,110,40,.5)', transform: 'rotate(10deg)' }}/>

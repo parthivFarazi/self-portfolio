@@ -1,5 +1,4 @@
 import { Canvas } from '@react-three/fiber';
-import { EffectComposer, Bloom } from '@react-three/postprocessing';
 import * as THREE from 'three';
 import { Sky } from './Sky';
 import { Island } from './Island';
@@ -15,8 +14,13 @@ export function Scene() {
   return (
     <Canvas
       shadows
-      dpr={[1, 1.5]}
-      gl={{ antialias: true, toneMapping: THREE.ACESFilmicToneMapping, toneMappingExposure: 1.05 }}
+      dpr={1}
+      gl={{
+        antialias: true,
+        powerPreference: 'high-performance',
+        toneMapping: THREE.ACESFilmicToneMapping,
+        toneMappingExposure: 1.05,
+      }}
       onCreated={({ gl, scene, camera }) => {
         gl.shadowMap.type = THREE.PCFSoftShadowMap;
         if (import.meta.env.DEV) {
@@ -36,10 +40,6 @@ export function Scene() {
       <Buildings />
       <Decorations />
       <Player />
-
-      <EffectComposer>
-        <Bloom intensity={0.55} luminanceThreshold={0.85} luminanceSmoothing={0.2} mipmapBlur />
-      </EffectComposer>
     </Canvas>
   );
 }

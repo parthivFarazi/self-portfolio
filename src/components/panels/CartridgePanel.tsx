@@ -140,35 +140,52 @@ export function CartridgePanel({ width = 820, height = 920 }: PanelProps) {
               target="_blank"
               rel="noopener noreferrer"
               style={{
-                display: 'flex',
-                flexDirection: 'column',
-                alignItems: 'flex-start',
+                display: 'inline-flex',
+                alignItems: 'center',
                 justifyContent: 'center',
-                gap: 2,
-                padding: '10px 18px',
+                gap: 10,
+                minHeight: 48,
+                padding: '0 18px',
                 background: `linear-gradient(180deg, #ffe9a0 0%, ${NEON_AMBER} 100%)`,
                 color: '#0e1a2e',
                 textDecoration: 'none',
                 border: `1px solid #b39440`,
-                boxShadow: `0 0 14px rgba(245,217,122,.55), 0 3px 0 #b39440, inset 0 0 0 1px rgba(255,255,255,.45)`,
+                boxShadow: `0 0 14px rgba(245,217,122,.55), 0 4px 0 #b39440, inset 0 0 0 1px rgba(255,255,255,.45)`,
                 transition: 'transform .12s ease, box-shadow .15s ease',
                 whiteSpace: 'nowrap',
+                clipPath: 'polygon(0 6px, 6px 0, calc(100% - 6px) 0, 100% 6px, 100% calc(100% - 6px), calc(100% - 6px) 100%, 6px 100%, 0 calc(100% - 6px))',
               }}
               onMouseEnter={(e) => {
                 e.currentTarget.style.transform = 'translateY(-2px)';
-                e.currentTarget.style.boxShadow = `0 0 22px rgba(245,217,122,.85), 0 5px 0 #b39440, inset 0 0 0 1px rgba(255,255,255,.55)`;
+                e.currentTarget.style.boxShadow = `0 0 22px rgba(245,217,122,.85), 0 6px 0 #b39440, inset 0 0 0 1px rgba(255,255,255,.55)`;
               }}
               onMouseLeave={(e) => {
                 e.currentTarget.style.transform = 'translateY(0)';
-                e.currentTarget.style.boxShadow = `0 0 14px rgba(245,217,122,.55), 0 3px 0 #b39440, inset 0 0 0 1px rgba(255,255,255,.45)`;
+                e.currentTarget.style.boxShadow = `0 0 14px rgba(245,217,122,.55), 0 4px 0 #b39440, inset 0 0 0 1px rgba(255,255,255,.45)`;
               }}
             >
-              <span style={{ display: 'inline-flex', alignItems: 'center', gap: 8, font: `10px ${PIXEL_FONT}`, letterSpacing: '.2em' }}>
-                <span>▶ VIEW ON GITHUB</span>
-                <span>→</span>
+              <span style={{
+                display: 'grid',
+                placeItems: 'center',
+                width: 20,
+                height: 20,
+                background: 'rgba(14,26,46,.12)',
+                boxShadow: 'inset 0 0 0 1px rgba(14,26,46,.18)',
+                font: `10px ${PIXEL_FONT}`,
+                letterSpacing: '.06em',
+              }}>
+                GH
               </span>
-              <span style={{ font: `12px ${PIXEL_BODY}`, color: 'rgba(14,26,46,.78)', letterSpacing: '.02em' }}>
-                /parthivFarazi/GameBoyCGame
+              <span style={{
+                display: 'inline-flex',
+                alignItems: 'center',
+                gap: 8,
+                font: `700 10px ${PIXEL_FONT}`,
+                letterSpacing: '.16em',
+                textShadow: '1px 0 0 rgba(14,26,46,.18)',
+              }}>
+                <span>VIEW CODE</span>
+                <span>→</span>
               </span>
             </a>
           </div>
@@ -337,9 +354,27 @@ function BuildFacts() {
 }
 
 function Stat({ n, k }: { n: string; k: string }) {
+  const hasSuffix = n.endsWith('+');
+  const baseValue = hasSuffix ? n.slice(0, -1) : n;
+
   return (
     <div style={{ borderLeft: `2px solid ${NEON_GREEN}55`, paddingLeft: 8 }}>
-      <div style={{ font: `400 13px ${PIXEL_FONT}`, color: NEON_GREEN, lineHeight: 1, letterSpacing: '.04em' }}>{n}</div>
+      <div style={{ color: NEON_GREEN, lineHeight: 1, minHeight: 13 }}>
+        {hasSuffix ? (
+          <span style={{ display: 'inline-flex', alignItems: 'flex-start', gap: 1 }}>
+            <span style={{ font: `700 16px ${PIXEL_BODY}`, letterSpacing: '.01em', textShadow: '0 0 10px rgba(148,226,192,.18)' }}>
+              {baseValue}
+            </span>
+            <span style={{ font: `700 8px ${PIXEL_FONT}`, color: NEON_AMBER, transform: 'translateY(1px)' }}>
+              +
+            </span>
+          </span>
+        ) : (
+          <span style={{ font: `400 13px ${PIXEL_FONT}`, letterSpacing: '.04em' }}>
+            {n}
+          </span>
+        )}
+      </div>
       <div style={{ font: `10.5px ${PIXEL_FONT}`, letterSpacing: '.16em', color: 'rgba(255,250,238,.55)', marginTop: 4 }}>{k}</div>
     </div>
   );

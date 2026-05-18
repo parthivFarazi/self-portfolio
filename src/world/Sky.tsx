@@ -1,5 +1,6 @@
-import { useMemo } from 'react';
-import { CanvasTexture, BackSide } from 'three';
+import { useEffect, useMemo } from 'react';
+import { useThree } from '@react-three/fiber';
+import { CanvasTexture, BackSide, LinearFilter, SRGBColorSpace } from 'three';
 import { COLORS } from '@/constants/world';
 
 function makeGradient(): CanvasTexture {
@@ -18,15 +19,30 @@ function makeGradient(): CanvasTexture {
   grad.addColorStop(1.0, '#e89a52');         // below horizon — deeper warm
   ctx.fillStyle = grad;
   ctx.fillRect(0, 0, c.width, c.height);
-  return new CanvasTexture(c);
+  const tex = new CanvasTexture(c);
+  tex.colorSpace = SRGBColorSpace;
+  tex.generateMipmaps = false;
+  tex.magFilter = LinearFilter;
+  tex.minFilter = LinearFilter;
+  return tex;
 }
 
 export function Sky() {
   const tex = useMemo(makeGradient, []);
+  const { scene } = useThree();
+
+  useEffect(() => {
+    const previousBackground = scene.background;
+    scene.background = tex;
+    return () => {
+      scene.background = previousBackground;
+    };
+  }, [scene, tex]);
+
   return (
-    <mesh>
+    <mesh frustumCulled={false} renderOrder={-1000}>
       <sphereGeometry args={[500, 32, 32]} />
-      <meshBasicMaterial map={tex} side={BackSide} depthWrite={false} fog={false} />
+      <meshBasicMaterial map={tex} side={BackSide} depthWrite={false} depthTest={false} fog={false} toneMapped={false} />
     </mesh>
   );
 }

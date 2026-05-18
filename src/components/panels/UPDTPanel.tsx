@@ -1,5 +1,6 @@
 import type { ReactNode } from 'react';
-import { Slot, PanelHeader } from './_shared';
+import { Slot, P2Header } from './_shared';
+import { panelImages } from './panelImages';
 
 export interface PanelProps {
   width?: number;
@@ -27,25 +28,28 @@ export function UPDTPanel({ width = 820, height = 780 }: PanelProps) {
       </div>
 
       <div style={{ position: 'relative', padding: '16px 28px 28px' }}>
-        <PanelHeader
-          kicker="UPDT. · soccer analytics"
-          title={<span style={{ color: '#fffaee' }}>From video<br/>to decisions.</span>}
+        <P2Header
+          kicker="UPDT · soccer analytics"
+          kickerColor="rgba(205,243,226,.78)"
+          titleColor="#fffaee"
           meta="Co-founder & CTO · updt.pro · 2026 — present"
+          metaColor="rgba(205,243,226,.78)"
+          title={<>From video<br/>to decisions.</>}
         />
 
         <div style={{ display: 'grid', gridTemplateColumns: '1.4fr 1fr', gap: 16, marginTop: 14 }}>
           <HoloFrame>
             <div style={{ font: '9.5px "JetBrains Mono", monospace', letterSpacing: '.18em', color: '#6fd5e0', textTransform: 'uppercase' }}>scoutpro · player search</div>
-            <Slot id="updt-scoutpro" w={400} h={300} placeholder="ScoutPro dashboard · screenshot" shape="rounded" radius={4}/>
+            <Slot id="updt-scoutpro" w={400} h={300} placeholder="ScoutPro dashboard · screenshot" shape="rounded" radius={4} fit="contain" src={panelImages.updt.playerSearch}/>
           </HoloFrame>
           <div style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>
             <HoloFrame magenta>
               <div style={{ font: '9.5px "JetBrains Mono", monospace', letterSpacing: '.18em', color: '#e07ec3', textTransform: 'uppercase' }}>CV · player tracking</div>
-              <Slot id="updt-cv" w={260} h={140} placeholder="CV tracking · clip frame" shape="rounded" radius={4}/>
+              <Slot id="updt-cv" w={260} h={140} placeholder="CV tracking · clip frame" shape="rounded" radius={4} src={panelImages.updt.playerTracking}/>
             </HoloFrame>
             <HoloFrame>
               <div style={{ font: '9.5px "JetBrains Mono", monospace', letterSpacing: '.18em', color: '#6fd5e0', textTransform: 'uppercase' }}>tactical patterns</div>
-              <Slot id="updt-tactics" w={260} h={140} placeholder="tactics · screenshot" shape="rounded" radius={4}/>
+              <Slot id="updt-tactics" w={260} h={140} placeholder="tactics · screenshot" shape="rounded" radius={4} src={panelImages.updt.tacticalPattern}/>
             </HoloFrame>
           </div>
         </div>

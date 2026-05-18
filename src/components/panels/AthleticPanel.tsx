@@ -1,10 +1,27 @@
 import { createElement } from 'react';
 import type { PanelProps } from './UPDTPanel';
+import { panelImages } from './panelImages';
 
 // AthleticPanel uses image-slot with percentage width — Slot from _shared expects
 // numeric w. Replicate the inline createElement pattern here.
-function PctSlot({ id, w, h, placeholder, shape = 'rect' }: { id: string; w: number | string; h: number | string; placeholder?: string; shape?: 'rect' | 'rounded' }) {
-  return createElement('image-slot', { id, placeholder, shape, style: { width: w, height: h } });
+function PctSlot({
+  id,
+  w,
+  h,
+  placeholder,
+  shape = 'rect',
+  fit,
+  src,
+}: {
+  id: string;
+  w: number | string;
+  h: number | string;
+  placeholder?: string;
+  shape?: 'rect' | 'rounded';
+  fit?: 'cover' | 'contain' | 'fill';
+  src?: string;
+}) {
+  return createElement('image-slot', { id, placeholder, shape, fit, src, style: { width: w, height: h } });
 }
 
 export function AthleticPanel({ width = 880, height = 780 }: PanelProps) {
@@ -62,7 +79,7 @@ export function AthleticPanel({ width = 880, height = 780 }: PanelProps) {
               Fig. 1 — program valuations, ranked
             </div>
             <div style={{ border: '1px solid #1a1410', padding: 4, background: '#fffaee' }}>
-              <PctSlot id="athletic-chart" w="100%" h={120} placeholder="bar chart · program valuations"/>
+              <PctSlot id="athletic-chart" w="100%" h={120} placeholder="bar chart · program valuations" src={panelImages.athletic.chart}/>
             </div>
             <div style={{ font: '10px var(--rw-serif)', fontStyle: 'italic', color: '#5a3e20', marginTop: 6 }}>
               60 programs, four power conferences, normalized to FY '24.
@@ -79,7 +96,7 @@ export function AthleticPanel({ width = 880, height = 780 }: PanelProps) {
 
           <div style={{ paddingRight: 12, marginBottom: 14 }}>
             <div style={{ border: '1px solid #1a1410', padding: 4, background: '#fffaee' }}>
-              <PctSlot id="athletic-stadium" w="100%" h={210} placeholder="stadium · photograph"/>
+              <PctSlot id="athletic-stadium" w="100%" h={210} placeholder="stadium · photograph" src={panelImages.athletic.stadium}/>
             </div>
             <div style={{ font: '10px var(--rw-serif)', fontStyle: 'italic', color: '#5a3e20', marginTop: 6, paddingRight: 4 }}>
               Bobby Dodd Stadium on a quiet Tuesday. The math doesn't care what day it is.
@@ -100,7 +117,7 @@ export function AthleticPanel({ width = 880, height = 780 }: PanelProps) {
               Fig. 2 — the Excel/Python pipeline
             </div>
             <div style={{ border: '1px solid #1a1410', padding: 4, background: '#fffaee' }}>
-              <PctSlot id="athletic-pipeline" w="100%" h={130} placeholder="Excel + Python pipeline · screenshot"/>
+              <PctSlot id="athletic-pipeline" w="100%" h={130} placeholder="Excel + Python pipeline · screenshot" src={panelImages.athletic.pipeline}/>
             </div>
           </div>
 
