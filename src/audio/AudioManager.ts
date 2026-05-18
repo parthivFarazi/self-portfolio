@@ -13,23 +13,31 @@ import type { BuildingId } from '@/data/buildings';
 
 const MUTE_KEY = 'rw.audio.muted';
 const MASTER_VOLUME = 0.7;
+const BACKGROUND_MUSIC_URL = '/audio/mixkit-smooth-meditation-324.mp3';
+const BACKGROUND_MUSIC_GAIN = 0.08;
 
-const BUILDING_ZONES: Partial<Record<BuildingId, ZoneConfig>> = {
-  updt: { kind: 'crowd', gain: 0.08, color: 'warm' },
-  forge: { kind: 'hammer', gain: 0.07 },
-  lighthouse: { kind: 'waves', gain: 0.10 },
-  zen: { kind: 'water', gain: 0.10 },
-  archive: { kind: 'whisper', gain: 0.06 },
-  petronas: { kind: 'city', gain: 0.06 },
-  tech: { kind: 'bell', gain: 0.0 }, // chimes via timer, not constant tone
-  du: { kind: 'chatter', gain: 0.05 },
-  qard: { kind: 'glass-wind', gain: 0.05 },
-  rmaict: { kind: 'server-hum', gain: 0.05 },
+const BUILDING_ZONES: Record<BuildingId, ZoneConfig> = {
+  updt: { kind: 'stadium-crowd', gain: 0.55 },
+  rmaict: { kind: 'data-pulse', gain: 0.42 },
+  du: { kind: 'chatter', gain: 0.24 },
+  tech: { kind: 'bell', gain: 0.55 },
+  petronas: { kind: 'city', gain: 0.36 },
+  forge: { kind: 'hammer', gain: 0.68 },
+  lighthouse: { kind: 'waves', gain: 0.5 },
+  qard: { kind: 'glass-wind', gain: 0.34 },
+  athletic: { kind: 'stadium-crowd', gain: 0.42 },
+  archive: { kind: 'whisper', gain: 0.2 },
+  zen: { kind: 'water', gain: 0.42 },
+  heatmap: { kind: 'heatmap-tones', gain: 0.34 },
+  workshop: { kind: 'robot-workshop', gain: 0.4 },
+  // The Cartridge — gentle 8-bit electronic shimmer. Reuses the existing
+  // data-pulse synth at a quieter gain since the GBA is small.
+  gba: { kind: 'data-pulse', gain: 0.22 },
 };
 
 interface ZoneConfig {
   kind:
-    | 'crowd'
+    | 'stadium-crowd'
     | 'hammer'
     | 'waves'
     | 'water'
@@ -38,9 +46,10 @@ interface ZoneConfig {
     | 'bell'
     | 'chatter'
     | 'glass-wind'
-    | 'server-hum';
+    | 'data-pulse'
+    | 'heatmap-tones'
+    | 'robot-workshop';
   gain: number;
-  color?: 'warm' | 'cool';
 }
 
 interface ZoneNodes {
@@ -64,18 +73,36 @@ function saveMute(m: boolean) {
   }
 }
 
+function clamp01(value: number): number {
+  return Math.max(0, Math.min(1, value));
+}
+
+type VoiceSampleKind = 'crowd' | 'chatter' | 'whisper';
+
+const VOICE_SAMPLE_URLS: Record<VoiceSampleKind, string> = {
+  crowd: '/audio/mixkit-huge-crowd-cheering-victory.mp3',
+  chatter: '/audio/mixkit-people-indoors-ambience.mp3',
+  whisper: '/audio/mixkit-male-conspiracy-voices-whispers.mp3',
+};
+
 class AudioManagerImpl {
   ctx: AudioContext | null = null;
   master: GainNode | null = null;
+  musicGain: GainNode | null = null;
   ambientGain: GainNode | null = null;
   uiGain: GainNode | null = null;
   footstepGain: GainNode | null = null;
   zoneBus: GainNode | null = null;
+  musicBuffer: AudioBuffer | null = null;
+  musicLoad: Promise<AudioBuffer | null> | null = null;
+  musicSource: AudioBufferSourceNode | null = null;
   pinkBuffer: AudioBuffer | null = null;
   whiteBuffer: AudioBuffer | null = null;
   muted = loadMute();
   initialized = false;
   zones: Map<BuildingId, ZoneNodes> = new Map();
+  voiceSampleBuffers: Map<VoiceSampleKind, AudioBuffer> = new Map();
+  voiceSampleLoads: Map<VoiceSampleKind, Promise<AudioBuffer | null>> = new Map();
   activeZone: BuildingId | null = null;
   bellTimer: number | null = null;
   lastFootstepAt = 0;
@@ -99,6 +126,10 @@ class AudioManagerImpl {
     this.master.connect(this.ctx.destination);
 
     // Sub-buses
+    this.musicGain = this.ctx.createGain();
+    this.musicGain.gain.value = BACKGROUND_MUSIC_GAIN;
+    this.musicGain.connect(this.master);
+
     this.ambientGain = this.ctx.createGain();
     this.ambientGain.gain.value = 1.0;
     this.ambientGain.connect(this.master);
@@ -119,10 +150,14 @@ class AudioManagerImpl {
     this.pinkBuffer = makePinkBuffer(this.ctx, 4);
     this.whiteBuffer = makeWhiteBuffer(this.ctx, 0.3);
 
-    // Start base ambient layers (wind + warm pad + sporadic birds)
-    this.startWind();
-    this.startGoldenPad();
+    // Start base ambient layer (sporadic birds)
     this.startBirdLoop();
+    this.startBackgroundMusic();
+
+    // Start loading the real voice/crowd samples as soon as audio is allowed.
+    void this.loadVoiceSample('crowd');
+    void this.loadVoiceSample('chatter');
+    void this.loadVoiceSample('whisper');
 
     // Resume context if it was suspended
     if (this.ctx.state === 'suspended') {
@@ -153,62 +188,6 @@ class AudioManagerImpl {
   }
 
   // ── Ambient base layers ─────────────────────────────────────────────
-  private startWind() {
-    if (!this.ctx || !this.ambientGain || !this.pinkBuffer) return;
-    const src = this.ctx.createBufferSource();
-    src.buffer = this.pinkBuffer;
-    src.loop = true;
-    const lp = this.ctx.createBiquadFilter();
-    lp.type = 'lowpass';
-    lp.frequency.value = 540;
-    lp.Q.value = 0.6;
-    const g = this.ctx.createGain();
-    g.gain.value = 0;
-    src.connect(lp).connect(g).connect(this.ambientGain);
-    src.start();
-    // Slow modulation of cutoff for "breathing" wind
-    const lfo = this.ctx.createOscillator();
-    lfo.frequency.value = 0.06;
-    const lfoGain = this.ctx.createGain();
-    lfoGain.gain.value = 180;
-    lfo.connect(lfoGain).connect(lp.frequency);
-    lfo.start();
-    // Fade in
-    g.gain.linearRampToValueAtTime(0.18, this.ctx.currentTime + 1.6);
-  }
-
-  private startGoldenPad() {
-    if (!this.ctx || !this.ambientGain) return;
-    const osc1 = this.ctx.createOscillator();
-    osc1.type = 'sine';
-    osc1.frequency.value = 110;
-    osc1.detune.value = -8;
-    const osc2 = this.ctx.createOscillator();
-    osc2.type = 'sine';
-    osc2.frequency.value = 220;
-    osc2.detune.value = +5;
-    const osc3 = this.ctx.createOscillator();
-    osc3.type = 'triangle';
-    osc3.frequency.value = 330;
-    osc3.detune.value = -3;
-    const g = this.ctx.createGain();
-    g.gain.value = 0;
-    const sub1 = this.ctx.createGain();
-    sub1.gain.value = 0.55;
-    const sub2 = this.ctx.createGain();
-    sub2.gain.value = 0.22;
-    const sub3 = this.ctx.createGain();
-    sub3.gain.value = 0.10;
-    osc1.connect(sub1).connect(g);
-    osc2.connect(sub2).connect(g);
-    osc3.connect(sub3).connect(g);
-    g.connect(this.ambientGain);
-    osc1.start();
-    osc2.start();
-    osc3.start();
-    g.gain.linearRampToValueAtTime(0.05, this.ctx.currentTime + 2.0);
-  }
-
   private startBirdLoop() {
     if (!this.ctx) return;
     const schedule = () => {
@@ -237,6 +216,49 @@ class AudioManagerImpl {
     osc.connect(g).connect(this.ambientGain);
     osc.start(when);
     osc.stop(when + 0.3);
+  }
+
+  private startBackgroundMusic() {
+    if (!this.ctx || !this.musicGain || this.musicSource) return;
+
+    const startLoop = (buffer: AudioBuffer) => {
+      if (!this.ctx || !this.musicGain || this.musicSource) return;
+      const src = this.ctx.createBufferSource();
+      src.buffer = buffer;
+      src.loop = true;
+      src.connect(this.musicGain);
+      src.start(this.ctx.currentTime);
+      this.musicSource = src;
+    };
+
+    if (this.musicBuffer) {
+      startLoop(this.musicBuffer);
+      return;
+    }
+
+    void this.loadBackgroundMusic().then((buffer) => {
+      if (buffer) startLoop(buffer);
+    });
+  }
+
+  private loadBackgroundMusic(): Promise<AudioBuffer | null> {
+    if (!this.ctx) return Promise.resolve(null);
+    if (this.musicBuffer) return Promise.resolve(this.musicBuffer);
+    if (this.musicLoad) return this.musicLoad;
+
+    this.musicLoad = fetch(BACKGROUND_MUSIC_URL)
+      .then((res) => {
+        if (!res.ok) throw new Error('Failed to load background music');
+        return res.arrayBuffer();
+      })
+      .then((data) => this.ctx!.decodeAudioData(data))
+      .then((buffer) => {
+        this.musicBuffer = buffer;
+        return buffer;
+      })
+      .catch(() => null);
+
+    return this.musicLoad;
   }
 
   // ── Footsteps ───────────────────────────────────────────────────────
@@ -353,25 +375,40 @@ class AudioManagerImpl {
 
   // ── Building zones ──────────────────────────────────────────────────
   /** Crossfade to the building zone for `id` (or null = base ambient only). */
-  enterZone(id: BuildingId | null) {
+  enterZone(id: BuildingId | null, intensity = 1) {
+    if (id && !this.initialized) this.ensureStart();
     if (!this.ctx || !this.zoneBus) return;
-    if (id === this.activeZone) return;
+    if (this.ctx.state === 'suspended') void this.ctx.resume();
+
+    const now = this.ctx.currentTime;
+    const amount = clamp01(intensity);
+
+    if (id === this.activeZone) {
+      if (!id) return;
+      const cfg = BUILDING_ZONES[id];
+      const z = this.zones.get(id);
+      if (!z) return;
+      const nextGain = cfg.gain * amount;
+      if (Math.abs(z.gain.gain.value - nextGain) < 0.015) return;
+      z.gain.gain.cancelScheduledValues(now);
+      z.gain.gain.setValueAtTime(z.gain.gain.value, now);
+      z.gain.gain.linearRampToValueAtTime(nextGain, now + 0.18);
+      return;
+    }
 
     // Fade out previous
     if (this.activeZone) {
       const prev = this.zones.get(this.activeZone);
       if (prev) {
-        const now = this.ctx.currentTime;
         prev.gain.gain.cancelScheduledValues(now);
         prev.gain.gain.setValueAtTime(prev.gain.gain.value, now);
-        prev.gain.gain.linearRampToValueAtTime(0, now + 1.2);
+        prev.gain.gain.linearRampToValueAtTime(0, now + 0.45);
       }
     }
     this.activeZone = id;
 
     if (!id) return;
     const cfg = BUILDING_ZONES[id];
-    if (!cfg) return;
 
     // Lazy-build zone on first use
     let z: ZoneNodes | undefined = this.zones.get(id);
@@ -383,10 +420,9 @@ class AudioManagerImpl {
       }
     }
     if (!z) return;
-    const now = this.ctx.currentTime;
     z.gain.gain.cancelScheduledValues(now);
     z.gain.gain.setValueAtTime(z.gain.gain.value, now);
-    z.gain.gain.linearRampToValueAtTime(cfg.gain, now + 1.2);
+    z.gain.gain.linearRampToValueAtTime(cfg.gain * amount, now + 0.45);
   }
 
   private buildZone(cfg: ZoneConfig): ZoneNodes | null {
@@ -396,57 +432,68 @@ class AudioManagerImpl {
     out.connect(this.zoneBus);
 
     switch (cfg.kind) {
-      case 'crowd': {
-        const src = this.ctx.createBufferSource();
-        src.buffer = this.pinkBuffer;
-        src.loop = true;
-        const lp = this.ctx.createBiquadFilter();
-        lp.type = 'lowpass';
-        lp.frequency.value = 800;
-        const hp = this.ctx.createBiquadFilter();
-        hp.type = 'highpass';
-        hp.frequency.value = 220;
-        src.connect(hp).connect(lp).connect(out);
-        src.start();
-        return { gain: out };
+      case 'stadium-crowd': {
+        return this.buildSampleZone('crowd', out, 0.75);
       }
       case 'hammer': {
-        // Periodic clang via metallic tones every ~1.5s
-        const timer = window.setInterval(() => {
-          if (!this.ctx) return;
+        const strike = () => {
+          if (!this.ctx || !this.whiteBuffer) return;
           const t = this.ctx.currentTime;
-          [320, 480, 720].forEach((f, i) => {
+          const hit = this.ctx.createBufferSource();
+          hit.buffer = this.whiteBuffer;
+          const hitFilter = this.ctx.createBiquadFilter();
+          hitFilter.type = 'bandpass';
+          hitFilter.frequency.value = 1800;
+          hitFilter.Q.value = 2.2;
+          const hitGain = this.ctx.createGain();
+          hitGain.gain.setValueAtTime(0, t);
+          hitGain.gain.linearRampToValueAtTime(0.16, t + 0.004);
+          hitGain.gain.exponentialRampToValueAtTime(0.001, t + 0.08);
+          hit.connect(hitFilter).connect(hitGain).connect(out);
+          hit.start(t);
+          hit.stop(t + 0.1);
+
+          [280, 520, 980].forEach((f, i) => {
             const o = this.ctx!.createOscillator();
             o.type = 'square';
             o.frequency.value = f;
             const g = this.ctx!.createGain();
+            const peak = 0.18 / (i + 1);
             g.gain.setValueAtTime(0, t);
-            g.gain.linearRampToValueAtTime(0.06, t + 0.002);
-            g.gain.exponentialRampToValueAtTime(0.0001, t + 0.25);
-            const f1 = this.ctx!.createBiquadFilter();
-            f1.type = 'bandpass';
-            f1.frequency.value = f * (1 + i * 0.2);
-            o.connect(f1).connect(g).connect(out);
+            g.gain.linearRampToValueAtTime(peak, t + 0.003);
+            g.gain.exponentialRampToValueAtTime(0.001, t + 0.42);
+            const bp = this.ctx!.createBiquadFilter();
+            bp.type = 'bandpass';
+            bp.frequency.value = f * (1.2 + i * 0.25);
+            bp.Q.value = 7;
+            o.connect(bp).connect(g).connect(out);
             o.start(t);
-            o.stop(t + 0.3);
+            o.stop(t + 0.48);
           });
-        }, 1500 + Math.random() * 800);
-        return { gain: out, cleanup: () => window.clearInterval(timer) };
+        };
+        const initial = window.setTimeout(strike, 300);
+        const timer = window.setInterval(strike, 1050);
+        return {
+          gain: out,
+          cleanup: () => {
+            window.clearTimeout(initial);
+            window.clearInterval(timer);
+          },
+        };
       }
       case 'waves': {
-        // Slow LFO'd pink noise
         const src = this.ctx.createBufferSource();
         src.buffer = this.pinkBuffer;
         src.loop = true;
         const lp = this.ctx.createBiquadFilter();
         lp.type = 'lowpass';
-        lp.frequency.value = 420;
+        lp.frequency.value = 520;
         const lfo = this.ctx.createOscillator();
         lfo.frequency.value = 0.12;
         const lfoGain = this.ctx.createGain();
-        lfoGain.gain.value = 0.5;
+        lfoGain.gain.value = 0.25;
         const swell = this.ctx.createGain();
-        swell.gain.value = 0.5;
+        swell.gain.value = 0.52;
         lfo.connect(lfoGain).connect(swell.gain);
         src.connect(lp).connect(swell).connect(out);
         src.start();
@@ -454,108 +501,240 @@ class AudioManagerImpl {
         return { gain: out };
       }
       case 'water': {
-        // Trickling — quick high-pitched drips at random intervals
         const timer = window.setInterval(() => {
           if (!this.ctx) return;
-          const t = this.ctx.currentTime + Math.random() * 0.4;
+          const t = this.ctx.currentTime + Math.random() * 0.2;
           const o = this.ctx.createOscillator();
           o.type = 'sine';
-          const base = 1200 + Math.random() * 1600;
+          const base = 1200 + Math.random() * 1700;
           o.frequency.setValueAtTime(base, t);
-          o.frequency.exponentialRampToValueAtTime(base * 0.5, t + 0.18);
+          o.frequency.exponentialRampToValueAtTime(base * 0.45, t + 0.2);
           const g = this.ctx.createGain();
           g.gain.setValueAtTime(0, t);
-          g.gain.linearRampToValueAtTime(0.05, t + 0.005);
-          g.gain.exponentialRampToValueAtTime(0.001, t + 0.22);
+          g.gain.linearRampToValueAtTime(0.11, t + 0.006);
+          g.gain.exponentialRampToValueAtTime(0.001, t + 0.24);
           o.connect(g).connect(out);
           o.start(t);
           o.stop(t + 0.3);
-        }, 700);
+        }, 360);
         return { gain: out, cleanup: () => window.clearInterval(timer) };
       }
       case 'whisper': {
-        const src = this.ctx.createBufferSource();
-        src.buffer = this.pinkBuffer;
-        src.loop = true;
-        const bp = this.ctx.createBiquadFilter();
-        bp.type = 'bandpass';
-        bp.frequency.value = 1400;
-        bp.Q.value = 1.8;
-        src.connect(bp).connect(out);
-        src.start();
-        return { gain: out };
+        return this.buildSampleZone('whisper', out, 0.72);
       }
       case 'city': {
         const src = this.ctx.createBufferSource();
         src.buffer = this.pinkBuffer;
         src.loop = true;
+        const hp = this.ctx.createBiquadFilter();
+        hp.type = 'highpass';
+        hp.frequency.value = 90;
         const lp = this.ctx.createBiquadFilter();
         lp.type = 'lowpass';
-        lp.frequency.value = 380;
-        src.connect(lp).connect(out);
+        lp.frequency.value = 620;
+        const motion = this.ctx.createGain();
+        motion.gain.value = 0.55;
+        src.connect(hp).connect(lp).connect(motion).connect(out);
         src.start();
         return { gain: out };
       }
       case 'bell': {
-        // Periodic chime every ~60s while zone is active
-        const timer = window.setInterval(() => {
+        const ring = () => {
           if (!this.ctx) return;
           const t = this.ctx.currentTime;
-          [440, 660, 880].forEach((f, i) => {
+          [392, 523.25, 659.25, 784].forEach((f, i) => {
             const o = this.ctx!.createOscillator();
             o.type = 'sine';
             o.frequency.value = f;
             const g = this.ctx!.createGain();
-            const peak = 0.04 / (i + 1);
+            const peak = 0.14 / (i + 1);
             g.gain.setValueAtTime(0, t);
-            g.gain.linearRampToValueAtTime(peak, t + 0.01);
-            g.gain.exponentialRampToValueAtTime(0.0001, t + 2.2);
+            g.gain.linearRampToValueAtTime(peak, t + 0.02);
+            g.gain.exponentialRampToValueAtTime(0.001, t + 2.5);
             o.connect(g).connect(out);
             o.start(t);
-            o.stop(t + 2.4);
+            o.stop(t + 2.7);
           });
-        }, 60_000);
-        // Bell is gain=0 in config — its events are self-amplified
-        out.gain.value = 1;
-        return { gain: out, cleanup: () => window.clearInterval(timer) };
+        };
+        const initial = window.setTimeout(ring, 650);
+        const timer = window.setInterval(ring, 12_000);
+        return {
+          gain: out,
+          cleanup: () => {
+            window.clearTimeout(initial);
+            window.clearInterval(timer);
+          },
+        };
       }
       case 'chatter': {
-        const src = this.ctx.createBufferSource();
-        src.buffer = this.pinkBuffer;
-        src.loop = true;
-        const bp = this.ctx.createBiquadFilter();
-        bp.type = 'bandpass';
-        bp.frequency.value = 700;
-        bp.Q.value = 1.0;
-        src.connect(bp).connect(out);
-        src.start();
-        return { gain: out };
+        return this.buildSampleZone('chatter', out, 0.7);
       }
       case 'glass-wind': {
         const src = this.ctx.createBufferSource();
         src.buffer = this.pinkBuffer;
         src.loop = true;
-        const bp = this.ctx.createBiquadFilter();
-        bp.type = 'highpass';
-        bp.frequency.value = 600;
-        src.connect(bp).connect(out);
+        const hp = this.ctx.createBiquadFilter();
+        hp.type = 'highpass';
+        hp.frequency.value = 900;
+        const bed = this.ctx.createGain();
+        bed.gain.value = 0.35;
+        src.connect(hp).connect(bed).connect(out);
         src.start();
-        return { gain: out };
+        const timer = window.setInterval(() => {
+          if (!this.ctx) return;
+          const t = this.ctx.currentTime;
+          [1046.5, 1318.5].forEach((f, i) => {
+            const o = this.ctx!.createOscillator();
+            o.type = 'triangle';
+            o.frequency.value = f + Math.random() * 80;
+            const g = this.ctx!.createGain();
+            g.gain.setValueAtTime(0, t + i * 0.08);
+            g.gain.linearRampToValueAtTime(0.05, t + i * 0.08 + 0.02);
+            g.gain.exponentialRampToValueAtTime(0.001, t + i * 0.08 + 1.2);
+            o.connect(g).connect(out);
+            o.start(t + i * 0.08);
+            o.stop(t + i * 0.08 + 1.3);
+          });
+        }, 3400);
+        return { gain: out, cleanup: () => window.clearInterval(timer) };
       }
-      case 'server-hum': {
-        const o = this.ctx.createOscillator();
-        o.type = 'sawtooth';
-        o.frequency.value = 60;
-        const lp = this.ctx.createBiquadFilter();
-        lp.type = 'lowpass';
-        lp.frequency.value = 220;
-        const g = this.ctx.createGain();
-        g.gain.value = 0.6;
-        o.connect(lp).connect(g).connect(out);
-        o.start();
-        return { gain: out };
+      case 'data-pulse': {
+        const timer = window.setInterval(() => {
+          if (!this.ctx) return;
+          const t = this.ctx.currentTime;
+          const o = this.ctx.createOscillator();
+          o.type = 'triangle';
+          const base = 620 + Math.random() * 720;
+          o.frequency.setValueAtTime(base, t);
+          o.frequency.linearRampToValueAtTime(base * 1.35, t + 0.08);
+          const g = this.ctx.createGain();
+          g.gain.setValueAtTime(0, t);
+          g.gain.linearRampToValueAtTime(0.08, t + 0.01);
+          g.gain.exponentialRampToValueAtTime(0.001, t + 0.16);
+          o.connect(g).connect(out);
+          o.start(t);
+          o.stop(t + 0.2);
+        }, 420);
+        return { gain: out, cleanup: () => window.clearInterval(timer) };
+      }
+      case 'heatmap-tones': {
+        const notes = [523.25, 659.25, 783.99, 987.77, 1174.66];
+        let idx = 0;
+        const timer = window.setInterval(() => {
+          if (!this.ctx) return;
+          const t = this.ctx.currentTime;
+          const o = this.ctx.createOscillator();
+          o.type = 'sine';
+          o.frequency.value = notes[idx % notes.length];
+          idx += 1;
+          const g = this.ctx.createGain();
+          g.gain.setValueAtTime(0, t);
+          g.gain.linearRampToValueAtTime(0.07, t + 0.02);
+          g.gain.exponentialRampToValueAtTime(0.001, t + 0.45);
+          o.connect(g).connect(out);
+          o.start(t);
+          o.stop(t + 0.5);
+        }, 520);
+        return { gain: out, cleanup: () => window.clearInterval(timer) };
+      }
+      case 'robot-workshop': {
+        const timer = window.setInterval(() => {
+          if (!this.ctx || !this.whiteBuffer) return;
+          const t = this.ctx.currentTime;
+          const servo = this.ctx.createOscillator();
+          servo.type = 'sawtooth';
+          const base = 360 + Math.random() * 160;
+          servo.frequency.setValueAtTime(base, t);
+          servo.frequency.linearRampToValueAtTime(base * 1.8, t + 0.12);
+          const servoGain = this.ctx.createGain();
+          servoGain.gain.setValueAtTime(0, t);
+          servoGain.gain.linearRampToValueAtTime(0.045, t + 0.015);
+          servoGain.gain.exponentialRampToValueAtTime(0.001, t + 0.2);
+          servo.connect(servoGain).connect(out);
+          servo.start(t);
+          servo.stop(t + 0.22);
+
+          const click = this.ctx.createBufferSource();
+          click.buffer = this.whiteBuffer;
+          const clickFilter = this.ctx.createBiquadFilter();
+          clickFilter.type = 'bandpass';
+          clickFilter.frequency.value = 2400;
+          clickFilter.Q.value = 2.8;
+          const clickGain = this.ctx.createGain();
+          clickGain.gain.setValueAtTime(0, t + 0.16);
+          clickGain.gain.linearRampToValueAtTime(0.04, t + 0.165);
+          clickGain.gain.exponentialRampToValueAtTime(0.001, t + 0.22);
+          click.connect(clickFilter).connect(clickGain).connect(out);
+          click.start(t + 0.16);
+          click.stop(t + 0.24);
+        }, 780);
+        return { gain: out, cleanup: () => window.clearInterval(timer) };
       }
     }
+  }
+
+  private buildSampleZone(kind: VoiceSampleKind, out: GainNode, level: number): ZoneNodes {
+    let source: AudioBufferSourceNode | null = null;
+    let cancelled = false;
+
+    const startLoop = (buffer: AudioBuffer) => {
+      if (!this.ctx || cancelled || source) return;
+      const src = this.ctx.createBufferSource();
+      src.buffer = buffer;
+      src.loop = true;
+
+      const g = this.ctx.createGain();
+      g.gain.value = level;
+      src.connect(g).connect(out);
+
+      const maxOffset = Math.max(0, buffer.duration - 0.2);
+      src.start(this.ctx.currentTime, Math.random() * maxOffset);
+      source = src;
+    };
+
+    const existing = this.voiceSampleBuffers.get(kind);
+    if (existing) {
+      startLoop(existing);
+    } else {
+      void this.loadVoiceSample(kind).then((buffer) => {
+        if (buffer) startLoop(buffer);
+      });
+    }
+
+    return {
+      gain: out,
+      cleanup: () => {
+        cancelled = true;
+        try {
+          source?.stop();
+        } catch {
+          // Already stopped.
+        }
+      },
+    };
+  }
+
+  private loadVoiceSample(kind: VoiceSampleKind): Promise<AudioBuffer | null> {
+    if (!this.ctx) return Promise.resolve(null);
+    const cached = this.voiceSampleBuffers.get(kind);
+    if (cached) return Promise.resolve(cached);
+    const existingLoad = this.voiceSampleLoads.get(kind);
+    if (existingLoad) return existingLoad;
+
+    const load = fetch(VOICE_SAMPLE_URLS[kind])
+      .then((res) => {
+        if (!res.ok) throw new Error(`Failed to load ${kind} voice sample`);
+        return res.arrayBuffer();
+      })
+      .then((data) => this.ctx!.decodeAudioData(data))
+      .then((buffer) => {
+        this.voiceSampleBuffers.set(kind, buffer);
+        return buffer;
+      })
+      .catch(() => null);
+
+    this.voiceSampleLoads.set(kind, load);
+    return load;
   }
 }
 

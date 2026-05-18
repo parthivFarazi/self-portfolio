@@ -12,6 +12,7 @@ import { ArchivePanel } from '@/components/panels/ArchivePanel';
 import { SoothePanel } from '@/components/panels/SoothePanel';
 import { HeatmapPanel } from '@/components/panels/HeatmapPanel';
 import { WorkshopPanel } from '@/components/panels/WorkshopPanel';
+import { CartridgePanel } from '@/components/panels/CartridgePanel';
 
 export type BuildingId =
   | 'updt'
@@ -26,10 +27,12 @@ export type BuildingId =
   | 'archive'
   | 'zen'
   | 'heatmap'
-  | 'workshop';
+  | 'workshop'
+  | 'gba';
 
 export type BuildingShape =
   | { kind: 'cylinder'; radius: number; height: number }
+  | { kind: 'oval'; radiusX: number; radiusZ: number; height: number }
   | { kind: 'box'; width: number; depth: number; height: number }
   | { kind: 'twin'; width: number; depth: number; height: number; spacing: number }
   | { kind: 'dome'; radius: number; baseHeight: number }
@@ -160,7 +163,7 @@ export const BUILDINGS: BuildingDef[] = [
     shortLabel: 'Athletic',
     ring: 'outer',
     position: [55, 0, -20],
-    shape: { kind: 'cylinder', radius: 11, height: 6 },
+    shape: { kind: 'oval', radiusX: 12, radiusZ: 8, height: 6 },
     color: '#bcb6a0',
     triggerRadius: 14,
     panel: AthleticPanel,
@@ -214,6 +217,20 @@ export const BUILDINGS: BuildingDef[] = [
     panel: WorkshopPanel,
     panelSize: { w: 760, h: 780 },
   },
+  {
+    // The Cartridge — oversized GBA lying on the grass. Outer ring, south
+    // side, in the open gap between Zen Garden (−40,45) and Heatmap (10,50).
+    id: 'gba',
+    name: 'The Cartridge',
+    shortLabel: 'Cartridge',
+    ring: 'outer',
+    position: [-15, 0, 60],
+    shape: { kind: 'box', width: 4, depth: 2.5, height: 0.6 },
+    color: '#7E6CBC',
+    triggerRadius: 4.5,
+    panel: CartridgePanel,
+    panelSize: { w: 820, h: 760 },
+  },
 ];
 
 export function getBuilding(id: BuildingId): BuildingDef {
@@ -228,7 +245,8 @@ export function getBuilding(id: BuildingId): BuildingDef {
 export function getVisualTopY(def: BuildingDef): number {
   const s = def.shape;
   switch (s.kind) {
-    case 'cylinder': return s.height + 1.5;
+    case 'cylinder':
+    case 'oval': return s.height + 1.5;
     case 'box': return s.height + 8;            // covers parapet + roof + finial
     case 'twin': return s.height + 10;          // covers spires + tip light
     case 'dome': return s.baseHeight + s.radius + 1;
@@ -240,6 +258,7 @@ export function footprintHalfExtents(def: BuildingDef): { halfX: number; halfZ: 
   const s = def.shape;
   switch (s.kind) {
     case 'cylinder': return { halfX: s.radius, halfZ: s.radius };
+    case 'oval': return { halfX: s.radiusX, halfZ: s.radiusZ };
     case 'box': return { halfX: s.width / 2, halfZ: s.depth / 2 };
     case 'twin': {
       const total = s.spacing + s.width;

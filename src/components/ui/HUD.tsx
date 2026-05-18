@@ -21,6 +21,7 @@ const MINI_LABELS: Record<BuildingId, string> = {
   zen: 'Zen',
   heatmap: 'Heatmap',
   workshop: 'Workshop',
+  gba: 'GBA',
 };
 
 const GROUP_COLORS: Record<string, string> = {

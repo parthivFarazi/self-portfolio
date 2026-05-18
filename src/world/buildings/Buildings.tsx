@@ -14,6 +14,7 @@ import { Archive } from './Archive';
 import { ZenGarden } from './ZenGarden';
 import { HeatmapGarden } from './HeatmapGarden';
 import { RobotWorkshop } from './RobotWorkshop';
+import { Cartridge } from './Cartridge';
 
 const REGISTRY: Partial<Record<BuildingDef['id'], ComponentType<{ def: BuildingDef }>>> = {
   tech: TechTower,
@@ -29,6 +30,7 @@ const REGISTRY: Partial<Record<BuildingDef['id'], ComponentType<{ def: BuildingD
   zen: ZenGarden,
   heatmap: HeatmapGarden,
   workshop: RobotWorkshop,
+  gba: Cartridge,
 };
 
 export function Buildings() {

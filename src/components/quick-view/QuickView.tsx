@@ -132,6 +132,17 @@ const DASH_BUILDINGS: DashboardTileData[] = [
     panelId: 'workshop',
   },
   {
+    id: 'gba',
+    group: 'projects',
+    title: 'The Cartridge',
+    role: 'Game Boy Advance · arcade game',
+    sub: 'C | GBA hardware | DMA graphics',
+    tag: 'Project | April 2025',
+    chip: '60 FPS',
+    thumb: 'gba',
+    panelId: 'gba',
+  },
+  {
     id: 'about',
     group: 'about',
     title: 'Twin Towers',
@@ -210,9 +221,15 @@ export function LandingPage({ onOpenQuick, onOpenWorld }: LandingPageProps) {
         </p>
       </section>
 
-      <aside className="qv-polaroid" aria-label="Stylized avatar portrait">
+      <aside className="qv-polaroid" aria-label="Portrait of Parthiv Farazi">
         <div className="qv-polaroid-art">
-          <AvatarFront size={236} />
+          <img
+            className="qv-polaroid-photo"
+            src="/quick-view/self-portrait.jpg"
+            alt="Parthiv Farazi at Bobby Dodd Stadium"
+            loading="eager"
+            decoding="async"
+          />
         </div>
         <div className="qv-polaroid-caption">PF, in person.</div>
       </aside>
