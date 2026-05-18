@@ -114,6 +114,12 @@ export function CartridgePanel({ width = 820, height = 760 }: PanelProps) {
             />
           </div>
 
+          {/* ── FROM THE SOURCE · code snippet + build facts ────────── */}
+          <div style={{ display: 'grid', gridTemplateColumns: '1.55fr 1fr', gap: 10 }}>
+            <CodeWindow />
+            <BuildFacts />
+          </div>
+
           {/* ── Stat row + CTA ───────────────────────────────────────── */}
           <div style={{ marginTop: 'auto', display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: 10 }}>
             <div style={{ display: 'flex', gap: 14, flexWrap: 'wrap' }}>
@@ -216,6 +222,91 @@ function Callout({ label, accent, body }: { label: string; accent: string; body:
       </div>
       <div style={{ font: `13.5px/1.35 ${PIXEL_BODY}`, color: OFF_WHITE }}>
         {body}
+      </div>
+    </div>
+  );
+}
+
+function CodeWindow() {
+  // Tight, representative GBA C — the actual story this project tells.
+  const KW = NEON_PINK;
+  const FN = NEON_GREEN;
+  const COM = 'rgba(255,250,238,.5)';
+  const PLAIN = OFF_WHITE;
+  const NUM = NEON_AMBER;
+  const SYM = NEON_CYAN;
+  return (
+    <div style={{
+      background: '#06101e',
+      border: `1px solid ${NEON_CYAN}55`,
+      boxShadow: `0 0 14px ${NEON_CYAN}22, inset 0 0 24px rgba(0,0,0,.55)`,
+      display: 'flex', flexDirection: 'column',
+    }}>
+      {/* Title bar */}
+      <div style={{
+        padding: '5px 10px', background: `${NEON_CYAN}22`, borderBottom: `1px solid ${NEON_CYAN}55`,
+        font: `8.5px ${PIXEL_FONT}`, letterSpacing: '.2em', color: NEON_CYAN,
+        display: 'flex', justifyContent: 'space-between', alignItems: 'center',
+      }}>
+        <span>▸ MAIN.C</span>
+        <span style={{ color: 'rgba(255,250,238,.4)' }}>FROM THE SOURCE</span>
+      </div>
+      {/* Code body */}
+      <pre style={{
+        margin: 0, padding: '10px 12px',
+        font: `12px/1.35 ${PIXEL_BODY}`,
+        color: PLAIN,
+        whiteSpace: 'pre',
+        overflow: 'hidden',
+        flex: 1,
+      }}>
+        <span style={{ color: COM }}>// main.c — game loop</span>{'\n'}
+        <span style={{ color: KW }}>void</span> <span style={{ color: FN }}>main</span><span style={{ color: SYM }}>(</span><span style={{ color: KW }}>void</span><span style={{ color: SYM }}>) {'{'}</span>{'\n'}
+        {'  '}<span style={{ color: FN }}>init_gba</span><span style={{ color: SYM }}>();</span>{'\n'}
+        {'  '}<span style={{ color: KW }}>while</span> <span style={{ color: SYM }}>(</span><span style={{ color: NUM }}>1</span><span style={{ color: SYM }}>) {'{'}</span>{'\n'}
+        {'    '}<span style={{ color: FN }}>vblank_wait</span><span style={{ color: SYM }}>();</span>{'\n'}
+        {'    '}<span style={{ color: FN }}>poll_keys</span><span style={{ color: SYM }}>();</span>{'\n'}
+        {'    '}<span style={{ color: KW }}>switch</span> <span style={{ color: SYM }}>(</span>state<span style={{ color: SYM }}>) {'{'}</span>{'\n'}
+        {'      '}<span style={{ color: KW }}>case</span> PLAY<span style={{ color: SYM }}>:</span>  <span style={{ color: FN }}>play_tick</span><span style={{ color: SYM }}>();</span>  <span style={{ color: KW }}>break</span><span style={{ color: SYM }}>;</span>{'\n'}
+        {'      '}<span style={{ color: KW }}>case</span> WIN<span style={{ color: SYM }}>:</span>   <span style={{ color: FN }}>win_tick</span><span style={{ color: SYM }}>();</span>   <span style={{ color: KW }}>break</span><span style={{ color: SYM }}>;</span>{'\n'}
+        {'      '}<span style={{ color: KW }}>case</span> LOSE<span style={{ color: SYM }}>:</span>  <span style={{ color: FN }}>lose_tick</span><span style={{ color: SYM }}>();</span>  <span style={{ color: KW }}>break</span><span style={{ color: SYM }}>;</span>{'\n'}
+        {'    '}<span style={{ color: SYM }}>{'}'}</span>{'\n'}
+        {'    '}<span style={{ color: FN }}>dma_render</span><span style={{ color: SYM }}>();</span>  <span style={{ color: COM }}>// 60 fps</span>{'\n'}
+        {'  '}<span style={{ color: SYM }}>{'}'}</span>{'\n'}
+        <span style={{ color: SYM }}>{'}'}</span>
+      </pre>
+    </div>
+  );
+}
+
+function BuildFacts() {
+  const rows: Array<[string, string, string]> = [
+    ['TARGET',    'AGB · GBA ROM',         NEON_AMBER],
+    ['TOOLCHAIN', 'devkitARM + libgba',    NEON_CYAN],
+    ['COMPILER',  'arm-none-eabi-gcc -O2', NEON_GREEN],
+    ['INPUT',     'D-pad · A · B · START', NEON_PINK],
+    ['TESTED',    'mGBA · real hardware',  NEON_AMBER],
+  ];
+  return (
+    <div style={{
+      background: '#06101e',
+      border: `1px solid ${NEON_AMBER}55`,
+      boxShadow: `0 0 14px ${NEON_AMBER}22, inset 0 0 24px rgba(0,0,0,.55)`,
+      display: 'flex', flexDirection: 'column',
+    }}>
+      <div style={{
+        padding: '5px 10px', background: `${NEON_AMBER}22`, borderBottom: `1px solid ${NEON_AMBER}55`,
+        font: `8.5px ${PIXEL_FONT}`, letterSpacing: '.2em', color: NEON_AMBER,
+      }}>
+        ◇ BUILD FACTS
+      </div>
+      <div style={{ padding: '8px 10px', display: 'flex', flexDirection: 'column', gap: 4, flex: 1, justifyContent: 'space-between' }}>
+        {rows.map(([k, v, c]) => (
+          <div key={k} style={{ display: 'grid', gridTemplateColumns: '64px 1fr', gap: 6, alignItems: 'baseline' }}>
+            <span style={{ font: `8px ${PIXEL_FONT}`, letterSpacing: '.18em', color: 'rgba(255,250,238,.55)' }}>{k}</span>
+            <span style={{ font: `12px ${PIXEL_BODY}`, color: c, letterSpacing: '.02em' }}>{v}</span>
+          </div>
+        ))}
       </div>
     </div>
   );
