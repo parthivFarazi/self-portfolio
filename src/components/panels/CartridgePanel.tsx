@@ -20,7 +20,7 @@ const OFF_WHITE = '#fffaee';
 const PIXEL_FONT = '"Press Start 2P", "Pixelify Sans", "VT323", ui-monospace, monospace';
 const PIXEL_BODY = '"VT323", "Pixelify Sans", ui-monospace, monospace';
 
-export function CartridgePanel({ width = 820, height = 860 }: PanelProps) {
+export function CartridgePanel({ width = 820, height = 920 }: PanelProps) {
   return (
     <div style={{
       width, height, position: 'relative', overflow: 'hidden',
@@ -163,11 +163,11 @@ export function CartridgePanel({ width = 820, height = 860 }: PanelProps) {
                 e.currentTarget.style.boxShadow = `0 0 14px rgba(245,217,122,.55), 0 3px 0 #b39440, inset 0 0 0 1px rgba(255,255,255,.45)`;
               }}
             >
-              <span style={{ display: 'inline-flex', alignItems: 'center', gap: 8, font: `11px ${PIXEL_FONT}`, letterSpacing: '.2em' }}>
+              <span style={{ display: 'inline-flex', alignItems: 'center', gap: 8, font: `10px ${PIXEL_FONT}`, letterSpacing: '.2em' }}>
                 <span>▶ VIEW ON GITHUB</span>
                 <span>→</span>
               </span>
-              <span style={{ font: `11px ${PIXEL_BODY}`, color: 'rgba(14,26,46,.72)', letterSpacing: '.02em' }}>
+              <span style={{ font: `12px ${PIXEL_BODY}`, color: 'rgba(14,26,46,.78)', letterSpacing: '.02em' }}>
                 /parthivFarazi/GameBoyCGame
               </span>
             </a>
