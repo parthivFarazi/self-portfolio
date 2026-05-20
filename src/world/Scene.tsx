@@ -46,7 +46,7 @@ export function Scene({ onReady }: { onReady?: () => void }) {
 
       <Sky />
       {liteWorld ? null : <Atmosphere />}
-      <Island />
+      <Island liteWorld={liteWorld} />
       <Plaza />
       <Buildings />
       <Decorations />

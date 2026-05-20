@@ -450,7 +450,7 @@ function IsoScene({ tod = 'golden', children, label, sub, location }) {
         position: 'absolute', right: 28, top: 24,
         font: '10px var(--rw-mono)', letterSpacing: '.18em', color: 'rgba(255,250,238,.6)',
         background: 'rgba(15,15,12,.65)', padding: '8px 14px', borderRadius: 999,
-      }}>RESUME WORLD · CONCEPT</div>
+      }}>PARTHIV'S WORLD · CONCEPT</div>
     </div>
   );
 }

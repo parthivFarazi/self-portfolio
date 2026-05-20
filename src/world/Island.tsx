@@ -95,7 +95,7 @@ function makeTopGeometry() {
 //  • tree-canopy centers tint darker (shadow under foliage)
 //  • building entrance fronts get a worn lighter tint
 // Implemented via onBeforeCompile so we keep MeshStandardMaterial's lighting.
-function buildGrassMaterial(grass: CanvasTexture): MeshStandardMaterial {
+function buildDetailedGrassMaterial(grass: CanvasTexture): MeshStandardMaterial {
   // Dark spots = grove CENTERS (7), not individual trees (24+) — keeps the
   // fragment shader's per-pixel loop short. Worn spots = building entrance
   // fronts derived from footprints.
@@ -184,10 +184,25 @@ function buildGrassMaterial(grass: CanvasTexture): MeshStandardMaterial {
   return mat;
 }
 
-export function Island() {
+function buildLiteGrassMaterial(grass: CanvasTexture): MeshStandardMaterial {
+  // iPhone Safari was intermittently dropping the custom grass shader. The
+  // lite-world path keeps the same texture and lighting without shader patching.
+  const mat = new MeshStandardMaterial({
+    map: grass,
+    color: '#74bf69',
+    roughness: 0.98,
+  });
+  mat.needsUpdate = true;
+  return mat;
+}
+
+export function Island({ liteWorld = false }: { liteWorld?: boolean }) {
   const grass = useMemo(makeGrassTexture, []);
   const topGeo = useMemo(makeTopGeometry, []);
-  const grassMat = useMemo(() => buildGrassMaterial(grass), [grass]);
+  const grassMat = useMemo(
+    () => (liteWorld ? buildLiteGrassMaterial(grass) : buildDetailedGrassMaterial(grass)),
+    [grass, liteWorld],
+  );
 
   return (
     <group>

@@ -434,7 +434,7 @@ function SpawnPlaza({ x, y }) {
         <rect x="-50" y="-110" width="100" height="40" fill="#5a3a18" stroke="#1a1410" strokeWidth="1.5"/>
         <rect x="-46" y="-106" width="92" height="32" fill="#7a5234"/>
         <text x="0" y="-90" textAnchor="middle" fontFamily="Caveat,cursive" fontSize="22" fontWeight="700" fill="#fffaee">welcome</text>
-        <text x="0" y="-76" textAnchor="middle" fontFamily="JetBrains Mono,monospace" fontSize="8" fill="#f5d97a" letterSpacing="2">RESUME WORLD · v.1</text>
+        <text x="0" y="-76" textAnchor="middle" fontFamily="JetBrains Mono,monospace" fontSize="8" fill="#f5d97a" letterSpacing="2">PARTHIV'S WORLD · v.1</text>
         {/* Hanging chain */}
         <line x1="-46" y1="-110" x2="-50" y2="-118" stroke="#1a1410" strokeWidth="1.5"/>
       </g>

@@ -2,6 +2,7 @@ import { useGame } from '@/state/gameStore';
 import { BUILDINGS, type BuildingId } from '@/data/buildings';
 import { ISLAND_RADIUS } from '@/constants/world';
 import { useAudio } from '@/audio/useAudio';
+import { useIsNarrowViewport, useIsTouchDevice } from '@/hooks/useTouchInput';
 
 const MAP_SIZE = 180;
 const MAP_CENTER = MAP_SIZE / 2;
@@ -40,10 +41,12 @@ function mapPoint(x: number, z: number): { x: number; y: number } {
 export function HUD() {
   const zone = useGame((s) => s.zoneLabel);
   const playerPosition = useGame((s) => s.playerPosition);
+  const mobileHud = useIsTouchDevice() || useIsNarrowViewport(768);
+
   return (
     <div className="pointer-events-none absolute inset-0 z-10 select-none">
       <div className="absolute left-4 top-4 rounded-full bg-rw-paper/85 px-3 py-1 text-[11px] font-mono tracking-[0.22em] text-rw-ink shadow-sm backdrop-blur">
-        RESUME WORLD
+        PARTHIV&apos;S WORLD
       </div>
       <div className="absolute right-4 top-4 flex items-center gap-2">
         <div className="rounded-full bg-rw-paper/85 px-3 py-1 text-[11px] font-mono tracking-[0.18em] text-rw-ink-soft shadow-sm backdrop-blur">
@@ -51,8 +54,15 @@ export function HUD() {
         </div>
         <MuteButton />
       </div>
-      <div className="absolute bottom-3 left-1/2 -translate-x-1/2 text-[11px] font-mono tracking-[0.18em] text-rw-ink-soft/70">
-        WASD to move &nbsp;·&nbsp; E to interact &nbsp;·&nbsp; ESC to close
+      <div
+        className={`absolute left-1/2 -translate-x-1/2 font-mono tracking-[0.18em] ${
+          mobileHud
+            ? 'rounded-full bg-rw-paper/82 px-3 py-1 text-[10px] text-rw-ink-soft shadow-sm backdrop-blur'
+            : 'bottom-3 text-[11px] text-rw-ink-soft/70'
+        }`}
+        style={mobileHud ? { bottom: 'calc(env(safe-area-inset-bottom, 0px) + 108px)' } : undefined}
+      >
+        {mobileHud ? 'Drag to move · Tap E to interact' : 'WASD to move · E to interact · ESC to close'}
       </div>
       <MiniMap playerPosition={playerPosition} />
     </div>

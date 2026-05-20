@@ -175,7 +175,7 @@ function WelcomeSign({ worldX, worldY, tod }) {
         <rect x="-54" y="-28" width="108" height="36" fill="#7a5234"/>
         <rect x="-54" y="-28" width="108" height="6" fill="rgba(255,250,238,.18)"/>
         <text x="0" y="-8" textAnchor="middle" fontFamily="Caveat,cursive" fontSize="24" fontWeight="700" fill="#fffaee">welcome</text>
-        <text x="0" y="6" textAnchor="middle" fontFamily="JetBrains Mono,monospace" fontSize="8" fill="#f5d97a" letterSpacing="2">RESUME WORLD · v.1</text>
+        <text x="0" y="6" textAnchor="middle" fontFamily="JetBrains Mono,monospace" fontSize="8" fill="#f5d97a" letterSpacing="2">PARTHIV'S WORLD · v.1</text>
       </g>
       {/* Hanging chain */}
       <line x1="-58" y1="-120" x2="-50" y2="-100" stroke="#1a1410" strokeWidth="1.2"/>
