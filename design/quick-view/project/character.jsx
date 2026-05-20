@@ -217,7 +217,7 @@ function CharacterSheetCard() {
         <div style={{ display: 'flex', alignItems: 'baseline', gap: 12 }}>
           <div style={{ font: '11px var(--rw-mono)', letterSpacing: '.14em', textTransform: 'uppercase', color: 'var(--rw-ink-soft)' }}>Character · 01</div>
           <div style={{ flex: 1, borderBottom: '1px solid #c8bb95' }}></div>
-          <div style={{ font: '11px var(--rw-mono)', color: 'var(--rw-ink-soft)' }}>PF / Resume World</div>
+          <div style={{ font: '11px var(--rw-mono)', color: 'var(--rw-ink-soft)' }}>PF / Parthiv's World</div>
         </div>
         <h2 style={{ font: 'italic 56px/.95 var(--rw-serif)', margin: 0, color: 'var(--rw-ink)' }}>Parthiv,<br/>three views</h2>
         <p style={{ font: '13px/1.5 var(--rw-sans)', color: 'var(--rw-ink-soft)', margin: 0, maxWidth: 360 }}>

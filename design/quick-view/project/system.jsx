@@ -210,7 +210,7 @@ function TypeCard() {
       <div style={{ display: 'grid', gridTemplateColumns: '1.4fr 1fr', gap: 32, marginBottom: 24 }}>
         <div style={{ border: '1px dashed #c8bb95', padding: 18, borderRadius: 4 }}>
           <div style={{ font: '10px var(--rw-mono)', letterSpacing: '.14em', textTransform: 'uppercase', color: 'var(--rw-ink-soft)' }}>Display · Instrument Serif</div>
-          <div style={{ font: 'italic 88px/.9 var(--rw-serif)', margin: '8px 0 0' }}>Resume World</div>
+          <div style={{ font: 'italic 88px/.9 var(--rw-serif)', margin: '8px 0 0' }}>Parthiv's World</div>
           <div style={{ font: '13px var(--rw-sans)', color: 'var(--rw-ink-soft)', marginTop: 8 }}>Hero titles · building names · the dreamy register.</div>
         </div>
         <div style={{ border: '1px dashed #c8bb95', padding: 18, borderRadius: 4 }}>

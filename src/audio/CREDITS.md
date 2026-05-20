@@ -1,4 +1,4 @@
-# Audio Credits — Resume World
+# Audio Credits — Parthiv's World
 
 ## Current implementation
 

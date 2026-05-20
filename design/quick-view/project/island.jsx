@@ -238,7 +238,7 @@ function IslandPrototype({ tod = 'golden', onOpenPanel }) {
       {/* Toolbar */}
       <div style={{ position: 'absolute', left: 24, top: 24, display: 'flex', flexDirection: 'column', gap: 10 }}>
         <div style={{ padding: '10px 16px', background: 'rgba(250,247,238,.85)', backdropFilter: 'blur(8px)', borderRadius: 10, boxShadow: '0 6px 18px rgba(0,0,0,.18)', font: '12px var(--rw-mono)', color: 'var(--rw-ink)', display: 'flex', alignItems: 'center', gap: 12 }}>
-          <span style={{ font: '11px var(--rw-mono)', letterSpacing: '.16em', textTransform: 'uppercase', color: 'var(--rw-ink-soft)' }}>Resume World</span>
+          <span style={{ font: '11px var(--rw-mono)', letterSpacing: '.16em', textTransform: 'uppercase', color: 'var(--rw-ink-soft)' }}>Parthiv's World</span>
           <span style={{ width: 1, height: 14, background: '#c8bb95' }}></span>
           <span>Click a building →</span>
         </div>

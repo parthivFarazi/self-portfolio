@@ -85,7 +85,7 @@ export default function App() {
     <Suspense
       fallback={
         <RouteLoadingScreen
-          title="Waking Resume World..."
+          title="Waking Parthiv's World..."
           subtitle="Setting up the landing view and the fast path into the portfolio."
         />
       }

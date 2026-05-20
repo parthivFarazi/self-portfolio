@@ -1,4 +1,4 @@
-# Resume World — Design Brief for Parthiv Farazi
+# Parthiv's World — Design Brief for Parthiv Farazi
 
 > Extracted from the original design-phase chat transcript (May 15, 2026). Canonical reference for content + visual direction.
 

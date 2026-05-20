@@ -468,7 +468,7 @@ function Hud({ tod, avatar, hovered, camX, onJump, returnToPlaza }) {
       <div style={{ position: 'absolute', left: 16, top: 16, display: 'flex', gap: 10, alignItems: 'center', pointerEvents: 'none' }}>
         <div style={{ padding: '8px 14px', background: 'rgba(15,15,12,.78)', backdropFilter: 'blur(8px)', borderRadius: 999, font: '11px var(--rw-mono)', letterSpacing: '.16em', textTransform: 'uppercase', color: '#fffaee', display: 'inline-flex', alignItems: 'center', gap: 8 }}>
           <span style={{ width: 7, height: 7, borderRadius: '50%', background: '#7cd17a', boxShadow: '0 0 8px #7cd17a' }}></span>
-          Resume World
+          Parthiv's World
         </div>
         <div style={{ padding: '8px 14px', background: 'rgba(255,250,238,.85)', backdropFilter: 'blur(8px)', borderRadius: 999, font: '11px var(--rw-mono)', color: 'var(--rw-ink)', letterSpacing: '.06em', display: 'inline-flex', alignItems: 'center', gap: 8 }}>
           <kbd style={kbdStyle}>←</kbd><kbd style={kbdStyle}>→</kbd> or <kbd style={kbdStyle}>A</kbd><kbd style={kbdStyle}>D</kbd> · click to walk

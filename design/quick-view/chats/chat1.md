@@ -1,4 +1,4 @@
-# Resume World Island
+# Parthiv's World Island
 
 _Started 2026-05-15 07:29 UTC_
 
@@ -23,7 +23,7 @@ CRITICAL: ignore default aesthetic entirely if given other aesthetic instruction
 </default aesthetic>
 
 <pasted_text name="Pasted text (170 lines)">
-Resume World — Design Brief for Parthiv Farazi
+Parthiv's World — Design Brief for Parthiv Farazi
 The Project
 I'm Parthiv Farazi — CS @ Georgia Tech (graduating Dec 2026), Atlanta-based, originally lived in Kuala Lumpur. I'm the Co-founder & CTO of Update Analytics (UPDT.), an AI-driven soccer analytics platform, and I'm targeting Software Engineering roles.
 I'm building an interactive web portfolio where recruiters control a small avatar (looks like me) and walk around a dreamlike island. Every job, project, and section of my resume has its own dedicated, architecturally distinct building. Recruiters walk up to a building and step inside to learn about that piece of my story.
@@ -227,7 +227,7 @@ Questions answered:
 - ui_panel_priority: Collegiate Tower (Education) — parchment scroll + wax seal, Twin Towers (About Me) — polaroid stack, Pong Frat House — notebook on pong table
 - character_sheet: Both — spec sheet + a simple SVG avatar as a placeholder
 - interactive_behavior: Click-to-walk — click a building, avatar pathfinds to it, panel opens
-- tone_register: Recruiter-facing teaser — polished, minimal, marketing-y. 'Coming soon: Resume World' vibes.
+- tone_register: Recruiter-facing teaser — polished, minimal, marketing-y. 'Coming soon: Parthiv's World' vibes.
 - tweaks_interest: Yes — just sky/time-of-day
 
 ## Assistant
@@ -497,7 +497,7 @@ Major rebuild done. **The prototype is now side-scrolling Sims-style:**
 **Parallax:** three depth layers (distant floating islands, sky/clouds/sun, near hills) all move at different rates as you walk. Sky reacts to the time-of-day Tweak.
 
 **Two artboards in the Prototype section:**
-1. **Resume World — playable** (the new walkable thing)
+1. **Parthiv's World — playable** (the new walkable thing)
 2. **World map · overview reference** (the old top-down, kept for spatial reference)
 
 Verifier is checking that camera follow, scale, and click-to-walk all work. Will let you know if anything's broken.

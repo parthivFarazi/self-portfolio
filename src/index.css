@@ -13,7 +13,7 @@
   }
 }
 
-/* Resume World design tokens — mirror the original prototype's <style> block.
+/* Parthiv's World design tokens — mirror the original prototype's <style> block.
    Panels reference these via inline styles; do not rename. */
 :root {
   --rw-grass: #6db862;

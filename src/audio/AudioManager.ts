@@ -1,4 +1,4 @@
-// AudioManager — singleton Web Audio orchestrator for Resume World.
+// AudioManager — singleton Web Audio orchestrator for Parthiv's World.
 //
 // Why no Howler.js: we have no audio files in this bundle, and procuring
 // CC0 samples is out of scope for Phase 5. Instead we synthesize every
