@@ -7,7 +7,7 @@ export function Lighting({ liteWorld = false }: { liteWorld?: boolean }) {
       <directionalLight
         castShadow={!liteWorld}
         position={[32, 22, 20]}
-        intensity={1.55}
+        intensity={1.75}
         color="#ffa55a"
         shadow-mapSize-width={1024}
         shadow-mapSize-height={1024}

@@ -36,7 +36,10 @@ export function Scene({ onReady }: { onReady?: () => void }) {
         // the renderer linear (no double tone-map). On liteWorld we skip the
         // composer entirely, so the renderer must tone-map itself.
         toneMapping: liteWorld ? THREE.ACESFilmicToneMapping : THREE.NoToneMapping,
-        toneMappingExposure: liteWorld ? 1.15 : 1.0,
+        // Bumped to 1.2 — even with NoToneMapping the composer's ToneMapping
+        // effect reads the renderer's exposure value via the standard
+        // three.js shader chunk, so this still warms/lifts the desktop pass.
+        toneMappingExposure: 1.2,
       }}
       onCreated={({ gl, scene, camera }) => {
         gl.shadowMap.type = THREE.PCFSoftShadowMap;
