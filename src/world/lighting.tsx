@@ -1,10 +1,10 @@
-export function Lighting() {
+export function Lighting({ liteWorld = false }: { liteWorld?: boolean }) {
   return (
     <>
       {/* Golden-hour key light, ~30° elevation, biased SE so shadows fall toward
           the camera and read clearly. */}
       <directionalLight
-        castShadow
+        castShadow={!liteWorld}
         position={[35, 40, 22]}
         intensity={1.0}
         color="#ffd9a0"

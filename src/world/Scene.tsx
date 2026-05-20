@@ -1,4 +1,5 @@
 import { Canvas } from '@react-three/fiber';
+import { useMemo } from 'react';
 import * as THREE from 'three';
 import { Sky } from './Sky';
 import { Island } from './Island';
@@ -11,12 +12,17 @@ import { IsometricCamera } from './IsometricCamera';
 import { Lighting } from './lighting';
 
 export function Scene({ onReady }: { onReady?: () => void }) {
+  const liteWorld = useMemo(
+    () => window.matchMedia('(pointer: coarse), (max-width: 767px)').matches,
+    [],
+  );
+
   return (
     <Canvas
-      shadows
-      dpr={1}
+      shadows={!liteWorld}
+      dpr={liteWorld ? 0.85 : 1}
       gl={{
-        antialias: true,
+        antialias: !liteWorld,
         powerPreference: 'high-performance',
         toneMapping: THREE.ACESFilmicToneMapping,
         toneMappingExposure: 1.05,
@@ -34,12 +40,12 @@ export function Scene({ onReady }: { onReady?: () => void }) {
       }}
     >
       <IsometricCamera />
-      <Lighting />
+      <Lighting liteWorld={liteWorld} />
       {/* Warm horizon fog — softens the island edge into the peach sky. */}
       <fog attach="fog" args={['#f4b87a', 110, 280]} />
 
       <Sky />
-      <Atmosphere />
+      {liteWorld ? null : <Atmosphere />}
       <Island />
       <Plaza />
       <Buildings />

@@ -47,9 +47,98 @@
       href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Geist:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500;700&family=Caveat:wght@500;700&family=Pixelify+Sans:wght@400;500;600;700&family=VT323&display=swap"
       rel="stylesheet"
     />
+    <style>
+      html, body, #root {
+        height: 100%;
+      }
+
+      body {
+        margin: 0;
+        background: radial-gradient(circle at 50% 22%, rgba(255, 255, 255, 0.14), transparent 28%),
+          linear-gradient(180deg, #f4d7b0 0%, #e8c6a2 40%, #d8b08b 100%);
+        color: #2a1a0e;
+      }
+
+      .boot-shell {
+        min-height: 100%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 24px;
+        font-family: "Geist", system-ui, sans-serif;
+      }
+
+      .boot-card {
+        max-width: 440px;
+        border: 1px solid rgba(212, 193, 120, 0.8);
+        border-radius: 28px;
+        background: rgba(255, 248, 226, 0.88);
+        box-shadow: 0 3px 0 #d4c178, 0 18px 42px rgba(40, 20, 8, 0.18);
+        padding: 28px 32px;
+        text-align: center;
+        backdrop-filter: blur(10px);
+      }
+
+      .boot-kicker {
+        font: 600 11px/1.2 "JetBrains Mono", ui-monospace, monospace;
+        letter-spacing: 0.28em;
+        text-transform: uppercase;
+        color: #7a5a30;
+      }
+
+      .boot-title {
+        margin: 14px 0 12px;
+        font: 700 40px/1 "Pixelify Sans", monospace;
+        letter-spacing: -0.04em;
+      }
+
+      .boot-copy {
+        margin: 0 auto;
+        max-width: 320px;
+        font-size: 14px;
+        line-height: 1.7;
+        color: #5a3e20;
+      }
+
+      .boot-dots {
+        margin-top: 18px;
+        display: inline-flex;
+        gap: 8px;
+      }
+
+      .boot-dots span {
+        width: 12px;
+        height: 12px;
+        border-radius: 999px;
+        background: #b3a369;
+        box-shadow: 0 0 0 1px rgba(42, 26, 14, 0.08), 0 0 14px rgba(179, 163, 105, 0.45);
+        animation: boot-bounce 0.9s ease-in-out infinite;
+      }
+
+      .boot-dots span:nth-child(2) { animation-delay: 0.16s; }
+      .boot-dots span:nth-child(3) { animation-delay: 0.32s; }
+
+      @keyframes boot-bounce {
+        0%, 80%, 100% { transform: translateY(0); opacity: 0.72; }
+        40% { transform: translateY(-7px); opacity: 1; }
+      }
+    </style>
   </head>
   <body>
-    <div id="root"></div>
+    <div id="root">
+      <div class="boot-shell">
+        <div class="boot-card">
+          <div class="boot-kicker">Parthiv's World</div>
+          <div class="boot-title">Loading portfolio...</div>
+          <p class="boot-copy">Preparing Quick View, the 3D world, and the project panels.</p>
+          <div class="boot-dots" aria-hidden="true">
+            <span></span>
+            <span></span>
+            <span></span>
+          </div>
+        </div>
+      </div>
+    </div>
     <script type="module" src="/src/main.tsx"></script>
   </body>
 </html>

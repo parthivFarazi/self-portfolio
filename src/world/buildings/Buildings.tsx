@@ -1,49 +1,40 @@
-import { useRef, useState, type ComponentType } from 'react';
+import { startTransition, useEffect, useRef, useState, type ComponentType } from 'react';
 import { useFrame } from '@react-three/fiber';
 import { BUILDINGS, type BuildingDef } from '@/data/buildings';
 import { Placeholder } from './Placeholder';
-import { TechTower } from './TechTower';
-import { PetronasTowers } from './PetronasTowers';
-import { UPDT } from './UPDT';
-import { RMAICT } from './RMAICT';
-import { DeltaUpsilon } from './DeltaUpsilon';
-import { Forge } from './Forge';
-import { Lighthouse } from './Lighthouse';
-import { Qard } from './Qard';
-import { Athletic } from './Athletic';
-import { Archive } from './Archive';
-import { ZenGarden } from './ZenGarden';
-import { HeatmapGarden } from './HeatmapGarden';
-import { RobotWorkshop } from './RobotWorkshop';
-import { Cartridge } from './Cartridge';
 import { useGame } from '@/state/gameStore';
 
 const LOD_NEAR = 78;
 const LOD_FAR = 86;
 
-const REGISTRY: Partial<Record<BuildingDef['id'], ComponentType<{ def: BuildingDef }>>> = {
-  tech: TechTower,
-  petronas: PetronasTowers,
-  updt: UPDT,
-  rmaict: RMAICT,
-  du: DeltaUpsilon,
-  forge: Forge,
-  lighthouse: Lighthouse,
-  qard: Qard,
-  athletic: Athletic,
-  archive: Archive,
-  zen: ZenGarden,
-  heatmap: HeatmapGarden,
-  workshop: RobotWorkshop,
-  gba: Cartridge,
+type BuildingComponent = ComponentType<{ def: BuildingDef }>;
+type BuildingLoader = () => Promise<BuildingComponent>;
+
+const REGISTRY: Partial<Record<BuildingDef['id'], BuildingLoader>> = {
+  tech: () => import('./TechTower').then((m) => m.TechTower),
+  petronas: () => import('./PetronasTowers').then((m) => m.PetronasTowers),
+  updt: () => import('./UPDT').then((m) => m.UPDT),
+  rmaict: () => import('./RMAICT').then((m) => m.RMAICT),
+  du: () => import('./DeltaUpsilon').then((m) => m.DeltaUpsilon),
+  forge: () => import('./Forge').then((m) => m.Forge),
+  lighthouse: () => import('./Lighthouse').then((m) => m.Lighthouse),
+  qard: () => import('./Qard').then((m) => m.Qard),
+  athletic: () => import('./Athletic').then((m) => m.Athletic),
+  archive: () => import('./Archive').then((m) => m.Archive),
+  zen: () => import('./ZenGarden').then((m) => m.ZenGarden),
+  heatmap: () => import('./HeatmapGarden').then((m) => m.HeatmapGarden),
+  workshop: () => import('./RobotWorkshop').then((m) => m.RobotWorkshop),
+  gba: () => import('./Cartridge').then((m) => m.Cartridge),
 };
+
+const componentCache = new Map<BuildingDef['id'], BuildingComponent>();
 
 export function Buildings() {
   return (
     <>
       {BUILDINGS.map((b) => {
-        const Custom = REGISTRY[b.id];
-        return <LodBuilding key={b.id} def={b} Custom={Custom} />;
+        const loadComponent = REGISTRY[b.id];
+        return <LodBuilding key={b.id} def={b} loadComponent={loadComponent} />;
       })}
     </>
   );
@@ -51,12 +42,13 @@ export function Buildings() {
 
 function LodBuilding({
   def,
-  Custom,
+  loadComponent,
 }: {
   def: BuildingDef;
-  Custom?: ComponentType<{ def: BuildingDef }>;
+  loadComponent?: BuildingLoader;
 }) {
   const [useProxy, setUseProxy] = useState(true);
+  const [Custom, setCustom] = useState<BuildingComponent | null>(() => componentCache.get(def.id) ?? null);
   const useProxyRef = useRef(true);
 
   useFrame(() => {
@@ -71,6 +63,23 @@ function LodBuilding({
       setUseProxy(true);
     }
   });
+
+  useEffect(() => {
+    if (useProxy || Custom || !loadComponent) return;
+
+    let cancelled = false;
+    void loadComponent().then((component) => {
+      componentCache.set(def.id, component);
+      if (cancelled) return;
+      startTransition(() => {
+        setCustom(() => component);
+      });
+    });
+
+    return () => {
+      cancelled = true;
+    };
+  }, [Custom, def.id, loadComponent, useProxy]);
 
   if (useProxy || !Custom) return <Placeholder def={def} />;
   return <Custom def={def} />;
