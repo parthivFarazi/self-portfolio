@@ -1,4 +1,10 @@
-import { EffectComposer, Bloom, Vignette, ToneMapping } from '@react-three/postprocessing';
+import {
+  EffectComposer,
+  Bloom,
+  Vignette,
+  ToneMapping,
+  HueSaturation,
+} from '@react-three/postprocessing';
 import { BlendFunction, KernelSize, ToneMappingMode } from 'postprocessing';
 
 // Hero-match post-processing pass.
@@ -21,10 +27,13 @@ import { BlendFunction, KernelSize, ToneMappingMode } from 'postprocessing';
 export function PostFX() {
   return (
     <EffectComposer>
+      {/* Subtle saturation lift — pulls the lawn from muted olive into a
+          lush green without pushing the warm tones into cartoon orange. */}
+      <HueSaturation hue={0} saturation={0.18} />
       <Bloom
-        intensity={0.7}
-        luminanceThreshold={0.6}
-        luminanceSmoothing={0.35}
+        intensity={0.95}
+        luminanceThreshold={0.5}
+        luminanceSmoothing={0.4}
         mipmapBlur
         kernelSize={KernelSize.LARGE}
       />

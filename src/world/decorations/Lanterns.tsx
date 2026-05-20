@@ -17,7 +17,10 @@ import type { LanternPlacement } from './placements';
 
 const PULSE_FREQ = 0.5;       // Hz
 const PULSE_AMPLITUDE = 0.10; // ±10% intensity
-const EMISSIVE_BASE = 1.4;    // slightly higher to compensate for no light
+// Cranked from 1.4 → 2.5 so each lantern catches the bloom threshold by a
+// wider margin — gives the hero-style radiant halo without paying for
+// 22 point lights.
+const EMISSIVE_BASE = 2.5;
 
 export function Lanterns({ lanterns }: { lanterns: LanternPlacement[] }) {
   const postRef = useRef<InstancedMesh>(null);
@@ -35,7 +38,7 @@ export function Lanterns({ lanterns }: { lanterns: LanternPlacement[] }) {
     () =>
       new MeshStandardMaterial({
         color: '#fbe6cc',
-        emissive: '#f5b66a',
+        emissive: '#ffb347',
         emissiveIntensity: EMISSIVE_BASE,
         roughness: 0.4,
         transparent: true,

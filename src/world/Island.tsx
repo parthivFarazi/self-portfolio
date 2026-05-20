@@ -45,7 +45,7 @@ function makeGrassTexture() {
     const x = Math.random() * c.width;
     const y = Math.random() * c.height;
     const r = 1 + Math.random() * 2.2;
-    ctx.fillStyle = Math.random() > 0.5 ? COLORS.grassDeep : '#7fc471';
+    ctx.fillStyle = Math.random() > 0.5 ? COLORS.grassDeep : '#72d055';
     ctx.globalAlpha = 0.35 + Math.random() * 0.4;
     ctx.beginPath();
     ctx.arc(x, y, r, 0, Math.PI * 2);
@@ -189,7 +189,7 @@ function buildLiteGrassMaterial(grass: CanvasTexture): MeshStandardMaterial {
   // lite-world path keeps the same texture and lighting without shader patching.
   const mat = new MeshStandardMaterial({
     map: grass,
-    color: '#74bf69',
+    color: '#5fbf42',
     roughness: 0.98,
   });
   mat.needsUpdate = true;

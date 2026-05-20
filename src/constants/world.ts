@@ -18,8 +18,10 @@ export const PATH_WIDTH = 1.8;
 export const PATH_LENGTH = 14;
 
 export const COLORS = {
-  grass: '#6db862',
-  grassDeep: '#5aa454',
+  // Brightened toward the hero's lush, saturated lawn (was #6db862 — read
+  // as muted olive under the warm key light). Deeper variant follows.
+  grass: '#5fbf42',
+  grassDeep: '#4ea336',
   edgeRock: '#7a6a4f',
   path: '#e8d5a8',
   plaza: '#d8c498',

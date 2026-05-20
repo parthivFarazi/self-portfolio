@@ -77,7 +77,9 @@ function makePitchTexture() {
   const ctx = c.getContext('2d')!;
   // Stripes
   for (let i = 0; i < 10; i++) {
-    ctx.fillStyle = i % 2 === 0 ? '#3e8a3e' : '#458f45';
+    // Brighter stripes — paired with the emissive lift on the material,
+    // these read as a luminous floodlit pitch (matches hero).
+    ctx.fillStyle = i % 2 === 0 ? '#4ba83f' : '#56b048';
     ctx.fillRect((i * c.width) / 10, 0, c.width / 10, c.height);
   }
   ctx.strokeStyle = '#f6f1e4';
@@ -164,10 +166,19 @@ export function UPDT({ def }: { def: BuildingDef }) {
         <cylinderGeometry args={[1, 1, 1, 64]} />
       </mesh>
 
-      {/* Pitch — flat green oval inside */}
+      {/* Pitch — flat green oval. Emissive lift makes it read as a
+          floodlit field even when the stadium stand casts shadow over it
+          (matches the hero shot where the pitch glows from within).
+          Threshold is 0.5 so this catches a touch of bloom too. */}
       <mesh receiveShadow position={[0, 0.51, 0]} rotation={[-Math.PI / 2, 0, 0]} scale={[rx - 2, rz - 1.8, 1]}>
         <circleGeometry args={[1, 64]} />
-        <meshStandardMaterial map={pitchTex} roughness={0.95} color="#3e8a3e" />
+        <meshStandardMaterial
+          map={pitchTex}
+          roughness={0.85}
+          color="#4ea93f"
+          emissive="#3fa83f"
+          emissiveIntensity={0.55}
+        />
       </mesh>
       {/* Two goals */}
       {[[-rx + 2.6, 0, 0], [rx - 2.6, 0, 0]].map(([gx, , gz], i) => (
