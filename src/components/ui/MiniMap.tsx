@@ -1,7 +1,16 @@
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { useGame } from '@/state/gameStore';
 import { BUILDINGS, type BuildingDef, type BuildingId, type Ring } from '@/data/buildings';
 import { ISLAND_RADIUS } from '@/constants/world';
+
+// ─── Onboarding hint ─────────────────────────────────────────────────────
+//
+// First-time visitors don't realise the dots are hoverable / clickable.
+// Show a small parchment tooltip once, then never again (localStorage).
+// Dismissed on auto-timeout or first map interaction.
+
+const HINT_KEY = 'rw.minimap.hintSeen.v1';
+const HINT_AUTO_DISMISS_MS = 8000;
 
 // Redesigned minimap.
 //
@@ -56,6 +65,27 @@ export function MiniMap() {
   const [hoveredId, setHoveredId] = useState<BuildingId | null>(null);
   const [mobileOpen, setMobileOpen] = useState(false);
 
+  // Onboarding hint visibility — show on first visit, dismiss on first
+  // map interaction or after a timeout. localStorage persists the choice.
+  const [hintVisible, setHintVisible] = useState(() => {
+    if (typeof window === 'undefined') return false;
+    try { return !window.localStorage.getItem(HINT_KEY); } catch { return false; }
+  });
+  function dismissHint() {
+    setHintVisible(false);
+    try { window.localStorage.setItem(HINT_KEY, '1'); } catch {}
+  }
+  useEffect(() => {
+    if (!hintVisible) return;
+    // 2.2s grace after mount before the auto-dismiss timer starts — the
+    // loading screen blocks the minimap for the first second or two on
+    // a cold cache, and we don't want the hint to expire before the
+    // visitor can see it. Total visible window = grace + dismiss = ~10s.
+    const GRACE = 2200;
+    const t = window.setTimeout(dismissHint, GRACE + HINT_AUTO_DISMISS_MS);
+    return () => window.clearTimeout(t);
+  }, [hintVisible]);
+
   const player = mapPoint(playerPosition[0], playerPosition[2]);
 
   // Nearest building — used for the always-visible orientation label.
@@ -72,6 +102,16 @@ export function MiniMap() {
   // building gets its label visible so the disc is never label-less.
   const labeledId: BuildingId = hoveredId ?? nearest.id;
 
+  // Wrapped handlers so any interaction also dismisses the hint.
+  const onHoverDot = (id: BuildingId | null) => {
+    setHoveredId(id);
+    if (hintVisible) dismissHint();
+  };
+  const onClickDot = (id: BuildingId) => {
+    openBuilding(id);
+    if (hintVisible) dismissHint();
+  };
+
   return (
     <>
       {/* Desktop minimap — always visible (lg ≥ 1024px) */}
@@ -83,10 +123,11 @@ export function MiniMap() {
           player={player}
           labeledId={labeledId}
           hoveredId={hoveredId}
-          setHoveredId={setHoveredId}
-          openBuilding={openBuilding}
+          setHoveredId={onHoverDot}
+          openBuilding={onClickDot}
           nearestName={nearest.name}
         />
+        {hintVisible && <MinimapHint onDismiss={dismissHint} />}
       </aside>
 
       {/* Mobile minimap — toggle button + expanding panel */}
@@ -109,8 +150,8 @@ export function MiniMap() {
               player={player}
               labeledId={labeledId}
               hoveredId={hoveredId}
-              setHoveredId={setHoveredId}
-              openBuilding={openBuilding}
+              setHoveredId={onHoverDot}
+              openBuilding={onClickDot}
               nearestName={nearest.shortLabel}
             />
           </div>
@@ -450,5 +491,85 @@ function LabelTag({ x, y, text }: { x: number; y: number; text: string }) {
         {text}
       </text>
     </g>
+  );
+}
+
+// ─── Onboarding hint UI ──────────────────────────────────────────────────
+function MinimapHint({ onDismiss }: { onDismiss: () => void }) {
+  return (
+    <div
+      role="status"
+      aria-live="polite"
+      onClick={onDismiss}
+      style={{
+        position: 'absolute',
+        right: 272, // sits just to the left of the 256px card (+ small gap)
+        bottom: 32,
+        maxWidth: 220,
+        padding: '10px 14px 10px 12px',
+        background: '#fff8e2',
+        border: '1px solid #d4a04a',
+        borderRadius: 6,
+        color: '#3a2a1e',
+        font: '12.5px/1.45 var(--rw-sans, system-ui)',
+        boxShadow: '0 2px 0 #c8a050, 0 10px 22px rgba(60,30,8,.22)',
+        cursor: 'pointer',
+        animation: 'rwHintIn .35s ease-out',
+        pointerEvents: 'auto',
+      }}
+    >
+      <div
+        style={{
+          font: '9.5px var(--rw-mono, monospace)',
+          letterSpacing: '.2em',
+          textTransform: 'uppercase',
+          color: '#7a5a30',
+          marginBottom: 4,
+        }}
+      >
+        Tip
+      </div>
+      <div>
+        Hover a dot to see what's there ·{' '}
+        <span style={{ fontWeight: 700 }}>click to travel</span>.
+      </div>
+      {/* Right-pointing arrow notch — sits at the right edge pointing at
+          the minimap. Drawn with two stacked divs so it has a clean
+          border outline matching the card. */}
+      <span
+        aria-hidden
+        style={{
+          position: 'absolute',
+          right: -8,
+          top: '50%',
+          transform: 'translateY(-50%)',
+          width: 0,
+          height: 0,
+          borderTop: '8px solid transparent',
+          borderBottom: '8px solid transparent',
+          borderLeft: '8px solid #d4a04a',
+        }}
+      />
+      <span
+        aria-hidden
+        style={{
+          position: 'absolute',
+          right: -7,
+          top: '50%',
+          transform: 'translateY(-50%)',
+          width: 0,
+          height: 0,
+          borderTop: '7px solid transparent',
+          borderBottom: '7px solid transparent',
+          borderLeft: '7px solid #fff8e2',
+        }}
+      />
+      <style>{`
+        @keyframes rwHintIn {
+          from { opacity: 0; transform: translateX(8px); }
+          to   { opacity: 1; transform: translateX(0); }
+        }
+      `}</style>
+    </div>
   );
 }

@@ -1,6 +1,7 @@
 import { useMemo } from 'react';
 import { CanvasTexture, RepeatWrapping } from 'three';
 import { COLORS, PLAZA_RADIUS, PATH_WIDTH, PATH_LENGTH } from '@/constants/world';
+import { Signpost } from './decorations/Signpost';
 
 function makeStoneTileTexture() {
   const c = document.createElement('canvas');
@@ -93,6 +94,10 @@ export function Plaza() {
           <meshStandardMaterial color="#f1e4c4" roughness={0.7} />
         </mesh>
       </group>
+
+      {/* Category signpost — offset off-centre so it doesn't block the
+          spawn point. Sits at SW of the plaza ring. */}
+      <Signpost position={[-2.4, 0, -2.4]} />
     </group>
   );
 }

@@ -34,14 +34,22 @@ export function Slot({ id, w, h, placeholder, shape = 'rect', radius, fit, posit
 export interface PanelHeaderProps {
   kicker: ReactNode;
   title: ReactNode;
+  /** One-line plain-language line beneath the poetic title.
+   *  Lighter weight + muted so it supports the title without competing. */
+  subtitle?: ReactNode;
   meta: ReactNode;
 }
 
-export function PanelHeader({ kicker, title, meta }: PanelHeaderProps) {
+export function PanelHeader({ kicker, title, subtitle, meta }: PanelHeaderProps) {
   return (
     <div style={{ marginBottom: 14 }}>
       <div style={{ font: '10.5px var(--rw-mono)', letterSpacing: '.16em', textTransform: 'uppercase', color: 'rgba(0,0,0,.55)' }}>{kicker}</div>
       <h1 style={{ font: 'italic 38px/1 var(--rw-serif)', margin: '4px 0 4px', color: 'var(--rw-ink)' }}>{title}</h1>
+      {subtitle && (
+        <div style={{ font: '15px/1.45 var(--rw-sans, system-ui)', color: 'rgba(0,0,0,.62)', maxWidth: '60ch', margin: '2px 0 6px' }}>
+          {subtitle}
+        </div>
+      )}
       <div style={{ font: '11.5px var(--rw-mono)', color: 'rgba(0,0,0,.55)' }}>{meta}</div>
     </div>
   );
@@ -51,22 +59,31 @@ export function PanelHeader({ kicker, title, meta }: PanelHeaderProps) {
 export interface P2HeaderProps {
   kicker: ReactNode;
   title: ReactNode;
+  /** Same one-line subtitle slot as PanelHeader. */
+  subtitle?: ReactNode;
   meta: ReactNode;
   kickerColor?: string;
   titleColor?: string;
+  subtitleColor?: string;
   metaColor?: string;
 }
 
 export function P2Header({
-  kicker, title, meta,
+  kicker, title, subtitle, meta,
   kickerColor = 'rgba(0,0,0,.55)',
   titleColor = 'var(--rw-ink)',
+  subtitleColor = 'rgba(0,0,0,.62)',
   metaColor = 'rgba(0,0,0,.55)',
 }: P2HeaderProps) {
   return (
     <div style={{ marginBottom: 14 }}>
       <div style={{ font: '10.5px var(--rw-mono)', letterSpacing: '.16em', textTransform: 'uppercase', color: kickerColor }}>{kicker}</div>
       <h1 style={{ font: 'italic 38px/1 var(--rw-serif)', margin: '4px 0 4px', color: titleColor }}>{title}</h1>
+      {subtitle && (
+        <div style={{ font: '15px/1.45 var(--rw-sans, system-ui)', color: subtitleColor, maxWidth: '60ch', margin: '2px 0 6px' }}>
+          {subtitle}
+        </div>
+      )}
       <div style={{ font: '11.5px var(--rw-mono)', color: metaColor }}>{meta}</div>
     </div>
   );

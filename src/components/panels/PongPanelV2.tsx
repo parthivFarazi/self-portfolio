@@ -34,6 +34,7 @@ export function PongPanelV2({ width = 760, height = 880 }: PanelProps) {
           <PanelHeader
             kicker="Pong · baseball logging app"
             title={<>From the porch:<br/>a cleaner scorebook.</>}
+            subtitle="A baseball stat-tracking app, live on the App Store, used by 70+ people."
             meta="Nov 2025 — Jan 2026 · React Native · Expo · Supabase · PostgreSQL"
           />
 

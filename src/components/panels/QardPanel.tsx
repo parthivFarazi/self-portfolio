@@ -16,6 +16,9 @@ export function QardPanel({ width = 760, height = 780 }: PanelProps) {
       <div style={{ position: 'relative', padding: '32px 36px', height: '100%', display: 'flex', flexDirection: 'column' }}>
         <div style={{ font: '10px "JetBrains Mono", monospace', letterSpacing: '.22em', color: '#6fd5e0', textTransform: 'uppercase' }}>qard.dev · founding frontend</div>
         <h1 style={{ font: 'italic 44px/1 var(--rw-serif)', margin: '6px 0 4px', color: '#fffaee' }}>The card system,<br/>in bloom.</h1>
+        <div style={{ font: '15px/1.45 var(--rw-sans, system-ui)', color: 'rgba(255,250,238,.78)', maxWidth: '60ch', margin: '4px 0 6px' }}>
+          A fintech startup landing page with an interactive 3D card interface.
+        </div>
         <div style={{ font: '11.5px "JetBrains Mono", monospace', color: 'rgba(205,243,226,.65)' }}>Jun — Aug 2025 · Three.js · Framer Motion · Next.js</div>
 
         <div style={{ marginTop: 22, alignSelf: 'center', position: 'relative' }}>

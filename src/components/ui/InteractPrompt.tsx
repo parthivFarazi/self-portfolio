@@ -26,6 +26,12 @@ export function InteractPrompt() {
               </kbd>
               <span className="font-serif text-lg">Enter {building.shortLabel}</span>
             </div>
+            {/* Plain-language subtitle — gives the gist before the visitor
+                even opens the panel. Same line that appears in the panel
+                header for consistency. */}
+            <div className="mt-1 max-w-[44ch] pl-[44px] font-sans text-[13px] italic leading-snug text-rw-cream/75">
+              {building.subtitle}
+            </div>
           </div>
         </motion.div>
       )}

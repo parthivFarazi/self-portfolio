@@ -30,6 +30,9 @@ export function LighthousePanel({ width = 760, height = 780 }: PanelProps) {
         <h1 style={{ font: 'italic 36px/1.05 var(--rw-serif)', margin: '0 0 6px', color: '#2a1a0e' }}>
           If you're reading this,<br/>let's talk.
         </h1>
+        <div style={{ font: '15px/1.45 var(--rw-sans, system-ui)', color: 'rgba(42,26,14,.7)', margin: '0 0 6px', maxWidth: '52ch' }}>
+          How to reach me — email, GitHub, LinkedIn, and resume.
+        </div>
         <div style={{ font: '13px "Caveat", cursive', color: '#5a3e20', marginBottom: 16 }}>
           Letters welcome at any hour. The light stays on.
         </div>

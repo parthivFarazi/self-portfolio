@@ -17,7 +17,11 @@ const TEXT_MED = 'rgba(205,243,226,.65)';
 export function UPDTPanel({ width = 820, height = 980 }: PanelProps) {
   return (
     <div style={{
-      width, height, position: 'relative', overflow: 'hidden',
+      width, height, position: 'relative',
+      // Bumped body text to 16px (quadrants + callout) — let the panel
+      // scroll if the larger sizes spill over rather than shrink back down.
+      overflowX: 'hidden',
+      overflowY: 'auto',
       background: 'radial-gradient(ellipse at 50% 0%, #14242e 0%, #050a10 100%)',
       fontFamily: 'var(--rw-sans)', color: '#cdf3e2',
       display: 'flex', flexDirection: 'column',
@@ -45,6 +49,8 @@ export function UPDTPanel({ width = 820, height = 980 }: PanelProps) {
             kickerColor={TEXT_DIM}
             titleColor="#fffaee"
             title={<>From video<br/>to decisions.</>}
+            subtitle="An AI platform that turns soccer broadcast footage into scouting data."
+            subtitleColor="rgba(255,250,238,0.78)"
             meta="Co-founder & Primary Technical Engineer · updt.pro · 2025 — Present · Atlanta, GA"
             metaColor={TEXT_DIM}
           />
@@ -116,8 +122,8 @@ export function UPDTPanel({ width = 820, height = 980 }: PanelProps) {
           display: 'flex', alignItems: 'center', gap: 14,
         }}>
           <span style={{ font: '20px var(--rw-serif)', color: GOLD, flexShrink: 0 }}>🏆</span>
-          <div style={{ font: '13px/1.45 var(--rw-sans)', color: '#fffaee' }}>
-            <b style={{ color: CYAN, letterSpacing: '.06em', textTransform: 'uppercase', font: '700 10.5px "JetBrains Mono", monospace', display: 'block', marginBottom: 4 }}>In the field</b>
+          <div style={{ font: '16px/1.5 var(--rw-sans)', color: '#fffaee' }}>
+            <b style={{ color: CYAN, letterSpacing: '.08em', textTransform: 'uppercase', font: '700 11px "JetBrains Mono", monospace', display: 'block', marginBottom: 6 }}>In the field</b>
             Earlier scouting workflow supported real-world player evaluation — including analysis related to <b style={{ color: GOLD }}>Miguel Berry during Charlotte Battery scouting</b>.
           </div>
         </div>
@@ -221,10 +227,10 @@ function Quadrant({ label, accent, body }: { label: string; accent: string; body
       <span style={{ position: 'absolute', bottom: -1, left: -1, width: 8, height: 8, borderBottom: `2px solid ${accent}`, borderLeft: `2px solid ${accent}` }}/>
       <span style={{ position: 'absolute', bottom: -1, right: -1, width: 8, height: 8, borderBottom: `2px solid ${accent}`, borderRight: `2px solid ${accent}` }}/>
 
-      <div style={{ font: '700 9.5px "JetBrains Mono", monospace', letterSpacing: '.18em', color: accent, marginBottom: 6 }}>
+      <div style={{ font: '700 11px "JetBrains Mono", monospace', letterSpacing: '.18em', color: accent, marginBottom: 8 }}>
         {label}
       </div>
-      <div style={{ font: '11.5px/1.4 var(--rw-sans)', color: '#fffaee', opacity: 0.92 }}>
+      <div style={{ font: '16px/1.5 var(--rw-sans)', color: '#fffaee', opacity: 0.92 }}>
         {body}
       </div>
     </div>

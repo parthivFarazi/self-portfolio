@@ -28,6 +28,11 @@ export interface BuildingDef {
   id: BuildingId;
   name: string;
   shortLabel: string;
+  /** One-line plain-language description shown beneath every poetic title.
+   *  10–15 words, no jargon — the line that tells a non-technical visitor
+   *  what this building actually is. Surfaced in: each panel header, and
+   *  the in-world Interact prompt. */
+  subtitle: string;
   ring: Ring;
   position: [number, number, number];
   shape: BuildingShape;
@@ -42,6 +47,7 @@ export const BUILDINGS: BuildingDef[] = [
     id: 'updt',
     name: 'UPDT. Soccer Stadium',
     shortLabel: 'UPDT.',
+    subtitle: 'An AI platform that turns soccer broadcast footage into scouting data.',
     ring: 'inner',
     position: [0, 0, -30],
     shape: { kind: 'cylinder', radius: 13, height: 8 },
@@ -53,6 +59,7 @@ export const BUILDINGS: BuildingDef[] = [
     id: 'rmaict',
     name: 'RMAICT Tower',
     shortLabel: 'RMAICT',
+    subtitle: 'An AI internship building document-reading models for receipts and invoices.',
     ring: 'inner',
     position: [30, 0, 0],
     shape: { kind: 'box', width: 5, depth: 5, height: 14 },
@@ -64,6 +71,7 @@ export const BUILDINGS: BuildingDef[] = [
     id: 'du',
     name: 'Delta Upsilon',
     shortLabel: 'Delta Upsilon',
+    subtitle: 'A baseball stat-tracking app, live on the App Store, used by 70+ people.',
     ring: 'inner',
     position: [0, 0, 30],
     shape: { kind: 'box', width: 10, depth: 7, height: 4.5 },
@@ -77,6 +85,7 @@ export const BUILDINGS: BuildingDef[] = [
     id: 'tech',
     name: 'The Tech Tower',
     shortLabel: 'Tech Tower',
+    subtitle: 'B.S. Computer Science at Georgia Tech, graduating December 2026.',
     ring: 'mid',
     position: [-30, 0, -30],
     shape: { kind: 'box', width: 4.4, depth: 4.4, height: 14 },
@@ -88,6 +97,7 @@ export const BUILDINGS: BuildingDef[] = [
     id: 'petronas',
     name: 'Petronas Twin Towers',
     shortLabel: 'Twin Towers',
+    subtitle: "Who I am, where I'm from, and what I build.",
     ring: 'mid',
     // Phase 4: nudged ~15u further NW so its base plaza no longer reads as
     // attached to Athletic's banners (Athletic sits at [55, 0, -20]).
@@ -101,6 +111,7 @@ export const BUILDINGS: BuildingDef[] = [
     id: 'forge',
     name: 'The Forge',
     shortLabel: 'The Forge',
+    subtitle: 'The languages, frameworks, and tools I work with.',
     ring: 'mid',
     position: [-25, 0, 25],
     shape: { kind: 'box', width: 8, depth: 6, height: 4 },
@@ -112,6 +123,7 @@ export const BUILDINGS: BuildingDef[] = [
     id: 'lighthouse',
     name: 'The Lighthouse',
     shortLabel: 'Lighthouse',
+    subtitle: 'How to reach me — email, GitHub, LinkedIn, and resume.',
     ring: 'mid',
     position: [45, 0, 30],
     shape: { kind: 'cylinder', radius: 2, height: 14 },
@@ -125,6 +137,7 @@ export const BUILDINGS: BuildingDef[] = [
     id: 'qard',
     name: 'The Qard Greenhouse',
     shortLabel: 'Qard',
+    subtitle: 'A fintech startup landing page with an interactive 3D card interface.',
     ring: 'outer',
     position: [-50, 0, -10],
     shape: { kind: 'dome', radius: 4, baseHeight: 1.2 },
@@ -136,6 +149,7 @@ export const BUILDINGS: BuildingDef[] = [
     id: 'athletic',
     name: 'The Athletic Stadium',
     shortLabel: 'Athletic',
+    subtitle: 'A valuation model for 60+ college football programs, featured in The Athletic.',
     ring: 'outer',
     position: [55, 0, -20],
     shape: { kind: 'oval', radiusX: 12, radiusZ: 8, height: 6 },
@@ -147,6 +161,7 @@ export const BUILDINGS: BuildingDef[] = [
     id: 'archive',
     name: 'The Whispering Archive',
     shortLabel: 'Archive',
+    subtitle: 'A semantic search engine over 490k+ quotes using AI embeddings.',
     ring: 'outer',
     position: [-55, 0, 5],
     shape: { kind: 'box', width: 7, depth: 7, height: 4 },
@@ -158,6 +173,7 @@ export const BUILDINGS: BuildingDef[] = [
     id: 'zen',
     name: 'The Zen Garden',
     shortLabel: 'Zen Garden',
+    subtitle: 'An AI mental-health journaling app with mood analysis and prompts.',
     ring: 'outer',
     position: [-40, 0, 45],
     shape: { kind: 'disc', radius: 5 },
@@ -169,6 +185,7 @@ export const BUILDINGS: BuildingDef[] = [
     id: 'heatmap',
     name: 'The Heatmap Garden',
     shortLabel: 'Heatmap Garden',
+    subtitle: 'A pipeline that scores the runs soccer players make without the ball.',
     ring: 'outer',
     position: [10, 0, 50],
     shape: { kind: 'disc', radius: 5 },
@@ -180,6 +197,7 @@ export const BUILDINGS: BuildingDef[] = [
     id: 'workshop',
     name: "The Robot's Workshop",
     shortLabel: 'Workshop',
+    subtitle: 'A solar-powered robot that cleared litter from soccer fields.',
     ring: 'outer',
     position: [45, 0, 50],
     shape: { kind: 'box', width: 4, depth: 4, height: 3 },
@@ -193,6 +211,7 @@ export const BUILDINGS: BuildingDef[] = [
     id: 'gba',
     name: 'The Cartridge',
     shortLabel: 'Cartridge',
+    subtitle: 'A Game Boy Advance game built from scratch on the hardware, in C.',
     ring: 'outer',
     position: [-15, 0, 60],
     shape: { kind: 'box', width: 4, depth: 2.5, height: 0.6 },

@@ -26,6 +26,8 @@ export function RMAICTPanel({ width = 760, height = 780 }: PanelProps) {
           <P2Header
             kicker="RMAICT Tower · AI Engineer Intern · Kuala Lumpur"
             title={<>The Donut that<br/>learned to read.</>}
+            subtitle="An AI internship building document-reading models for receipts and invoices."
+            subtitleColor="rgba(255,250,238,0.78)"
             meta="2024 · Donut (Hugging Face) · OCR · transfer learning · PyTorch"
             kickerColor="#c44a3a"
             titleColor="#fffaee"

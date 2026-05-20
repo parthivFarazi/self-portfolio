@@ -16,6 +16,9 @@ export function TwinTowersPanel({ width = 760, height = 760 }: PanelProps) {
       <div style={{ position: 'absolute', left: 32, top: 32, background: '#f6f1e4', padding: '10px 18px', font: 'italic 22px var(--rw-serif)', color: '#2a1a0e', boxShadow: '0 4px 12px rgba(0,0,0,.4)', transform: 'rotate(-2deg)' }}>
         <div style={{ font: '10px var(--rw-mono)', letterSpacing: '.18em', textTransform: 'uppercase', color: '#7a5a30' }}>Twin Towers · About</div>
         About me, in five photos
+        <div style={{ font: '14px/1.4 var(--rw-sans, system-ui)', color: 'rgba(42,26,14,.72)', fontStyle: 'normal', marginTop: 4, maxWidth: 320 }}>
+          Who I am, where I'm from, and what I build.
+        </div>
       </div>
 
       <Polaroid x={120} y={88} rotate={6} caption="KL · Petronas · home base"><SilhouetteTwinTowers/></Polaroid>

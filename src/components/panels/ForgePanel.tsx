@@ -24,6 +24,9 @@ export function ForgePanel({ width = 760, height = 780 }: PanelProps) {
           </div>
         </div>
         <h1 style={{ font: 'italic 44px/1 var(--rw-serif)', margin: '8px 0 4px', color: '#fffaee' }}>Every language,<br/>forged.</h1>
+        <div style={{ font: '15px/1.45 var(--rw-sans, system-ui)', color: 'rgba(255,250,238,.78)', margin: '2px 0 4px', maxWidth: '52ch' }}>
+          The languages, frameworks, and tools I work with.
+        </div>
         <div style={{ font: '11px "JetBrains Mono", monospace', color: 'rgba(205,243,226,.65)' }}>
           The tools on the wall — picked up over four years of building.
         </div>

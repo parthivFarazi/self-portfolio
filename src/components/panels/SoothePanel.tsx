@@ -21,7 +21,10 @@ export function SoothePanel({ width = 760, height = 780 }: PanelProps) {
 
           <div style={{ padding: '34px 30px 30px', position: 'relative' }}>
             <div style={{ font: '10.5px "JetBrains Mono", monospace', letterSpacing: '.18em', textTransform: 'uppercase', color: '#7a5a30' }}>Soothe · journal</div>
-            <h2 style={{ font: 'italic 30px/1.05 var(--rw-serif)', margin: '4px 0 14px', color: '#2a1a0e' }}>What if a journal<br/>could listen back?</h2>
+            <h2 style={{ font: 'italic 30px/1.05 var(--rw-serif)', margin: '4px 0 6px', color: '#2a1a0e' }}>What if a journal<br/>could listen back?</h2>
+            <div style={{ font: '14.5px/1.45 var(--rw-sans, system-ui)', color: 'rgba(42,26,14,.72)', margin: '0 0 12px', maxWidth: '40ch' }}>
+              An AI mental-health journaling app with mood analysis and prompts.
+            </div>
             <div style={{ font: '16px/1.55 "Caveat", cursive', color: '#2a1a0e' }}>
               <p style={{ margin: '0 0 6px' }}>· Cross-platform app — daily prompts, mood scoring, and gentle wellness suggestions.</p>
               <p style={{ margin: '0 0 6px' }}>· GPT-4 powers the prompt + analysis layer; Firebase, GCP App Engine, Firestore hold it together.</p>

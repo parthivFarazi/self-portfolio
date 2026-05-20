@@ -32,7 +32,10 @@ export function WorkshopPanel({ width = 760, height = 780 }: PanelProps) {
           <span>P. Farazi · model 01 · litter unit</span>
           <span>KL · 2021 · DWG—001</span>
         </div>
-        <h2 style={{ position: 'relative', font: 'italic 36px/1 var(--rw-serif)', margin: '8px 0 2px', color: '#fffaee' }}>The robot,<br/>in three views.</h2>
+        <h2 style={{ position: 'relative', font: 'italic 36px/1 var(--rw-serif)', margin: '8px 0 4px', color: '#fffaee' }}>The robot,<br/>in three views.</h2>
+        <div style={{ position: 'relative', font: '15px/1.45 var(--rw-sans, system-ui)', color: 'rgba(207,228,255,.82)', margin: '2px 0 6px', maxWidth: '52ch' }}>
+          A solar-powered robot that cleared litter from soccer fields.
+        </div>
         <div style={{ position: 'relative', font: '11px "JetBrains Mono", monospace', color: 'rgba(207,228,255,.65)' }}>C++ · Arduino IDE · TinkerCAD · Fusion 360</div>
 
         <div style={{ position: 'relative', marginTop: 22, display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: 14 }}>
