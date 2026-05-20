@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { Scene } from './world/Scene';
 import { HUD } from './components/ui/HUD';
 import { InteractPrompt } from './components/ui/InteractPrompt';
@@ -7,6 +7,7 @@ import { TouchControls } from './components/ui/TouchControls';
 import { LandingPage, QuickViewDashboard } from './components/quick-view/QuickView';
 import { useGame } from './state/gameStore';
 import { Audio } from './audio/AudioManager';
+import { WorldLoadingScreen } from './components/ui/WorldLoadingScreen';
 
 type AppMode = 'landing' | 'quick-view' | 'world';
 
@@ -18,7 +19,10 @@ function modeFromHash(hash: string): AppMode {
 
 export default function App() {
   const [mode, setMode] = useState<AppMode>(() => modeFromHash(window.location.hash));
+  const [worldLoading, setWorldLoading] = useState(() => mode === 'world');
   const closeBuilding = useGame((s) => s.closeBuilding);
+  const worldLoadStartedAt = useRef(0);
+  const worldReadyTimer = useRef<number | null>(null);
 
   useEffect(() => {
     const syncMode = () => setMode(modeFromHash(window.location.hash));
@@ -33,6 +37,27 @@ export default function App() {
   useEffect(() => {
     if (mode !== 'world') Audio.enterZone(null);
   }, [mode]);
+
+  useEffect(() => {
+    if (mode === 'world') {
+      worldLoadStartedAt.current = performance.now();
+      setWorldLoading(true);
+      return;
+    }
+    setWorldLoading(false);
+    if (worldReadyTimer.current !== null) {
+      window.clearTimeout(worldReadyTimer.current);
+      worldReadyTimer.current = null;
+    }
+  }, [mode]);
+
+  useEffect(() => {
+    return () => {
+      if (worldReadyTimer.current !== null) {
+        window.clearTimeout(worldReadyTimer.current);
+      }
+    };
+  }, []);
 
   const showMode = (next: AppMode) => {
     closeBuilding();
@@ -53,12 +78,25 @@ export default function App() {
   if (mode === 'world') {
     return (
       <div className="relative h-full w-full overflow-hidden bg-[#efeae0]">
-        <Scene />
+        <Scene
+          onReady={() => {
+            const elapsed = performance.now() - worldLoadStartedAt.current;
+            const remaining = Math.max(0, 750 - elapsed);
+            if (worldReadyTimer.current !== null) {
+              window.clearTimeout(worldReadyTimer.current);
+            }
+            worldReadyTimer.current = window.setTimeout(() => {
+              setWorldLoading(false);
+              worldReadyTimer.current = null;
+            }, remaining);
+          }}
+        />
         <HUD />
         <InteractPrompt />
         <BuildingDialog />
         <TouchControls />
         <WorldHomeButton onClick={() => showMode('landing')} />
+        {worldLoading ? <WorldLoadingScreen /> : null}
       </div>
     );
   }

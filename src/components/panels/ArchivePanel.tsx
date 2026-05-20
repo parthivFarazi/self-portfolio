@@ -115,7 +115,11 @@ export function ArchivePanel({ width = 820, height = 780 }: PanelProps) {
               <div>└─ <span style={{ color: '#7a5a30' }}>data/</span></div>
             </div>
 
-            <a style={{
+            <a
+              href="https://github.com/parthivFarazi/Embedding-Quote-Retrieval"
+              target="_blank"
+              rel="noopener noreferrer"
+              style={{
               display: 'inline-flex', alignItems: 'center', gap: 8,
               padding: '10px 14px',
               background: 'linear-gradient(180deg, #2a1a0e, #1a1006)',
@@ -125,7 +129,8 @@ export function ArchivePanel({ width = 820, height = 780 }: PanelProps) {
               textTransform: 'uppercase',
               boxShadow: '0 0 18px rgba(245,217,122,.45), inset 0 0 0 1px rgba(245,217,122,.4)',
               textDecoration: 'none',
-            }}>
+            }}
+            >
               ◈ View on GitHub
               <span style={{ font: '11px var(--rw-mono)', color: 'rgba(245,217,122,.65)', letterSpacing: '.06em', textTransform: 'none' }}>
                 github.com/parthivFarazi/Embedding-Quote-Retrieval

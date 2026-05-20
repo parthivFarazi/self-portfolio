@@ -10,7 +10,7 @@ import { Player } from './Player';
 import { IsometricCamera } from './IsometricCamera';
 import { Lighting } from './lighting';
 
-export function Scene() {
+export function Scene({ onReady }: { onReady?: () => void }) {
   return (
     <Canvas
       shadows
@@ -25,6 +25,11 @@ export function Scene() {
         gl.shadowMap.type = THREE.PCFSoftShadowMap;
         if (import.meta.env.DEV) {
           (window as any).__r3f = { gl, scene, camera };
+        }
+        if (onReady) {
+          requestAnimationFrame(() => {
+            requestAnimationFrame(() => onReady());
+          });
         }
       }}
     >

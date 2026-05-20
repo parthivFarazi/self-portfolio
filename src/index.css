@@ -2,6 +2,17 @@
 @tailwind components;
 @tailwind utilities;
 
+@keyframes rw-loading-bounce {
+  0%, 100% {
+    transform: translateY(0);
+    opacity: 0.45;
+  }
+  50% {
+    transform: translateY(-5px);
+    opacity: 1;
+  }
+}
+
 /* Resume World design tokens — mirror the original prototype's <style> block.
    Panels reference these via inline styles; do not rename. */
 :root {
