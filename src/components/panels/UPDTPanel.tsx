@@ -67,7 +67,7 @@ export function UPDTPanel({ width = 820, height = 980 }: PanelProps) {
               <Slot id="updt-cv" w={260} h={102} placeholder="CV tracking · clip frame" shape="rounded" radius={4} src={panelImages.updt.playerTracking}/>
             </HoloFrame>
             <HoloFrame>
-              <div style={{ font: '9.5px "JetBrains Mono", monospace', letterSpacing: '.18em', color: CYAN, textTransform: 'uppercase' }}>pitch keypoints + homography</div>
+              <div style={{ font: '9.5px "JetBrains Mono", monospace', letterSpacing: '.18em', color: CYAN, textTransform: 'uppercase' }}>game prep + team analysis</div>
               <Slot id="updt-tactics" w={260} h={102} placeholder="tactics · screenshot" shape="rounded" radius={4} src={panelImages.updt.tacticalPattern}/>
             </HoloFrame>
           </div>
