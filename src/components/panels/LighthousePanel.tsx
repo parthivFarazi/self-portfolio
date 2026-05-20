@@ -54,7 +54,7 @@ export function LighthousePanel({ width = 760, height = 780 }: PanelProps) {
           <ContactLine icon="☎" label="Call" value="(+1) 404 · 203 · 5379"/>
           <ContactLine icon="◐" label="Find on the web" value="updt.pro"/>
           <ContactLine icon="✦" label="GitHub" value="github.com/parthivFarazi"/>
-          <ContactLine icon="❖" label="LinkedIn" value="linkedin.com/in/parthiv-farazi-1aba8b223"/>
+          <ContactLine icon="❖" label="LinkedIn" value="linkedin.com/in/parthiv-farazi-1aba8b223/"/>
         </div>
 
         <div style={{ position: 'absolute', inset: 0, pointerEvents: 'none', background: 'radial-gradient(ellipse at 100% 0%, rgba(120,70,20,.1), transparent 30%), radial-gradient(ellipse at 0% 100%, rgba(120,70,20,.1), transparent 30%)' }}/>

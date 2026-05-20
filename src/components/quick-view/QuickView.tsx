@@ -517,7 +517,7 @@ function IdentityStrip() {
       <div className="qv-links" aria-label="Quick links">
         <QuickLink href="mailto:parthivfarazi@icloud.com" label="Email">Mail</QuickLink>
         <QuickLink href="https://github.com/parthivFarazi" label="GitHub">GH</QuickLink>
-        <QuickLink href="https://www.linkedin.com/in/parthiv-farazi/" label="LinkedIn">in</QuickLink>
+        <QuickLink href="https://www.linkedin.com/in/parthiv-farazi-1aba8b223/" label="LinkedIn">in</QuickLink>
         <QuickLink href="https://updt.pro" label="UPDT website">UPDT</QuickLink>
       </div>
     </section>
