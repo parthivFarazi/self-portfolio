@@ -1,10 +1,8 @@
 // AudioManager — singleton Web Audio orchestrator for Parthiv's World.
 //
-// Why no Howler.js: we have no audio files in this bundle, and procuring
-// CC0 samples is out of scope for Phase 5. Instead we synthesize every
-// sound directly with Web Audio (oscillators + filtered noise). The public
-// surface (footstep/uiPrompt/panelOpen/...) is asset-agnostic, so swapping
-// to real samples later is a localized change inside this file.
+// UI and environmental tones are synthesized with Web Audio. A few key
+// ambience beds use bundled loop assets so the world sounds like the version
+// the user approved before the performance refactor.
 //
 // Browser autoplay policy: AudioContext starts suspended. Call ensureStart()
 // from any user gesture handler before triggering anything else.
@@ -13,6 +11,7 @@ import type { BuildingId } from '@/data/buildings';
 
 const MUTE_KEY = 'rw.audio.muted';
 const MASTER_VOLUME = 0.7;
+const BACKGROUND_MUSIC_URL = '/audio/mixkit-smooth-meditation-324.mp3';
 const BACKGROUND_MUSIC_GAIN = 0.08;
 
 const BUILDING_ZONES: Record<BuildingId, ZoneConfig> = {
@@ -76,6 +75,14 @@ function clamp01(value: number): number {
   return Math.max(0, Math.min(1, value));
 }
 
+type VoiceSampleKind = 'crowd' | 'chatter' | 'whisper';
+
+const VOICE_SAMPLE_URLS: Record<VoiceSampleKind, string> = {
+  crowd: '/audio/mixkit-huge-crowd-cheering-victory.mp3',
+  chatter: '/audio/mixkit-people-indoors-ambience.mp3',
+  whisper: '/audio/mixkit-male-conspiracy-voices-whispers.mp3',
+};
+
 class AudioManagerImpl {
   ctx: AudioContext | null = null;
   master: GainNode | null = null;
@@ -84,11 +91,16 @@ class AudioManagerImpl {
   uiGain: GainNode | null = null;
   footstepGain: GainNode | null = null;
   zoneBus: GainNode | null = null;
+  musicBuffer: AudioBuffer | null = null;
+  musicLoad: Promise<AudioBuffer | null> | null = null;
+  musicSource: AudioBufferSourceNode | null = null;
   pinkBuffer: AudioBuffer | null = null;
   whiteBuffer: AudioBuffer | null = null;
   muted = loadMute();
   initialized = false;
   zones: Map<BuildingId, ZoneNodes> = new Map();
+  voiceSampleBuffers: Map<VoiceSampleKind, AudioBuffer> = new Map();
+  voiceSampleLoads: Map<VoiceSampleKind, Promise<AudioBuffer | null>> = new Map();
   activeZone: BuildingId | null = null;
   lastFootstepAt = 0;
   listeners: Set<() => void> = new Set();
@@ -138,6 +150,11 @@ class AudioManagerImpl {
     // Start base ambient layer (sporadic birds)
     this.startBirdLoop();
     this.startBackgroundMusic();
+
+    // Warm the human-voice / crowd loops as soon as audio is allowed.
+    void this.loadVoiceSample('crowd');
+    void this.loadVoiceSample('chatter');
+    void this.loadVoiceSample('whisper');
 
     // Resume context if it was suspended
     if (this.ctx.state === 'suspended') {
@@ -199,46 +216,46 @@ class AudioManagerImpl {
   }
 
   private startBackgroundMusic() {
-    if (!this.ctx || !this.musicGain) return;
+    if (!this.ctx || !this.musicGain || this.musicSource) return;
 
-    const progression = [
-      [261.63, 392.0, 523.25],
-      [293.66, 440.0, 587.33],
-      [329.63, 493.88, 659.25],
-      [293.66, 440.0, 587.33],
-    ] as const;
-
-    let chordIndex = 0;
-    const playChord = () => {
-      if (!this.ctx || !this.musicGain) return;
-      const t = this.ctx.currentTime;
-      const chord = progression[chordIndex % progression.length];
-      chordIndex += 1;
-
-      chord.forEach((frequency, idx) => {
-        const osc = this.ctx!.createOscillator();
-        osc.type = idx === 0 ? 'triangle' : 'sine';
-        osc.frequency.setValueAtTime(frequency, t);
-        osc.frequency.linearRampToValueAtTime(frequency * 0.5, t + 3.1);
-
-        const filter = this.ctx!.createBiquadFilter();
-        filter.type = 'lowpass';
-        filter.frequency.value = 900 + idx * 260;
-        filter.Q.value = 0.8;
-
-        const gain = this.ctx!.createGain();
-        gain.gain.setValueAtTime(0.0001, t);
-        gain.gain.linearRampToValueAtTime(BACKGROUND_MUSIC_GAIN / (idx === 0 ? 1.4 : 2.2), t + 0.55);
-        gain.gain.exponentialRampToValueAtTime(0.0001, t + 3.4);
-
-        osc.connect(filter).connect(gain).connect(this.musicGain!);
-        osc.start(t);
-        osc.stop(t + 3.6);
-      });
+    const startLoop = (buffer: AudioBuffer) => {
+      if (!this.ctx || !this.musicGain || this.musicSource) return;
+      const src = this.ctx.createBufferSource();
+      src.buffer = buffer;
+      src.loop = true;
+      src.connect(this.musicGain);
+      src.start(this.ctx.currentTime);
+      this.musicSource = src;
     };
 
-    playChord();
-    window.setInterval(playChord, 2600);
+    if (this.musicBuffer) {
+      startLoop(this.musicBuffer);
+      return;
+    }
+
+    void this.loadBackgroundMusic().then((buffer) => {
+      if (buffer) startLoop(buffer);
+    });
+  }
+
+  private loadBackgroundMusic(): Promise<AudioBuffer | null> {
+    if (!this.ctx) return Promise.resolve(null);
+    if (this.musicBuffer) return Promise.resolve(this.musicBuffer);
+    if (this.musicLoad) return this.musicLoad;
+
+    this.musicLoad = fetch(BACKGROUND_MUSIC_URL)
+      .then((res) => {
+        if (!res.ok) throw new Error('Failed to load background music');
+        return res.arrayBuffer();
+      })
+      .then((data) => this.ctx!.decodeAudioData(data))
+      .then((buffer) => {
+        this.musicBuffer = buffer;
+        return buffer;
+      })
+      .catch(() => null);
+
+    return this.musicLoad;
   }
 
   // ── Footsteps ───────────────────────────────────────────────────────
@@ -413,7 +430,7 @@ class AudioManagerImpl {
 
     switch (cfg.kind) {
       case 'stadium-crowd': {
-        return this.buildCrowdZone(out);
+        return this.buildSampleZone('crowd', out, 0.75);
       }
       case 'hammer': {
         const strike = () => {
@@ -500,7 +517,7 @@ class AudioManagerImpl {
         return { gain: out, cleanup: () => window.clearInterval(timer) };
       }
       case 'whisper': {
-        return this.buildWhisperZone(out);
+        return this.buildSampleZone('whisper', out, 0.5);
       }
       case 'city': {
         const src = this.ctx.createBufferSource();
@@ -547,7 +564,7 @@ class AudioManagerImpl {
         };
       }
       case 'chatter': {
-        return this.buildChatterZone(out);
+        return this.buildSampleZone('chatter', out, 0.7);
       }
       case 'glass-wind': {
         const src = this.ctx.createBufferSource();
@@ -653,60 +670,40 @@ class AudioManagerImpl {
     }
   }
 
-  private buildCrowdZone(out: GainNode): ZoneNodes {
-    if (!this.ctx || !this.pinkBuffer || !this.whiteBuffer) return { gain: out };
+  private buildSampleZone(kind: VoiceSampleKind, out: GainNode, level: number): ZoneNodes {
+    let source: AudioBufferSourceNode | null = null;
+    let cancelled = false;
 
-    const bed = this.ctx.createBufferSource();
-    bed.buffer = this.pinkBuffer;
-    bed.loop = true;
+    const startLoop = (buffer: AudioBuffer) => {
+      if (!this.ctx || cancelled || source) return;
+      const src = this.ctx.createBufferSource();
+      src.buffer = buffer;
+      src.loop = true;
 
-    const band = this.ctx.createBiquadFilter();
-    band.type = 'bandpass';
-    band.frequency.value = 580;
-    band.Q.value = 0.5;
+      const g = this.ctx.createGain();
+      g.gain.value = level;
+      src.connect(g).connect(out);
 
-    const low = this.ctx.createBiquadFilter();
-    low.type = 'lowpass';
-    low.frequency.value = 1800;
+      const maxOffset = Math.max(0, buffer.duration - 0.2);
+      src.start(this.ctx.currentTime, Math.random() * maxOffset);
+      source = src;
+    };
 
-    const bedGain = this.ctx.createGain();
-    bedGain.gain.value = 0.55;
-
-    const lfo = this.ctx.createOscillator();
-    lfo.frequency.value = 0.18;
-    const lfoGain = this.ctx.createGain();
-    lfoGain.gain.value = 0.12;
-    lfo.connect(lfoGain).connect(bedGain.gain);
-
-    bed.connect(band).connect(low).connect(bedGain).connect(out);
-    bed.start();
-    lfo.start();
-
-    const cheerTimer = window.setInterval(() => {
-      if (!this.ctx || !this.whiteBuffer) return;
-      const t = this.ctx.currentTime;
-      const burst = this.ctx.createBufferSource();
-      burst.buffer = this.whiteBuffer;
-      const burstFilter = this.ctx.createBiquadFilter();
-      burstFilter.type = 'bandpass';
-      burstFilter.frequency.value = 1400 + Math.random() * 500;
-      burstFilter.Q.value = 1.4;
-      const burstGain = this.ctx.createGain();
-      burstGain.gain.setValueAtTime(0.0001, t);
-      burstGain.gain.linearRampToValueAtTime(0.08, t + 0.05);
-      burstGain.gain.exponentialRampToValueAtTime(0.0001, t + 0.6);
-      burst.connect(burstFilter).connect(burstGain).connect(out);
-      burst.start(t);
-      burst.stop(t + 0.7);
-    }, 3200);
+    const existing = this.voiceSampleBuffers.get(kind);
+    if (existing) {
+      startLoop(existing);
+    } else {
+      void this.loadVoiceSample(kind).then((buffer) => {
+        if (buffer) startLoop(buffer);
+      });
+    }
 
     return {
       gain: out,
       cleanup: () => {
-        window.clearInterval(cheerTimer);
+        cancelled = true;
         try {
-          bed.stop();
-          lfo.stop();
+          source?.stop();
         } catch {
           // Already stopped.
         }
@@ -714,123 +711,27 @@ class AudioManagerImpl {
     };
   }
 
-  private buildChatterZone(out: GainNode): ZoneNodes {
-    if (!this.ctx || !this.pinkBuffer) return { gain: out };
+  private loadVoiceSample(kind: VoiceSampleKind): Promise<AudioBuffer | null> {
+    if (!this.ctx) return Promise.resolve(null);
+    const cached = this.voiceSampleBuffers.get(kind);
+    if (cached) return Promise.resolve(cached);
+    const existingLoad = this.voiceSampleLoads.get(kind);
+    if (existingLoad) return existingLoad;
 
-    const bed = this.ctx.createBufferSource();
-    bed.buffer = this.pinkBuffer;
-    bed.loop = true;
+    const load = fetch(VOICE_SAMPLE_URLS[kind])
+      .then((res) => {
+        if (!res.ok) throw new Error(`Failed to load ${kind} voice sample`);
+        return res.arrayBuffer();
+      })
+      .then((data) => this.ctx!.decodeAudioData(data))
+      .then((buffer) => {
+        this.voiceSampleBuffers.set(kind, buffer);
+        return buffer;
+      })
+      .catch(() => null);
 
-    const band = this.ctx.createBiquadFilter();
-    band.type = 'bandpass';
-    band.frequency.value = 1050;
-    band.Q.value = 0.8;
-
-    const bedGain = this.ctx.createGain();
-    bedGain.gain.value = 0.22;
-
-    const lfo = this.ctx.createOscillator();
-    lfo.frequency.value = 0.35;
-    const lfoGain = this.ctx.createGain();
-    lfoGain.gain.value = 0.06;
-    lfo.connect(lfoGain).connect(bedGain.gain);
-
-    bed.connect(band).connect(bedGain).connect(out);
-    bed.start();
-    lfo.start();
-
-    const murmurTimer = window.setInterval(() => {
-      if (!this.ctx) return;
-      const t = this.ctx.currentTime;
-      const osc = this.ctx.createOscillator();
-      osc.type = 'triangle';
-      const base = 240 + Math.random() * 220;
-      osc.frequency.setValueAtTime(base, t);
-      osc.frequency.linearRampToValueAtTime(base * (1.15 + Math.random() * 0.12), t + 0.14);
-      const filter = this.ctx.createBiquadFilter();
-      filter.type = 'bandpass';
-      filter.frequency.value = 900 + Math.random() * 400;
-      filter.Q.value = 2.4;
-      const gain = this.ctx.createGain();
-      gain.gain.setValueAtTime(0.0001, t);
-      gain.gain.linearRampToValueAtTime(0.018, t + 0.03);
-      gain.gain.exponentialRampToValueAtTime(0.0001, t + 0.28);
-      osc.connect(filter).connect(gain).connect(out);
-      osc.start(t);
-      osc.stop(t + 0.32);
-    }, 620);
-
-    return {
-      gain: out,
-      cleanup: () => {
-        window.clearInterval(murmurTimer);
-        try {
-          bed.stop();
-          lfo.stop();
-        } catch {
-          // Already stopped.
-        }
-      },
-    };
-  }
-
-  private buildWhisperZone(out: GainNode): ZoneNodes {
-    if (!this.ctx || !this.pinkBuffer || !this.whiteBuffer) return { gain: out };
-
-    const bed = this.ctx.createBufferSource();
-    bed.buffer = this.pinkBuffer;
-    bed.loop = true;
-
-    const high = this.ctx.createBiquadFilter();
-    high.type = 'highpass';
-    high.frequency.value = 1500;
-
-    const low = this.ctx.createBiquadFilter();
-    low.type = 'lowpass';
-    low.frequency.value = 4800;
-
-    const bedGain = this.ctx.createGain();
-    bedGain.gain.value = 0.12;
-
-    const lfo = this.ctx.createOscillator();
-    lfo.frequency.value = 0.24;
-    const lfoGain = this.ctx.createGain();
-    lfoGain.gain.value = 0.04;
-    lfo.connect(lfoGain).connect(bedGain.gain);
-
-    bed.connect(high).connect(low).connect(bedGain).connect(out);
-    bed.start();
-    lfo.start();
-
-    const sibilanceTimer = window.setInterval(() => {
-      if (!this.ctx || !this.whiteBuffer) return;
-      const t = this.ctx.currentTime;
-      const hiss = this.ctx.createBufferSource();
-      hiss.buffer = this.whiteBuffer;
-      const hissFilter = this.ctx.createBiquadFilter();
-      hissFilter.type = 'highpass';
-      hissFilter.frequency.value = 3200 + Math.random() * 800;
-      const hissGain = this.ctx.createGain();
-      hissGain.gain.setValueAtTime(0.0001, t);
-      hissGain.gain.linearRampToValueAtTime(0.035, t + 0.04);
-      hissGain.gain.exponentialRampToValueAtTime(0.0001, t + 0.22);
-      hiss.connect(hissFilter).connect(hissGain).connect(out);
-      hiss.start(t);
-      hiss.stop(t + 0.28);
-    }, 1100);
-
-    return {
-      gain: out,
-      cleanup: () => {
-        window.clearInterval(sibilanceTimer);
-        try {
-          bed.stop();
-          lfo.stop();
-        } catch {
-          // Already stopped.
-        }
-      },
-    };
+    this.voiceSampleLoads.set(kind, load);
+    return load;
   }
 }
 

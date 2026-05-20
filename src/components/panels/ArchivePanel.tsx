@@ -88,7 +88,7 @@ export function ArchivePanel({ width = 820, height = 780 }: PanelProps) {
               <BookGitGlyph/>
               <div>
                 <div style={{ font: '10px var(--rw-mono)', letterSpacing: '.16em', color: '#7a5a30', textTransform: 'uppercase' }}>parthivFarazi /</div>
-                <div style={{ font: 'italic 22px var(--rw-serif)', color: '#2a1a0e', lineHeight: 1 }}>Embedding-Quote-Retrieval</div>
+                <div style={{ font: 'italic 22px var(--rw-serif)', color: '#2a1a0e', lineHeight: 1 }}>embeddingSearchLLM</div>
               </div>
             </div>
 
@@ -116,7 +116,7 @@ export function ArchivePanel({ width = 820, height = 780 }: PanelProps) {
             </div>
 
             <a
-              href="https://github.com/parthivFarazi/Embedding-Quote-Retrieval"
+              href="https://github.com/parthivFarazi/embeddingSearchLLM"
               target="_blank"
               rel="noopener noreferrer"
               style={{
@@ -133,7 +133,7 @@ export function ArchivePanel({ width = 820, height = 780 }: PanelProps) {
             >
               ◈ View on GitHub
               <span style={{ font: '11px var(--rw-mono)', color: 'rgba(245,217,122,.65)', letterSpacing: '.06em', textTransform: 'none' }}>
-                github.com/parthivFarazi/Embedding-Quote-Retrieval
+                github.com/parthivFarazi/embeddingSearchLLM
               </span>
             </a>
           </div>

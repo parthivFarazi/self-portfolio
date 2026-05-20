@@ -7,7 +7,8 @@
 .qv-landing {
   position: relative;
   height: 100%;
-  min-height: 900px;
+  min-height: 960px;
+  min-height: max(100svh, 960px);
   overflow: auto;
   background:
     linear-gradient(180deg, #ffe8c1 0%, #f7d1b6 30%, #e8c4d4 65%, #c8dfd6 100%);
@@ -197,14 +198,14 @@
   width: 100%;
   height: 100%;
   object-fit: cover;
-  object-position: center 34%;
+  object-position: center center;
 }
 
 .qv-choice-grid {
   position: absolute;
   left: 7rem;
   right: 7rem;
-  bottom: 4.75rem;
+  bottom: 6.25rem;
   z-index: 2;
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -305,18 +306,21 @@
 .qv-bottom-note {
   position: absolute;
   left: 50%;
-  bottom: 1.75rem;
+  bottom: 1.15rem;
   z-index: 2;
   transform: translateX(-50%);
   color: rgba(42, 26, 14, .58);
   font: 500 .88rem var(--rw-term);
   letter-spacing: .22em;
   text-transform: uppercase;
-  white-space: nowrap;
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
+  flex-wrap: wrap;
+  justify-content: center;
   align-items: center;
-  gap: 0.7rem;
+  gap: .5rem 1rem;
+  max-width: calc(100% - 3rem);
+  white-space: normal;
   text-align: center;
 }
 
@@ -821,18 +825,74 @@
   transform: translateY(-1px);
 }
 
-@media (max-width: 1180px) {
+@media (max-width: 1180px), (max-height: 980px) {
+  .qv-landing {
+    min-height: 900px;
+    min-height: max(100svh, 900px);
+  }
+
+  .qv-landing-nav {
+    top: 1.5rem;
+    left: 3rem;
+    right: 3rem;
+  }
+
   .qv-hero {
     left: 4rem;
+    top: 7.25rem;
+    max-width: 40rem;
+  }
+
+  .qv-hero h1 {
+    font-size: 4.85rem;
+  }
+
+  .qv-hero p {
+    max-width: 31rem;
+    font-size: 1rem;
   }
 
   .qv-polaroid {
     right: 4rem;
+    top: 10.25rem;
+    width: 12.5rem;
+    height: 18.25rem;
+  }
+
+  .qv-polaroid-art {
+    height: 13.45rem;
   }
 
   .qv-choice-grid {
     left: 4rem;
     right: 4rem;
+    bottom: 5.6rem;
+    gap: 1.25rem;
+  }
+
+  .qv-choice {
+    min-height: 15.85rem;
+    gap: 1.2rem;
+    padding: 1.75rem 1.85rem;
+  }
+
+  .qv-choice-copy h2 {
+    font-size: 3rem;
+  }
+
+  .qv-choice-copy p {
+    max-width: 18rem;
+    font-size: .88rem;
+  }
+
+  .qv-choice-copy strong {
+    margin-top: 1.1rem;
+  }
+
+  .qv-bottom-note {
+    bottom: .95rem;
+    font-size: .74rem;
+    letter-spacing: .18em;
   }
 
   .qv-stats-grid {
@@ -841,6 +901,113 @@
 
   .qv-tile-grid-about {
     grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-height: 860px) and (min-width: 901px) {
+  .qv-landing {
+    min-height: 720px;
+    min-height: max(100svh, 720px);
+  }
+
+  .qv-sun {
+    right: 11rem;
+    top: 4.75rem;
+    width: 8rem;
+    height: 8rem;
+  }
+
+  .qv-landing-nav {
+    top: 1rem;
+    left: 2.5rem;
+    right: 2.5rem;
+  }
+
+  .qv-hero {
+    left: 3rem;
+    top: 4.85rem;
+    max-width: 35rem;
+  }
+
+  .qv-eyebrow {
+    margin-bottom: .9rem;
+    font-size: .72rem;
+    letter-spacing: .22em;
+  }
+
+  .qv-hero h1 {
+    font-size: 4rem;
+  }
+
+  .qv-hero p {
+    max-width: 29rem;
+    margin-top: 1rem;
+    font-size: .98rem;
+    line-height: 1.38;
+  }
+
+  .qv-polaroid {
+    right: 3rem;
+    top: 6.4rem;
+    width: 11rem;
+    height: 15.6rem;
+    padding: .75rem;
+  }
+
+  .qv-polaroid-art {
+    height: 11.7rem;
+  }
+
+  .qv-polaroid-caption {
+    margin-top: .45rem;
+    font-size: .9rem;
+  }
+
+  .qv-choice-grid {
+    left: 3rem;
+    right: 3rem;
+    bottom: 4rem;
+    gap: 1rem;
+  }
+
+  .qv-choice {
+    min-height: 12.9rem;
+    gap: 1rem;
+    padding: 1.35rem 1.5rem;
+  }
+
+  .qv-choice-copy span {
+    margin-bottom: .5rem;
+    font-size: .64rem;
+    letter-spacing: .16em;
+  }
+
+  .qv-choice-copy h2 {
+    margin-bottom: .65rem;
+    font-size: 2.45rem;
+  }
+
+  .qv-choice-copy p {
+    max-width: 16rem;
+    font-size: .82rem;
+    line-height: 1.35;
+  }
+
+  .qv-choice-copy strong {
+    margin-top: .9rem;
+    padding: .58rem .9rem;
+    font-size: .72rem;
+  }
+
+  .qv-bottom-note {
+    bottom: .7rem;
+    gap: .35rem .8rem;
+    font-size: .68rem;
+    letter-spacing: .16em;
+  }
+
+  .qv-built-link {
+    font-size: .7rem;
   }
 }
 
@@ -940,6 +1107,7 @@
 
   .qv-bottom-note {
     margin-top: 2rem;
+    flex-direction: column;
     white-space: normal;
     text-align: center;
   }
