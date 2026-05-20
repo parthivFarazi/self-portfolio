@@ -4,10 +4,7 @@ import type { PanelProps } from './UPDTPanel';
 export function HeatmapPanel({ width = 820, height = 880 }: PanelProps) {
   return (
     <div style={{
-      width, height, position: 'relative',
-      // Larger chalk text — scroll if the larger sizes overflow.
-      overflowX: 'hidden',
-      overflowY: 'auto',
+      width, height, position: 'relative', overflow: 'hidden',
       background: '#3a2410',
       padding: 20,
       fontFamily: 'var(--rw-sans)',
@@ -42,10 +39,10 @@ export function HeatmapPanel({ width = 820, height = 880 }: PanelProps) {
               <h1 style={{ font: '34px/1 "Caveat", cursive', margin: '4px 0 4px', color: '#fffaee', letterSpacing: '.01em' }}>
                 Off-ball runs, in color.
               </h1>
-              <div style={{ font: '15px/1.45 var(--rw-sans, system-ui)', color: 'rgba(244,236,214,.78)', margin: '0 0 6px', maxWidth: '52ch' }}>
+              <div style={{ font: '13.5px/1.4 var(--rw-sans, system-ui)', color: 'rgba(244,236,214,.78)', margin: '0 0 4px', maxWidth: '52ch' }}>
                 A pipeline that scores the runs soccer players make without the ball.
               </div>
-              <div style={{ font: '11.5px "JetBrains Mono", monospace', color: 'rgba(244,236,214,.7)', letterSpacing: '.04em' }}>
+              <div style={{ font: '10.5px "JetBrains Mono", monospace', color: 'rgba(244,236,214,.65)', letterSpacing: '.04em' }}>
                 April 2025 · US Soccer Federation data · Python · Pandas · Matplotlib · Seaborn
               </div>
             </div>
@@ -76,10 +73,10 @@ export function HeatmapPanel({ width = 820, height = 880 }: PanelProps) {
             <span style={{ position: 'absolute', bottom: -1, left: -1, width: 8, height: 8, borderBottom: '2px solid rgba(245,217,122,.6)', borderLeft: '2px solid rgba(245,217,122,.6)' }}/>
             <span style={{ position: 'absolute', bottom: -1, right: -1, width: 8, height: 8, borderBottom: '2px solid rgba(245,217,122,.6)', borderRight: '2px solid rgba(245,217,122,.6)' }}/>
 
-            <div style={{ font: '11px "JetBrains Mono", monospace', letterSpacing: '.22em', textTransform: 'uppercase', color: 'rgba(245,217,122,.85)' }}>
+            <div style={{ font: '9.5px "JetBrains Mono", monospace', letterSpacing: '.22em', textTransform: 'uppercase', color: 'rgba(245,217,122,.85)' }}>
               · what is ORIS? ·
             </div>
-            <div style={{ marginTop: 6, font: '20px/1.4 "Caveat", cursive', color: '#fffaee' }}>
+            <div style={{ marginTop: 4, font: '17px/1.32 "Caveat", cursive', color: '#fffaee' }}>
               <b style={{ color: '#f5d97a' }}>ORIS · Off-Ball Run Impact Score</b> — a metric for what players do <em style={{ color: '#f5b6da' }}>without</em> the ball: decoy runs, third-man movements, space-creating actions that don't show up in traditional stats.
             </div>
           </div>
@@ -122,10 +119,10 @@ export function HeatmapPanel({ width = 820, height = 880 }: PanelProps) {
 
           {/* ── Output caption ───────────────────────────────────────── */}
           <div style={{
-            font: '18px/1.4 "Caveat", cursive',
+            font: '14.5px "Caveat", cursive',
             color: '#cfe4ff',
             textAlign: 'center',
-            marginTop: -2,
+            marginTop: -4,
           }}>
             Heatmaps · Bar charts · Scatter plots — built to surface where impact lives.
           </div>
@@ -199,12 +196,12 @@ function MethodStep({ n, title, sub, icon }: { n: string; title: string; sub: st
       position: 'relative',
     }}>
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-        <span style={{ font: '700 12.5px "JetBrains Mono", monospace', letterSpacing: '.2em', color: '#f5d97a' }}>{n}</span>
-        <span style={{ font: '11px "JetBrains Mono", monospace', letterSpacing: '.14em', color: 'rgba(244,236,214,.62)', textTransform: 'uppercase' }}>{sub}</span>
+        <span style={{ font: '700 11px "JetBrains Mono", monospace', letterSpacing: '.2em', color: '#f5d97a' }}>{n}</span>
+        <span style={{ font: '9.5px "JetBrains Mono", monospace', letterSpacing: '.14em', color: 'rgba(244,236,214,.45)', textTransform: 'uppercase' }}>{sub}</span>
       </div>
       <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
         <div style={{ flexShrink: 0 }}>{icon}</div>
-        <div style={{ font: '18px/1.25 "Caveat", cursive', color: '#fffaee' }}>{title}</div>
+        <div style={{ font: '15px/1.18 "Caveat", cursive', color: '#fffaee' }}>{title}</div>
       </div>
     </div>
   );

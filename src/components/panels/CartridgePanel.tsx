@@ -53,10 +53,7 @@ export function CartridgePanel({ width = 820, height = 920 }: PanelProps) {
           inset 0 0 60px rgba(0,0,0,.55),
           0 6px 14px rgba(0,0,0,.45)
         `,
-        // Pixel body text bumped to 16-17px for readability — let the CRT
-        // scroll if content spills (rather than shrinking back down).
-        overflowX: 'hidden',
-        overflowY: 'auto',
+        overflow: 'hidden',
       }}>
         {/* Scanlines overlay */}
         <div style={{
@@ -84,10 +81,10 @@ export function CartridgePanel({ width = 820, height = 920 }: PanelProps) {
             }}>
               60 FPS, in C.
             </h1>
-            <div style={{ font: `16px ${PIXEL_BODY}`, letterSpacing: '.05em', color: NEON_CYAN, marginTop: 4 }}>
+            <div style={{ font: `14px ${PIXEL_BODY}`, letterSpacing: '.04em', color: NEON_CYAN, marginTop: 4 }}>
               Sixty frames a second, the hard way.
             </div>
-            <div style={{ font: `15px/1.5 ${PIXEL_BODY}`, letterSpacing: '.03em', color: 'rgba(248,244,232,.78)', marginTop: 8, maxWidth: '52ch' }}>
+            <div style={{ font: `13px/1.45 ${PIXEL_BODY}`, letterSpacing: '.03em', color: 'rgba(248,244,232,.78)', marginTop: 6, maxWidth: '52ch' }}>
               A Game Boy Advance game built from scratch on the hardware, in C.
             </div>
           </header>
@@ -96,7 +93,7 @@ export function CartridgePanel({ width = 820, height = 920 }: PanelProps) {
           <PixelPreview />
 
           {/* ── What it does ─────────────────────────────────────────── */}
-          <div style={{ font: `17px/1.5 ${PIXEL_BODY}`, letterSpacing: '.03em', color: OFF_WHITE, opacity: 0.95 }}>
+          <div style={{ font: `15.5px/1.35 ${PIXEL_BODY}`, color: OFF_WHITE, opacity: 0.92 }}>
             A complete GBA game built from the metal up — sprite engine, input loop,
             collision, win/loss states, all in C against the bare hardware framebuffer.
           </div>
@@ -264,10 +261,10 @@ function Callout({ label, accent, body }: { label: string; accent: string; body:
       <span style={{ position: 'absolute', bottom: -1, left: -1, width: 6, height: 6, borderBottom: `2px solid ${accent}`, borderLeft: `2px solid ${accent}` }}/>
       <span style={{ position: 'absolute', bottom: -1, right: -1, width: 6, height: 6, borderBottom: `2px solid ${accent}`, borderRight: `2px solid ${accent}` }}/>
 
-      <div style={{ font: `10px ${PIXEL_FONT}`, letterSpacing: '.22em', color: accent, marginBottom: 8 }}>
+      <div style={{ font: `8.5px ${PIXEL_FONT}`, letterSpacing: '.22em', color: accent, marginBottom: 6 }}>
         {label}
       </div>
-      <div style={{ font: `16px/1.5 ${PIXEL_BODY}`, letterSpacing: '.03em', color: OFF_WHITE }}>
+      <div style={{ font: `13.5px/1.35 ${PIXEL_BODY}`, color: OFF_WHITE }}>
         {body}
       </div>
     </div>
@@ -301,8 +298,7 @@ function CodeWindow() {
       {/* Code body */}
       <pre style={{
         margin: 0, padding: '10px 12px',
-        font: `14px/1.5 ${PIXEL_BODY}`,
-        letterSpacing: '.02em',
+        font: `12px/1.35 ${PIXEL_BODY}`,
         color: PLAIN,
         whiteSpace: 'pre',
         overflow: 'hidden',
