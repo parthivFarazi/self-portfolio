@@ -33,7 +33,7 @@ export function CollegiateTowerPanel({ width = 720, height = 760 }: PanelProps) 
             Georgia Institute<br/>of Technology
           </h1>
           <div style={{ textAlign: 'center', font: '14px var(--rw-mono)', color: '#7a5a30', marginBottom: 18 }}>
-            2023 - 2026
+            BSc in Computer Science
           </div>
           <div style={{ display: 'flex', justifyContent: 'center', marginBottom: 18 }}><Flourish narrow/></div>
 
