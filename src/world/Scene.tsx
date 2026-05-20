@@ -10,22 +10,33 @@ import { Atmosphere } from './atmosphere/Atmosphere';
 import { Player } from './Player';
 import { IsometricCamera } from './IsometricCamera';
 import { Lighting } from './lighting';
+import { PostFX } from './PostFX';
 
 export function Scene({ onReady }: { onReady?: () => void }) {
-  const liteWorld = useMemo(
-    () => window.matchMedia('(pointer: coarse), (max-width: 767px)').matches,
-    [],
-  );
+  const liteWorld = useMemo(() => {
+    // ?lite=1 / ?lite=0 lets you force lite-world on/off for testing
+    // the post-processing path at small viewports. Otherwise auto-detect.
+    const qs = new URLSearchParams(window.location.search);
+    if (qs.get('lite') === '1') return true;
+    if (qs.get('lite') === '0') return false;
+    return window.matchMedia('(pointer: coarse), (max-width: 767px)').matches;
+  }, []);
 
   return (
     <Canvas
       shadows={!liteWorld}
-      dpr={liteWorld ? 0.85 : 1}
+      dpr={liteWorld ? 0.85 : [1, 2]}
       gl={{
         antialias: !liteWorld,
         powerPreference: 'high-performance',
-        toneMapping: THREE.ACESFilmicToneMapping,
-        toneMappingExposure: 1.05,
+        // On desktop, the EffectComposer's <ToneMapping> owns ACES so we keep
+        // the renderer linear (no double tone-map). On liteWorld we skip the
+        // composer entirely, so the renderer must tone-map itself.
+        // On desktop, the EffectComposer's <ToneMapping> owns ACES so we keep
+        // the renderer linear (no double tone-map). On liteWorld we skip the
+        // composer entirely, so the renderer must tone-map itself.
+        toneMapping: liteWorld ? THREE.ACESFilmicToneMapping : THREE.NoToneMapping,
+        toneMappingExposure: liteWorld ? 1.15 : 1.0,
       }}
       onCreated={({ gl, scene, camera }) => {
         gl.shadowMap.type = THREE.PCFSoftShadowMap;
@@ -51,6 +62,10 @@ export function Scene({ onReady }: { onReady?: () => void }) {
       <Buildings />
       <Decorations />
       <Player />
+      {/* Hero-match post-processing — bloom + vignette + ACES. Skipped on
+          liteWorld (mobile/low-end) where the warmed lighting alone carries
+          most of the look. */}
+      {liteWorld ? null : <PostFX />}
     </Canvas>
   );
 }
