@@ -9,7 +9,7 @@ export function TwinTowersPanel({ width = 760, height = 760 }: PanelProps) {
     }}>
       <div style={{ position: 'absolute', inset: 0, background: 'radial-gradient(ellipse at 50% 0%, rgba(245,217,122,.3), transparent 60%)' }}/>
       <Globe x={width - 150} y={height - 170} />
-      <div style={{ position: 'absolute', left: 40, bottom: 40, width: 160, height: 64, background: 'linear-gradient(180deg, #6db862 0%, #4a8a48 100%)', border: '4px solid #2e2520', display: 'grid', placeItems: 'center', font: 'italic 36px var(--rw-serif)', color: '#fffaee', letterSpacing: '.12em', boxShadow: '0 6px 12px rgba(0,0,0,.5)', transform: 'rotate(-3deg)' }}>
+      <div style={{ position: 'absolute', left: 40, bottom: 40, width: 160, height: 64, background: 'linear-gradient(180deg, #6db862 0%, #4a8a48 100%)', border: '4px solid #2e2520', display: 'grid', placeItems: 'center', font: 'italic 24px/1 var(--rw-serif)', color: '#fffaee', letterSpacing: '.04em', boxShadow: '0 6px 12px rgba(0,0,0,.5)', transform: 'rotate(-3deg)', padding: '0 10px', textAlign: 'center' }}>
         — Parthiv —
       </div>
 
