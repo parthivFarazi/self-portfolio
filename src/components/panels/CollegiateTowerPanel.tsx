@@ -30,16 +30,16 @@ export function CollegiateTowerPanel({ width = 720, height = 760 }: PanelProps) 
             Collegiate Tower · Education
           </div>
           <h1 style={{ font: 'italic 56px/1 var(--rw-serif)', margin: '14px 0 6px', textAlign: 'center', color: '#2a1a0e' }}>
-            On scholarship<br/>and engineering.
+            Georgia Institute<br/>of Technology
           </h1>
           <div style={{ textAlign: 'center', font: '14px var(--rw-mono)', color: '#7a5a30', marginBottom: 18 }}>
-            Anno · 2022 — 2026
+            2023 - 2026
           </div>
           <div style={{ display: 'flex', justifyContent: 'center', marginBottom: 18 }}><Flourish narrow/></div>
 
           <div style={{ font: '20px/1.5 var(--rw-serif)', textAlign: 'center', color: '#2a1a0e', margin: '0 auto 18px', maxWidth: 460 }}>
-            Georgia Institute of Technology<br/>
-            <em style={{ font: '17px var(--rw-serif)', color: '#5a3e20' }}>Bachelor of Science · Computer Science</em><br/>
+            Threads<br/>
+            <em style={{ font: '17px var(--rw-serif)', color: '#5a3e20' }}>Intelligence · Modelling and Simulation</em><br/>
             <span style={{ font: '14px var(--rw-mono)', color: '#7a5a30' }}>Expected · December 2026</span>
           </div>
 
