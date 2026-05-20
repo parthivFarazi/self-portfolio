@@ -1,19 +1,3 @@
-import type { ComponentType } from 'react';
-import { UPDTPanel, type PanelProps } from '@/components/panels/UPDTPanel';
-import { RMAICTPanel } from '@/components/panels/RMAICTPanel';
-import { PongPanelV2 } from '@/components/panels/PongPanelV2';
-import { CollegiateTowerPanel } from '@/components/panels/CollegiateTowerPanel';
-import { TwinTowersPanel } from '@/components/panels/TwinTowersPanel';
-import { ForgePanel } from '@/components/panels/ForgePanel';
-import { LighthousePanel } from '@/components/panels/LighthousePanel';
-import { QardPanel } from '@/components/panels/QardPanel';
-import { AthleticPanel } from '@/components/panels/AthleticPanel';
-import { ArchivePanel } from '@/components/panels/ArchivePanel';
-import { SoothePanel } from '@/components/panels/SoothePanel';
-import { HeatmapPanel } from '@/components/panels/HeatmapPanel';
-import { WorkshopPanel } from '@/components/panels/WorkshopPanel';
-import { CartridgePanel } from '@/components/panels/CartridgePanel';
-
 export type BuildingId =
   | 'updt'
   | 'rmaict'
@@ -49,7 +33,6 @@ export interface BuildingDef {
   shape: BuildingShape;
   color: string;
   triggerRadius: number;
-  panel: ComponentType<PanelProps>;
   panelSize: { w: number; h: number };
 }
 
@@ -64,7 +47,6 @@ export const BUILDINGS: BuildingDef[] = [
     shape: { kind: 'cylinder', radius: 13, height: 8 },
     color: '#b3dfd7',
     triggerRadius: 18,
-    panel: UPDTPanel,
     panelSize: { w: 820, h: 980 },
   },
   {
@@ -76,7 +58,6 @@ export const BUILDINGS: BuildingDef[] = [
     shape: { kind: 'box', width: 5, depth: 5, height: 14 },
     color: '#c97e58',
     triggerRadius: 6.5,
-    panel: RMAICTPanel,
     panelSize: { w: 760, h: 780 },
   },
   {
@@ -88,7 +69,6 @@ export const BUILDINGS: BuildingDef[] = [
     shape: { kind: 'box', width: 10, depth: 7, height: 4.5 },
     color: '#f6f1e4',
     triggerRadius: 8.5,
-    panel: PongPanelV2,
     panelSize: { w: 760, h: 880 },
   },
 
@@ -102,7 +82,6 @@ export const BUILDINGS: BuildingDef[] = [
     shape: { kind: 'box', width: 4.4, depth: 4.4, height: 14 },
     color: '#a8553c',
     triggerRadius: 7,
-    panel: CollegiateTowerPanel,
     panelSize: { w: 720, h: 760 },
   },
   {
@@ -116,7 +95,6 @@ export const BUILDINGS: BuildingDef[] = [
     shape: { kind: 'twin', width: 5, depth: 5, height: 28, spacing: 8 },
     color: '#c5cdd2',
     triggerRadius: 12,
-    panel: TwinTowersPanel,
     panelSize: { w: 760, h: 760 },
   },
   {
@@ -128,7 +106,6 @@ export const BUILDINGS: BuildingDef[] = [
     shape: { kind: 'box', width: 8, depth: 6, height: 4 },
     color: '#b8b3a3',
     triggerRadius: 8,
-    panel: ForgePanel,
     panelSize: { w: 760, h: 780 },
   },
   {
@@ -140,7 +117,6 @@ export const BUILDINGS: BuildingDef[] = [
     shape: { kind: 'cylinder', radius: 2, height: 14 },
     color: '#f6f1e4',
     triggerRadius: 5.5,
-    panel: LighthousePanel,
     panelSize: { w: 760, h: 780 },
   },
 
@@ -154,7 +130,6 @@ export const BUILDINGS: BuildingDef[] = [
     shape: { kind: 'dome', radius: 4, baseHeight: 1.2 },
     color: '#94e2c0',
     triggerRadius: 8,
-    panel: QardPanel,
     panelSize: { w: 760, h: 780 },
   },
   {
@@ -166,7 +141,6 @@ export const BUILDINGS: BuildingDef[] = [
     shape: { kind: 'oval', radiusX: 12, radiusZ: 8, height: 6 },
     color: '#bcb6a0',
     triggerRadius: 14,
-    panel: AthleticPanel,
     panelSize: { w: 880, h: 780 },
   },
   {
@@ -178,7 +152,6 @@ export const BUILDINGS: BuildingDef[] = [
     shape: { kind: 'box', width: 7, depth: 7, height: 4 },
     color: '#d6c5a0',
     triggerRadius: 8,
-    panel: ArchivePanel,
     panelSize: { w: 820, h: 780 },
   },
   {
@@ -190,7 +163,6 @@ export const BUILDINGS: BuildingDef[] = [
     shape: { kind: 'disc', radius: 5 },
     color: '#d4c8a0',
     triggerRadius: 7,
-    panel: SoothePanel,
     panelSize: { w: 760, h: 780 },
   },
   {
@@ -202,7 +174,6 @@ export const BUILDINGS: BuildingDef[] = [
     shape: { kind: 'disc', radius: 5 },
     color: '#e3a572',
     triggerRadius: 7,
-    panel: HeatmapPanel,
     panelSize: { w: 820, h: 880 },
   },
   {
@@ -214,7 +185,6 @@ export const BUILDINGS: BuildingDef[] = [
     shape: { kind: 'box', width: 4, depth: 4, height: 3 },
     color: '#8b5a3c',
     triggerRadius: 5.5,
-    panel: WorkshopPanel,
     panelSize: { w: 760, h: 780 },
   },
   {
@@ -228,7 +198,6 @@ export const BUILDINGS: BuildingDef[] = [
     shape: { kind: 'box', width: 4, depth: 2.5, height: 0.6 },
     color: '#7E6CBC',
     triggerRadius: 4.5,
-    panel: CartridgePanel,
     panelSize: { w: 820, h: 920 },
   },
 ];

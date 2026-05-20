@@ -1,15 +1,16 @@
-import { useEffect, useRef } from 'react';
+import { Suspense, useEffect, useRef } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
 import { useGame } from '@/state/gameStore';
 import { getBuilding } from '@/data/buildings';
 import { Audio } from '@/audio/AudioManager';
 import { ResponsivePanel } from './ResponsivePanel';
+import { getLazyPanel } from '@/components/panels/panelRegistry';
 
 export function BuildingDialog() {
   const active = useGame((s) => s.activeBuildingId);
   const close = useGame((s) => s.closeBuilding);
   const def = active ? getBuilding(active) : null;
-  const Panel = def?.panel;
+  const Panel = active ? getLazyPanel(active) : null;
 
   // Fire page-turn on open, soft click on close. Sentinel tracks last known
   // active id so we only ping on edge transitions, not re-renders.
@@ -45,9 +46,11 @@ export function BuildingDialog() {
             className="relative shadow-[0_30px_80px_rgba(0,0,0,0.55)]"
             onClick={(e) => e.stopPropagation()}
           >
-            <ResponsivePanel width={def.panelSize.w} height={def.panelSize.h}>
-              <Panel width={def.panelSize.w} height={def.panelSize.h} />
-            </ResponsivePanel>
+            <Suspense fallback={<PanelLoadingState width={def.panelSize.w} height={def.panelSize.h} />}>
+              <ResponsivePanel width={def.panelSize.w} height={def.panelSize.h}>
+                <Panel width={def.panelSize.w} height={def.panelSize.h} />
+              </ResponsivePanel>
+            </Suspense>
           </motion.div>
 
           {/* Close button — 44px min for mobile tap target */}
@@ -62,5 +65,31 @@ export function BuildingDialog() {
         </motion.div>
       )}
     </AnimatePresence>
+  );
+}
+
+function PanelLoadingState({ width, height }: { width: number; height: number }) {
+  return (
+    <ResponsivePanel width={width} height={height}>
+      <div
+        style={{
+          width,
+          height,
+          display: 'grid',
+          placeItems: 'center',
+          background:
+            'radial-gradient(circle at 50% 24%, rgba(255,255,255,0.16), transparent 28%), linear-gradient(180deg, #efe6cf 0%, #d8c9a6 100%)',
+          color: '#2a1a0e',
+          fontFamily: 'var(--rw-sans)',
+        }}
+      >
+        <div style={{ textAlign: 'center' }}>
+          <div style={{ font: '11px "JetBrains Mono", monospace', letterSpacing: '.24em', textTransform: 'uppercase', color: '#7a5a30' }}>
+            Loading panel
+          </div>
+          <div style={{ marginTop: 10, font: 'italic 30px var(--rw-serif)' }}>Opening the notebook...</div>
+        </div>
+      </div>
+    </ResponsivePanel>
   );
 }

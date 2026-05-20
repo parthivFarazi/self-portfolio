@@ -7,6 +7,7 @@ import { nearestBuilding } from '@/hooks/useProximity';
 import { BUILDINGS, type BuildingDef, type BuildingId } from '@/data/buildings';
 import { Audio } from '@/audio/AudioManager';
 import { touchInput } from '@/hooks/useTouchInput';
+import { preloadPanel } from '@/components/panels/panelRegistry';
 import {
   PLAYER_SPEED,
   PLAYER_ACCEL,
@@ -231,6 +232,7 @@ export function Player() {
     if (newId !== lastNearby.current) {
       // Soft chime when a fresh interaction prompt becomes available.
       if (newId && !lastNearby.current) Audio.uiPrompt();
+      if (newId) preloadPanel(newId);
       lastNearby.current = newId;
       useGame.getState().setNearbyBuilding(newId);
     }

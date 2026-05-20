@@ -1,77 +1,103 @@
-import { useMemo, useRef } from 'react';
+import { useEffect, useMemo, useRef } from 'react';
 import { useFrame } from '@react-three/fiber';
-import { type Mesh } from 'three';
+import {
+  BoxGeometry,
+  ConeGeometry,
+  CylinderGeometry,
+  InstancedMesh,
+  MeshStandardMaterial,
+  Object3D,
+} from 'three';
 import { stoneCool, woodDark } from '../materials';
 import type { LanternPlacement } from './placements';
 
-// Lanterns total ~22. We deliberately do NOT add a per-lantern <pointLight>:
-// MeshStandardMaterial evaluates every light per fragment, so 22 dynamic
-// lights would dominate the frame cost. The emissive amber material + the
-// scene's existing Bloom pass deliver the "lit" visual without that cost.
+// Lanterns total ~22, so instancing is mostly about keeping draw calls low
+// rather than memory. All glass heads share the same soft pulse to preserve
+// the "lit" look without per-lantern lights.
 
 const PULSE_FREQ = 0.5;       // Hz
 const PULSE_AMPLITUDE = 0.10; // ±10% intensity
 const EMISSIVE_BASE = 1.4;    // slightly higher to compensate for no light
 
-function Lantern({ placement, seed }: { placement: LanternPlacement; seed: number }) {
-  const glassRef = useRef<Mesh>(null);
+export function Lanterns({ lanterns }: { lanterns: LanternPlacement[] }) {
+  const postRef = useRef<InstancedMesh>(null);
+  const baseRef = useRef<InstancedMesh>(null);
+  const beamRef = useRef<InstancedMesh>(null);
+  const glassRef = useRef<InstancedMesh>(null);
+  const capRef = useRef<InstancedMesh>(null);
+
+  const postGeo = useMemo(() => new CylinderGeometry(0.06, 0.07, 1.4, 6), []);
+  const baseGeo = useMemo(() => new CylinderGeometry(0.16, 0.2, 0.1, 8), []);
+  const beamGeo = useMemo(() => new BoxGeometry(0.32, 0.05, 0.08), []);
+  const glassGeo = useMemo(() => new BoxGeometry(0.22, 0.28, 0.22), []);
+  const capGeo = useMemo(() => new ConeGeometry(0.18, 0.16, 4), []);
+  const glassMat = useMemo(
+    () =>
+      new MeshStandardMaterial({
+        color: '#fbe6cc',
+        emissive: '#f5b66a',
+        emissiveIntensity: EMISSIVE_BASE,
+        roughness: 0.4,
+        transparent: true,
+        opacity: 0.92,
+      }),
+    [],
+  );
+
+  const root = useMemo(() => new Object3D(), []);
+  const part = useMemo(() => new Object3D(), []);
+
+  useEffect(() => {
+    const refs = [postRef.current, baseRef.current, beamRef.current, glassRef.current, capRef.current];
+    if (refs.some((ref) => !ref)) return;
+
+    lanterns.forEach((placement, i) => {
+      root.position.set(placement.pos[0], 0, placement.pos[1]);
+      root.rotation.set(0, placement.rot ?? 0, 0);
+      root.updateMatrix();
+
+      setInstance(postRef.current!, i, root, part, [0, 0.7, 0]);
+      setInstance(baseRef.current!, i, root, part, [0, 0.05, 0]);
+      setInstance(beamRef.current!, i, root, part, [0, 1.42, 0]);
+      setInstance(glassRef.current!, i, root, part, [0, 1.6, 0]);
+      setInstance(capRef.current!, i, root, part, [0, 1.82, 0]);
+    });
+
+    postRef.current!.instanceMatrix.needsUpdate = true;
+    baseRef.current!.instanceMatrix.needsUpdate = true;
+    beamRef.current!.instanceMatrix.needsUpdate = true;
+    glassRef.current!.instanceMatrix.needsUpdate = true;
+    capRef.current!.instanceMatrix.needsUpdate = true;
+  }, [lanterns, part, root]);
 
   useFrame(({ clock }) => {
-    const t = clock.getElapsedTime();
-    const phase = seed * 1.7;
-    const pulse = Math.sin(t * PULSE_FREQ * 2 * Math.PI + phase);
-    const k = 1 + pulse * PULSE_AMPLITUDE;
-    if (glassRef.current) {
-      const mat = glassRef.current.material as any;
-      if (mat.emissiveIntensity !== undefined) mat.emissiveIntensity = EMISSIVE_BASE * k;
-    }
+    const pulse = Math.sin(clock.getElapsedTime() * PULSE_FREQ * 2 * Math.PI);
+    const intensity = EMISSIVE_BASE * (1 + pulse * PULSE_AMPLITUDE);
+    glassMat.emissiveIntensity = intensity;
   });
 
   return (
-    <group position={[placement.pos[0], 0, placement.pos[1]]} rotation={[0, placement.rot ?? 0, 0]}>
-      {/* Wooden post */}
-      <mesh castShadow material={woodDark} position={[0, 0.7, 0]}>
-        <cylinderGeometry args={[0.06, 0.07, 1.4, 6]} />
-      </mesh>
-      {/* Stone base ring */}
-      <mesh castShadow receiveShadow material={stoneCool} position={[0, 0.05, 0]}>
-        <cylinderGeometry args={[0.16, 0.2, 0.1, 8]} />
-      </mesh>
-      {/* Crossbeam under the lantern head */}
-      <mesh castShadow material={woodDark} position={[0, 1.42, 0]}>
-        <boxGeometry args={[0.32, 0.05, 0.08]} />
-      </mesh>
-      {/* Glass head — emissive amber, gently pulsing */}
-      <mesh ref={glassRef} position={[0, 1.6, 0]}>
-        <boxGeometry args={[0.22, 0.28, 0.22]} />
-        <meshStandardMaterial
-          color="#fbe6cc"
-          emissive="#f5b66a"
-          emissiveIntensity={EMISSIVE_BASE}
-          roughness={0.4}
-          transparent
-          opacity={0.92}
-        />
-      </mesh>
-      {/* Pyramidal cap on top */}
-      <mesh castShadow material={woodDark} position={[0, 1.82, 0]}>
-        <coneGeometry args={[0.18, 0.16, 4]} />
-      </mesh>
+    <group>
+      <instancedMesh ref={postRef} args={[postGeo, woodDark, lanterns.length]} castShadow />
+      <instancedMesh ref={baseRef} args={[baseGeo, stoneCool, lanterns.length]} castShadow receiveShadow />
+      <instancedMesh ref={beamRef} args={[beamGeo, woodDark, lanterns.length]} castShadow />
+      <instancedMesh ref={glassRef} args={[glassGeo, glassMat, lanterns.length]} />
+      <instancedMesh ref={capRef} args={[capGeo, woodDark, lanterns.length]} castShadow />
     </group>
   );
 }
 
-export function Lanterns({ lanterns }: { lanterns: LanternPlacement[] }) {
-  // Stable per-lantern seeds so pulses are out of phase.
-  const seeded = useMemo(
-    () => lanterns.map((l, i) => ({ placement: l, seed: i * 0.317 + 0.05 })),
-    [lanterns],
-  );
-  return (
-    <group>
-      {seeded.map((entry, i) => (
-        <Lantern key={i} placement={entry.placement} seed={entry.seed} />
-      ))}
-    </group>
-  );
+function setInstance(
+  mesh: InstancedMesh,
+  index: number,
+  root: Object3D,
+  part: Object3D,
+  position: [number, number, number],
+) {
+  part.position.set(position[0], position[1], position[2]);
+  part.rotation.set(0, 0, 0);
+  part.scale.set(1, 1, 1);
+  part.updateMatrix();
+  part.matrix.premultiply(root.matrix);
+  mesh.setMatrixAt(index, part.matrix);
 }

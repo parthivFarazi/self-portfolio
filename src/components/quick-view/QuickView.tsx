@@ -1,10 +1,11 @@
 import { AnimatePresence, motion } from 'framer-motion';
-import { useEffect, useState, type ReactNode } from 'react';
+import { Suspense, useEffect, useState, type ReactNode } from 'react';
 import { getBuilding, type BuildingId } from '@/data/buildings';
 import { AvatarFront } from './Avatar';
 import { Thumb, type ThumbKind } from './Thumb';
 import { Audio } from '@/audio/AudioManager';
 import { ResponsivePanel } from '../ui/ResponsivePanel';
+import { getLazyPanel, preloadPanel } from '../panels/panelRegistry';
 import './quick-view.css';
 
 type DashboardGroup = 'work' | 'projects' | 'about';
@@ -400,7 +401,11 @@ function DashboardTile({ tile, layout, onOpen }: { tile: DashboardTileData; layo
       className={`qv-tile qv-tile-${layout}`}
       type="button"
       onClick={() => onOpen(tile.panelId)}
-      onMouseEnter={() => Audio.tileHover()}
+      onMouseEnter={() => {
+        Audio.tileHover();
+        preloadPanel(tile.panelId);
+      }}
+      onFocus={() => preloadPanel(tile.panelId)}
     >
       <div className="qv-tile-thumb">
         <Thumb kind={tile.thumb} w="100%" h="100%" />
@@ -424,7 +429,7 @@ function DashboardTile({ tile, layout, onOpen }: { tile: DashboardTileData; layo
 
 function DashboardPanelOverlay({ id, onClose, onHome }: { id: BuildingId; onClose: () => void; onHome: () => void }) {
   const def = getBuilding(id);
-  const Panel = def.panel;
+  const Panel = getLazyPanel(id);
   const goHome = () => {
     onClose();
     onHome();
@@ -447,9 +452,11 @@ function DashboardPanelOverlay({ id, onClose, onHome }: { id: BuildingId; onClos
         transition={{ duration: 0.28, ease: [0.22, 1, 0.36, 1] }}
         onClick={(event) => event.stopPropagation()}
       >
-        <ResponsivePanel width={def.panelSize.w} height={def.panelSize.h}>
-          <Panel width={def.panelSize.w} height={def.panelSize.h} />
-        </ResponsivePanel>
+        <Suspense fallback={<QuickPanelLoading width={def.panelSize.w} height={def.panelSize.h} />}>
+          <ResponsivePanel width={def.panelSize.w} height={def.panelSize.h}>
+            <Panel width={def.panelSize.w} height={def.panelSize.h} />
+          </ResponsivePanel>
+        </Suspense>
       </motion.div>
       <button type="button" className="qv-panel-close" aria-label="Close panel" onClick={onClose}>
         x
@@ -458,6 +465,32 @@ function DashboardPanelOverlay({ id, onClose, onHome }: { id: BuildingId; onClos
         Home Screen
       </button>
     </motion.div>
+  );
+}
+
+function QuickPanelLoading({ width, height }: { width: number; height: number }) {
+  return (
+    <ResponsivePanel width={width} height={height}>
+      <div
+        style={{
+          width,
+          height,
+          display: 'grid',
+          placeItems: 'center',
+          background:
+            'radial-gradient(circle at 50% 20%, rgba(255,255,255,0.18), transparent 24%), linear-gradient(180deg, #fbf3da 0%, #ead9b4 100%)',
+          color: '#2a1a0e',
+          fontFamily: 'var(--rw-sans)',
+        }}
+      >
+        <div style={{ textAlign: 'center' }}>
+          <div style={{ font: '11px "JetBrains Mono", monospace', letterSpacing: '.24em', textTransform: 'uppercase', color: '#7a5a30' }}>
+            Loading panel
+          </div>
+          <div style={{ marginTop: 10, font: 'italic 30px var(--rw-serif)' }}>Pulling the card...</div>
+        </div>
+      </div>
+    </ResponsivePanel>
   );
 }
 
