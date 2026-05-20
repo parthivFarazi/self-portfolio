@@ -79,28 +79,28 @@ export function UPDTPanel({ width = 820, height = 980 }: PanelProps) {
             label="01 · CO-FOUNDER CONTEXT"
             accent={MINT}
             body={<>
-              Co-founded with a <b>UEFA B-licensed analyst</b> who leads tactical and domain workflows. I own end-to-end CV/ML pipeline architecture, infrastructure, and product direction.
+              Co-founded with a <b>UEFA B-licensed analyst</b>. I own CV/ML, infra, and product end-to-end.
             </>}
           />
           <Quadrant
             label="02 · COMPUTER VISION"
             accent={MAGENTA}
             body={<>
-              <b>YOLOv8</b> player + ball detection, custom-trained on a <b>hand-labeled dataset of 100+ soccer clips</b>. Tuned confidence thresholds to handle motion blur, white-line ball confusion, and inconsistent broadcast footage.
+              <b>YOLOv8</b> player + ball detection. Custom-trained on <b>100+ hand-labeled clips</b>. Tuned for motion blur, white-line confusion, and noisy broadcasts.
             </>}
           />
           <Quadrant
             label="03 · PITCH GEOMETRY"
             accent={CYAN}
             body={<>
-              <b>Pitch keypoint detection + homography estimation</b> translates broadcast footage into normalized tactical coordinates — handling camera pans, zooms, and incomplete field visibility. Analyst-in-the-loop verification keeps outputs reliable on low-quality footage.
+              <b>Keypoint detection + homography</b>. Broadcast → tactical coordinates. Survives pans, zooms, partial views. Analyst-in-the-loop QA.
             </>}
           />
           <Quadrant
             label="04 · INFRASTRUCTURE"
             accent={GOLD}
             body={<>
-              Trained on <b>Georgia Tech's PACE ICE HPC cluster</b> (H100 GPUs, Slurm, CUDA). Production stack: <b>FastAPI · Supabase/PostgreSQL · Cloudflare R2</b>.
+              Trained on <b>GT PACE ICE</b> (H100 · Slurm · CUDA). Stack: <b>FastAPI · Supabase/Postgres · Cloudflare R2</b>.
             </>}
           />
         </div>

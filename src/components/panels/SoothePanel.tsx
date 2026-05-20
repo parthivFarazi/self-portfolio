@@ -27,6 +27,7 @@ export function SoothePanel({ width = 760, height = 780 }: PanelProps) {
               <p style={{ margin: '0 0 6px' }}>· GPT-4 powers the prompt + analysis layer; Firebase, GCP App Engine, Firestore hold it together.</p>
               <p style={{ margin: '0 0 6px' }}>· 90%+ test coverage. CI/CD via GitHub Actions.</p>
               <p style={{ margin: '8px 0 4px', font: 'italic 14px var(--rw-serif)', color: '#5a3e20' }}>May — Jul 2025 · React Native · FastAPI · Firebase · GCP · GPT-4</p>
+              <SootheDemoBookmark/>
             </div>
             <div style={{ position: 'absolute', right: 14, bottom: 24, width: 36, height: 70, transform: 'rotate(20deg)' }}>
               <svg viewBox="0 0 36 70" width="36" height="70">
@@ -63,8 +64,6 @@ export function SoothePanel({ width = 760, height = 780 }: PanelProps) {
 
           <div style={{ position: 'absolute', top: -6, right: 60, width: 24, height: 60, background: 'linear-gradient(180deg, #e07ec3, #b85aa0)', clipPath: 'polygon(0 0, 100% 0, 100% 100%, 50% 80%, 0 100%)', boxShadow: '2px 2px 4px rgba(0,0,0,.3)' }}/>
 
-          {/* Pressed-flower bookmark tucked into the bottom-right of the journal. */}
-          <SootheDemoBookmark/>
         </div>
       </div>
     </div>
@@ -78,44 +77,69 @@ function SootheDemoBookmark() {
       target="_blank"
       rel="noopener noreferrer"
       style={{
-        // Positioned over the gutter at the bottom of the spread so it looks
-        // like a real bookmark sticking out of the open journal.
-        position: 'absolute',
-        bottom: -18,
-        left: '50%',
-        transform: 'translateX(-50%) rotate(-2.5deg)',
+        // Earthy "library card" pinned beneath the bullet points on the
+        // left page — sits in normal flow so it always anchors directly
+        // below the metadata line. Muted cream/sand palette with a sage
+        // accent so it reads as journal stationery rather than candy.
         display: 'inline-flex',
         flexDirection: 'column',
-        alignItems: 'center',
+        alignItems: 'flex-start',
         justifyContent: 'center',
         gap: 2,
-        minHeight: 46,
-        minWidth: 180,
-        padding: '8px 18px 14px',
-        background: 'linear-gradient(180deg, #fffaee 0%, #f7d8e8 78%, #e8a8cd 100%)',
-        color: '#3a1c2a',
+        minHeight: 48,
+        marginTop: 14,
+        padding: '8px 14px',
+        background: 'linear-gradient(180deg, #fffaee 0%, #f0e1c2 100%)',
+        color: '#3a2a1e',
         textDecoration: 'none',
-        // Pointed bookmark notch at the bottom
-        clipPath: 'polygon(0 0, 100% 0, 100% calc(100% - 12px), 60% calc(100% - 12px), 50% 100%, 40% calc(100% - 12px), 0 calc(100% - 12px))',
-        boxShadow: '0 8px 18px rgba(120,40,80,.28), 0 0 14px rgba(245,182,218,.45)',
-        transition: 'transform .14s ease, box-shadow .18s ease, filter .18s ease',
+        border: '1px solid #c8b585',
+        borderRadius: 3,
+        boxShadow:
+          '0 2px 0 #a89464, 0 8px 16px rgba(80,50,20,.22), inset 0 0 0 1px rgba(255,255,255,.55)',
+        transform: 'rotate(-1deg)',
+        transition: 'transform .14s ease, box-shadow .18s ease',
         zIndex: 3,
       }}
       onMouseEnter={(e) => {
-        e.currentTarget.style.transform = 'translateX(-50%) rotate(-2.5deg) translateY(-3px)';
-        e.currentTarget.style.boxShadow = '0 14px 26px rgba(120,40,80,.4), 0 0 22px rgba(245,182,218,.7)';
-        e.currentTarget.style.filter = 'brightness(1.04)';
+        e.currentTarget.style.transform = 'rotate(-1deg) translateY(-2px)';
+        e.currentTarget.style.boxShadow =
+          '0 4px 0 #a89464, 0 12px 22px rgba(80,50,20,.28), 0 0 14px rgba(122,139,74,.35), inset 0 0 0 1px rgba(255,255,255,.65)';
       }}
       onMouseLeave={(e) => {
-        e.currentTarget.style.transform = 'translateX(-50%) rotate(-2.5deg)';
-        e.currentTarget.style.boxShadow = '0 8px 18px rgba(120,40,80,.28), 0 0 14px rgba(245,182,218,.45)';
-        e.currentTarget.style.filter = 'none';
+        e.currentTarget.style.transform = 'rotate(-1deg)';
+        e.currentTarget.style.boxShadow =
+          '0 2px 0 #a89464, 0 8px 16px rgba(80,50,20,.22), inset 0 0 0 1px rgba(255,255,255,.55)';
       }}
     >
-      <span style={{ font: '10px "JetBrains Mono", monospace', letterSpacing: '.22em', color: '#8a3a6a', textTransform: 'uppercase' }}>
-        ♡ Demo
+      <span
+        style={{
+          display: 'inline-flex',
+          alignItems: 'center',
+          gap: 6,
+          font: '9.5px "JetBrains Mono", monospace',
+          letterSpacing: '.22em',
+          color: '#5a7048',
+          textTransform: 'uppercase',
+        }}
+      >
+        <svg viewBox="0 0 12 14" width="10" height="11" aria-hidden="true">
+          <path
+            d="M6 1 Q11 5 9 12 Q6 13 3 12 Q1 5 6 1 Z"
+            fill="#7a8b4a"
+            opacity="0.85"
+          />
+          <path d="M6 2 L6 12" stroke="#3a4e20" strokeWidth=".6" opacity=".7" />
+        </svg>
+        Demo · 3 min
       </span>
-      <span style={{ font: '700 19px "Caveat", cursive', color: '#3a1c2a', lineHeight: 1, marginTop: 2 }}>
+      <span
+        style={{
+          font: '700 17px "Caveat", cursive',
+          color: '#3a2a1e',
+          lineHeight: 1,
+          marginTop: 2,
+        }}
+      >
         Watch the demo →
       </span>
     </a>

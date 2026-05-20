@@ -3,7 +3,7 @@ import { Slot, PanelHeader } from './_shared';
 import type { PanelProps } from './UPDTPanel';
 import { panelImages } from './panelImages';
 
-export function PongPanelV2({ width = 760, height = 780 }: PanelProps) {
+export function PongPanelV2({ width = 760, height = 880 }: PanelProps) {
   return (
     <div style={{
       width, height, position: 'relative', overflow: 'hidden',
@@ -49,7 +49,7 @@ export function PongPanelV2({ width = 760, height = 780 }: PanelProps) {
             </PhoneFrame>
           </div>
 
-          <div style={{ font: '20px/1.5 "Caveat", cursive', color: '#1a1410' }}>
+          <div style={{ font: '20px/1.5 "Caveat", cursive', color: '#1a1410', paddingBottom: 78 }}>
             <p style={{ margin: '0 0 6px' }}><span style={{ color: '#c44a3a' }}>★</span> Cross-platform mobile app. <em>70+ users</em>, multiple locations.</p>
             <p style={{ margin: '0 0 6px' }}><span style={{ color: '#c44a3a' }}>★</span> Supabase backend — secure auth, real-time, persistent storage.</p>
             <p style={{ margin: '0 0 6px' }}><span style={{ color: '#c44a3a' }}>★</span> Replaced paper logging — saved <strong style={{ background: '#f5d97a' }}>2+ hrs</strong> of post-game entry.</p>
@@ -72,10 +72,12 @@ function AppStoreSticker() {
       rel="noopener noreferrer"
       style={{
         // Sticker affixed to the notebook — slight 3° rotation + a torn
-        // white border to read as "stuck on after the fact".
+        // white border to read as "stuck on after the fact". Pinned to the
+        // bottom-left corner clear of the handwritten bullets above and the
+        // "we won." scribble in the bottom-right.
         position: 'absolute',
-        left: 88,
-        bottom: 22,
+        left: 70,
+        bottom: 14,
         display: 'inline-flex',
         alignItems: 'center',
         gap: 8,

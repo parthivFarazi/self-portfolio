@@ -89,7 +89,7 @@ export const BUILDINGS: BuildingDef[] = [
     color: '#f6f1e4',
     triggerRadius: 8.5,
     panel: PongPanelV2,
-    panelSize: { w: 760, h: 780 },
+    panelSize: { w: 760, h: 880 },
   },
 
   // ─── MID RING ────────────────────────────────────────────────────────────
