@@ -84,9 +84,6 @@ export function CartridgePanel({ width = 820, height = 920 }: PanelProps) {
             <div style={{ font: `14px ${PIXEL_BODY}`, letterSpacing: '.04em', color: NEON_CYAN, marginTop: 4 }}>
               Sixty frames a second, the hard way.
             </div>
-            <div style={{ font: `13px/1.45 ${PIXEL_BODY}`, letterSpacing: '.03em', color: 'rgba(248,244,232,.78)', marginTop: 6, maxWidth: '52ch' }}>
-              A Game Boy Advance game built from scratch on the hardware, in C.
-            </div>
           </header>
 
           {/* ── Animated mini "screen" — pixel sprite chasing the goal ── */}

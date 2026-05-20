@@ -30,9 +30,6 @@ export function ArchivePanel({ width = 820, height = 780 }: PanelProps) {
           <h1 style={{ font: 'italic 38px/1.05 var(--rw-serif)', margin: '8px 0 4px', color: '#2a1a0e' }}>
             490,000 whispers,<br/>indexed.
           </h1>
-          <div style={{ font: '15px/1.45 var(--rw-sans, system-ui)', color: 'rgba(42,26,14,.7)', margin: '2px 0 8px', maxWidth: '60ch' }}>
-            A semantic search engine over 490k+ quotes using AI embeddings.
-          </div>
           <div style={{ font: '11.5px var(--rw-mono)', color: '#7a5a30', marginBottom: 14 }}>
             2024 · FAISS · Gemma-3 · PACE H100 cluster
           </div>

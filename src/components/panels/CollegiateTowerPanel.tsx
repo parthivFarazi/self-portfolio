@@ -32,9 +32,6 @@ export function CollegiateTowerPanel({ width = 720, height = 760 }: PanelProps) 
           <h1 style={{ font: 'italic 56px/1 var(--rw-serif)', margin: '14px 0 6px', textAlign: 'center', color: '#2a1a0e' }}>
             Georgia Institute<br/>of Technology
           </h1>
-          <div style={{ textAlign: 'center', font: '15px/1.45 var(--rw-sans, system-ui)', color: 'rgba(42,26,14,.7)', margin: '4px auto 6px', maxWidth: '52ch' }}>
-            B.S. Computer Science at Georgia Tech, graduating December 2026.
-          </div>
           <div style={{ textAlign: 'center', font: '14px var(--rw-mono)', color: '#7a5a30', marginBottom: 18 }}>
             2023 - 2026
           </div>

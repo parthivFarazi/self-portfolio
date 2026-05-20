@@ -47,12 +47,9 @@ export function AthleticPanel({ width = 880, height = 780 }: PanelProps) {
 
           <div style={{ marginTop: 14, paddingLeft: 12 }}>
             <div style={{ font: '10px "JetBrains Mono", monospace', letterSpacing: '.22em', textTransform: 'uppercase', color: '#c44a3a', marginBottom: 10 }}>The valuation issue · feature</div>
-            <h1 style={{ font: 'italic 700 46px/1.05 var(--rw-serif)', margin: '0 0 8px', color: '#1a1410' }}>
+            <h1 style={{ font: 'italic 700 46px/1.05 var(--rw-serif)', margin: '0 0 12px', color: '#1a1410' }}>
               What is a college football program <em>actually</em> worth?
             </h1>
-            <div style={{ font: '15px/1.45 var(--rw-sans, system-ui)', color: 'rgba(26,20,16,.7)', margin: '0 0 10px', maxWidth: '60ch' }}>
-              A valuation model for 60+ college football programs, featured in The Athletic.
-            </div>
             <div style={{ font: '11.5px "JetBrains Mono", monospace', letterSpacing: '.1em', color: '#7a5a30', marginBottom: 14 }}>
               by Parthiv Farazi · with Georgia Tech Athletics · 2024 — 2025
             </div>
