@@ -38,10 +38,10 @@ export function PongPanelV2({ width = 760, height = 880 }: PanelProps) {
           />
 
           <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: 16, marginTop: 10, marginBottom: 18 }}>
-            <PhoneFrame caption="game log">
+            <PhoneFrame caption="scheduler">
               <Slot id="pong-screen-1" w={140} h={290} placeholder="app screenshot · game log" shape="rounded" radius={22} src={panelImages.pong.gameLog}/>
             </PhoneFrame>
-            <PhoneFrame caption="lineup card">
+            <PhoneFrame caption="leaderboard">
               <Slot id="pong-screen-2" w={140} h={290} placeholder="app screenshot · lineup" shape="rounded" radius={22} src={panelImages.pong.lineupCard}/>
             </PhoneFrame>
             <PhoneFrame caption="live score">
