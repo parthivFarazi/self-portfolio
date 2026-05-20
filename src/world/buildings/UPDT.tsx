@@ -77,9 +77,10 @@ function makePitchTexture() {
   const ctx = c.getContext('2d')!;
   // Stripes
   for (let i = 0; i < 10; i++) {
-    // Brighter stripes — paired with the emissive lift on the material,
-    // these read as a luminous floodlit pitch (matches hero).
-    ctx.fillStyle = i % 2 === 0 ? '#4ba83f' : '#56b048';
+    // Subtle stripe contrast — paired with a gentle emissive lift on the
+    // material, reads as a real grass pitch under stadium light (not a
+    // glow stick).
+    ctx.fillStyle = i % 2 === 0 ? '#3f8a3a' : '#4a9442';
     ctx.fillRect((i * c.width) / 10, 0, c.width / 10, c.height);
   }
   ctx.strokeStyle = '#f6f1e4';
@@ -174,10 +175,10 @@ export function UPDT({ def }: { def: BuildingDef }) {
         <circleGeometry args={[1, 64]} />
         <meshStandardMaterial
           map={pitchTex}
-          roughness={0.85}
-          color="#4ea93f"
-          emissive="#3fa83f"
-          emissiveIntensity={0.55}
+          roughness={0.92}
+          color="#3f8a3a"
+          emissive="#2a6a2a"
+          emissiveIntensity={0.18}
         />
       </mesh>
       {/* Two goals */}
