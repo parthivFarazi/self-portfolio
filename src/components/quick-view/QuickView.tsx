@@ -207,8 +207,15 @@ export function LandingPage({ onOpenQuick, onOpenWorld }: LandingPageProps) {
           <Sigil />
           <span>PF | Portfolio</span>
         </span>
-        <a className="qv-resume-link" href="mailto:parthivfarazi@icloud.com?subject=Resume%20PDF%20request">
-          Resume PDF
+        <a
+          className="qv-resume-link"
+          href="/resume.pdf"
+          target="_blank"
+          rel="noopener noreferrer"
+          download="parthiv-farazi-resume.pdf"
+        >
+          <span className="qv-resume-link__arrow" aria-hidden="true">↓</span>
+          <span>Resume PDF</span>
         </a>
       </nav>
 
