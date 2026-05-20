@@ -306,12 +306,19 @@
 .qv-bottom-note {
   position: absolute;
   left: 50%;
-  bottom: 1.15rem;
+  bottom: 1.35rem;
   z-index: 2;
   transform: translateX(-50%);
-  color: rgba(42, 26, 14, .58);
+  padding: .4rem .85rem;
+  border: 1px solid rgba(180, 140, 60, .18);
+  border-radius: 999px;
+  background: rgba(255, 248, 226, .42);
+  box-shadow: 0 8px 20px rgba(40, 20, 8, .08);
+  color: rgba(42, 26, 14, .72);
   font: 500 .88rem var(--rw-term);
   letter-spacing: .22em;
+  line-height: 1.25;
+  text-shadow: 0 1px 0 rgba(255, 250, 238, .55);
   text-transform: uppercase;
   display: flex;
   flex-direction: row;
@@ -322,23 +329,26 @@
   max-width: calc(100% - 3rem);
   white-space: normal;
   text-align: center;
+  backdrop-filter: blur(5px);
+  -webkit-backdrop-filter: blur(5px);
 }
 
 .qv-built-link {
-  color: rgba(42, 26, 14, .72);
+  color: rgba(42, 26, 14, .88);
   font: 600 .82rem var(--rw-term);
   letter-spacing: .22em;
   text-transform: uppercase;
-  text-decoration: none;
-  border-bottom: 1.5px dotted rgba(42, 26, 14, .42);
-  padding-bottom: 2px;
-  transition: color 0.15s ease, border-color 0.15s ease, text-shadow 0.18s ease;
+  text-decoration: underline;
+  text-decoration-thickness: 1.5px;
+  text-underline-offset: 3px;
+  text-decoration-color: rgba(42, 26, 14, .38);
+  padding-bottom: 1px;
+  transition: color 0.15s ease, text-decoration-color 0.15s ease, text-shadow 0.18s ease;
 }
 
 .qv-built-link:hover {
   color: #2a1a0e;
-  border-bottom-color: #b39440;
-  border-bottom-style: solid;
+  text-decoration-color: #b39440;
   text-shadow: 0 0 12px rgba(245, 217, 122, 0.45);
 }
 
@@ -890,7 +900,8 @@
   }
 
   .qv-bottom-note {
-    bottom: .95rem;
+    bottom: 1rem;
+    padding: .35rem .72rem;
     font-size: .74rem;
     letter-spacing: .18em;
   }
@@ -1000,7 +1011,8 @@
   }
 
   .qv-bottom-note {
-    bottom: .7rem;
+    bottom: .82rem;
+    padding: .32rem .66rem;
     gap: .35rem .8rem;
     font-size: .68rem;
     letter-spacing: .16em;
@@ -1107,7 +1119,8 @@
   }
 
   .qv-bottom-note {
-    bottom: .4rem;
+    bottom: .56rem;
+    padding: .28rem .58rem;
     gap: .25rem .65rem;
     font-size: .62rem;
     letter-spacing: .14em;
@@ -1214,6 +1227,13 @@
 
   .qv-bottom-note {
     margin-top: 2rem;
+    padding: 0;
+    border: 0;
+    border-radius: 0;
+    background: transparent;
+    box-shadow: none;
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
     flex-direction: column;
     white-space: normal;
     text-align: center;
