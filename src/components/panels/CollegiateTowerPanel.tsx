@@ -3,7 +3,7 @@ import type { PanelProps } from './UPDTPanel';
 
 export function CollegiateTowerPanel({ width = 720, height = 760 }: PanelProps) {
   const courses = [
-    'Data Structures', 'Algorithms', 'Discrete Math', 'OOP', 'Operating Systems',
+    'Data Structures', 'Algorithms', 'Discrete Math', 'Object-Oriented Programming', 'Operating Systems',
     'Algorithm Design', 'Software Engineering', 'Linear Algebra',
     'Machine Learning', 'Artificial Intelligence', 'Combinatorics',
     'Systems & Networks', 'Cognitive Science',

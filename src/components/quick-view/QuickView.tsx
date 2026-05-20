@@ -239,7 +239,7 @@ export function LandingPage({ onOpenQuick, onOpenWorld }: LandingPageProps) {
             decoding="async"
           />
         </div>
-        <div className="qv-polaroid-caption">PF, in person.</div>
+        <div className="qv-polaroid-caption">Parthiv, in person.</div>
       </aside>
 
       <section className="qv-choice-grid" aria-label="Choose portfolio mode">

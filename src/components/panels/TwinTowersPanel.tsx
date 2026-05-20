@@ -10,7 +10,7 @@ export function TwinTowersPanel({ width = 760, height = 760 }: PanelProps) {
       <div style={{ position: 'absolute', inset: 0, background: 'radial-gradient(ellipse at 50% 0%, rgba(245,217,122,.3), transparent 60%)' }}/>
       <Globe x={width - 150} y={height - 170} />
       <div style={{ position: 'absolute', left: 40, bottom: 40, width: 160, height: 64, background: 'linear-gradient(180deg, #6db862 0%, #4a8a48 100%)', border: '4px solid #2e2520', display: 'grid', placeItems: 'center', font: 'italic 36px var(--rw-serif)', color: '#fffaee', letterSpacing: '.12em', boxShadow: '0 6px 12px rgba(0,0,0,.5)', transform: 'rotate(-3deg)' }}>
-        — PF —
+        — Parthiv —
       </div>
 
       <div style={{ position: 'absolute', left: 32, top: 32, background: '#f6f1e4', padding: '10px 18px', font: 'italic 22px var(--rw-serif)', color: '#2a1a0e', boxShadow: '0 4px 12px rgba(0,0,0,.4)', transform: 'rotate(-2deg)' }}>
@@ -35,7 +35,7 @@ export function TwinTowersPanel({ width = 760, height = 760 }: PanelProps) {
         Hey, I'm Parthiv. CS @ Georgia Tech (Dec '26), CTO of UPDT.<br/>
         Grew up between Kuala Lumpur and Atlanta. I build things at the seam of <em>sports, AI, and product</em>.<br/><br/>
         Most of my work comes from the same instinct: data should turn into decisions.<br/>
-        <span style={{ display: 'inline-block', marginTop: 6, font: 'italic 18px var(--rw-serif)' }}>— PF</span>
+        <span style={{ display: 'inline-block', marginTop: 6, font: 'italic 18px var(--rw-serif)' }}>— Parthiv Farazi</span>
       </div>
     </div>
   );
