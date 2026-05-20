@@ -35,13 +35,57 @@ export function QardPanel({ width = 760, height = 780 }: PanelProps) {
           </CardBloom>
         </div>
 
-        <div style={{ marginTop: 'auto', paddingTop: 18, display: 'flex', gap: 14 }}>
+        <div style={{ marginTop: 'auto', paddingTop: 18, display: 'flex', alignItems: 'stretch', gap: 14 }}>
           <Metric n="200+" k="users · 30 days"/>
           <Metric n="+40%" k="session duration"/>
           <Metric n="-35%" k="initial page load"/>
+          <QardCardCTA/>
         </div>
       </div>
     </div>
+  );
+}
+
+function QardCardCTA() {
+  return (
+    <a
+      href="https://qard.dev"
+      target="_blank"
+      rel="noopener noreferrer"
+      style={{
+        // Styled like one of the floating Qard "cards" — small rectangular
+        // bloom with neon cyan trim that picks up the panel's existing
+        // card-bloom motif.
+        display: 'flex', flexDirection: 'column', justifyContent: 'center',
+        alignItems: 'flex-start',
+        minHeight: 52, padding: '10px 14px',
+        background: 'linear-gradient(135deg, rgba(111,213,224,.18), rgba(148,226,192,.22))',
+        border: '1px solid rgba(111,213,224,.65)',
+        borderRadius: 10,
+        boxShadow: '0 0 22px rgba(111,213,224,.32), inset 0 0 0 1px rgba(255,255,255,.06)',
+        color: '#fffaee',
+        textDecoration: 'none',
+        transition: 'transform .14s ease, box-shadow .18s ease, border-color .18s ease',
+        position: 'relative',
+        whiteSpace: 'nowrap',
+      }}
+      onMouseEnter={(e) => {
+        e.currentTarget.style.transform = 'translateY(-3px) rotateZ(-1deg)';
+        e.currentTarget.style.boxShadow = '0 0 32px rgba(111,213,224,.55), inset 0 0 0 1px rgba(255,255,255,.1)';
+        e.currentTarget.style.borderColor = 'rgba(148,226,192,.9)';
+      }}
+      onMouseLeave={(e) => {
+        e.currentTarget.style.transform = 'translateY(0) rotateZ(0deg)';
+        e.currentTarget.style.boxShadow = '0 0 22px rgba(111,213,224,.32), inset 0 0 0 1px rgba(255,255,255,.06)';
+        e.currentTarget.style.borderColor = 'rgba(111,213,224,.65)';
+      }}
+    >
+      <span style={{ font: '9px "JetBrains Mono", monospace', letterSpacing: '.22em', color: '#6fd5e0', textTransform: 'uppercase' }}>Live</span>
+      <span style={{ display: 'inline-flex', alignItems: 'center', gap: 6, font: '700 14px var(--rw-sans)', color: '#fffaee', marginTop: 2 }}>
+        Visit qard.dev
+        <span style={{ font: '13px var(--rw-serif)', color: '#94e2c0' }}>↗</span>
+      </span>
+    </a>
   );
 }
 

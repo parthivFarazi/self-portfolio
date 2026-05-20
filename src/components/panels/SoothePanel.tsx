@@ -62,8 +62,62 @@ export function SoothePanel({ width = 760, height = 780 }: PanelProps) {
           </div>
 
           <div style={{ position: 'absolute', top: -6, right: 60, width: 24, height: 60, background: 'linear-gradient(180deg, #e07ec3, #b85aa0)', clipPath: 'polygon(0 0, 100% 0, 100% 100%, 50% 80%, 0 100%)', boxShadow: '2px 2px 4px rgba(0,0,0,.3)' }}/>
+
+          {/* Pressed-flower bookmark tucked into the bottom-right of the journal. */}
+          <SootheDemoBookmark/>
         </div>
       </div>
     </div>
+  );
+}
+
+function SootheDemoBookmark() {
+  return (
+    <a
+      href="https://drive.google.com/file/d/1winoW97BaKeOOl89tJPT9pwWFyx36475/view?usp=drive_link"
+      target="_blank"
+      rel="noopener noreferrer"
+      style={{
+        // Positioned over the gutter at the bottom of the spread so it looks
+        // like a real bookmark sticking out of the open journal.
+        position: 'absolute',
+        bottom: -18,
+        left: '50%',
+        transform: 'translateX(-50%) rotate(-2.5deg)',
+        display: 'inline-flex',
+        flexDirection: 'column',
+        alignItems: 'center',
+        justifyContent: 'center',
+        gap: 2,
+        minHeight: 46,
+        minWidth: 180,
+        padding: '8px 18px 14px',
+        background: 'linear-gradient(180deg, #fffaee 0%, #f7d8e8 78%, #e8a8cd 100%)',
+        color: '#3a1c2a',
+        textDecoration: 'none',
+        // Pointed bookmark notch at the bottom
+        clipPath: 'polygon(0 0, 100% 0, 100% calc(100% - 12px), 60% calc(100% - 12px), 50% 100%, 40% calc(100% - 12px), 0 calc(100% - 12px))',
+        boxShadow: '0 8px 18px rgba(120,40,80,.28), 0 0 14px rgba(245,182,218,.45)',
+        transition: 'transform .14s ease, box-shadow .18s ease, filter .18s ease',
+        zIndex: 3,
+      }}
+      onMouseEnter={(e) => {
+        e.currentTarget.style.transform = 'translateX(-50%) rotate(-2.5deg) translateY(-3px)';
+        e.currentTarget.style.boxShadow = '0 14px 26px rgba(120,40,80,.4), 0 0 22px rgba(245,182,218,.7)';
+        e.currentTarget.style.filter = 'brightness(1.04)';
+      }}
+      onMouseLeave={(e) => {
+        e.currentTarget.style.transform = 'translateX(-50%) rotate(-2.5deg)';
+        e.currentTarget.style.boxShadow = '0 8px 18px rgba(120,40,80,.28), 0 0 14px rgba(245,182,218,.45)';
+        e.currentTarget.style.filter = 'none';
+      }}
+    >
+      <span style={{ font: '10px "JetBrains Mono", monospace', letterSpacing: '.22em', color: '#8a3a6a', textTransform: 'uppercase' }}>
+        ♡ Demo
+      </span>
+      <span style={{ font: '700 19px "Caveat", cursive', color: '#3a1c2a', lineHeight: 1, marginTop: 2 }}>
+        Watch the demo →
+      </span>
+    </a>
   );
 }

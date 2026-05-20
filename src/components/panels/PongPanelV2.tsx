@@ -55,10 +55,62 @@ export function PongPanelV2({ width = 760, height = 780 }: PanelProps) {
             <p style={{ margin: '0 0 6px' }}><span style={{ color: '#c44a3a' }}>★</span> Replaced paper logging — saved <strong style={{ background: '#f5d97a' }}>2+ hrs</strong> of post-game entry.</p>
           </div>
 
+          <AppStoreSticker/>
+
           <div style={{ position: 'absolute', right: 22, bottom: 16, font: '22px "Caveat", cursive', color: '#c44a3a', transform: 'rotate(-4deg)' }}>we won.</div>
         </div>
       </div>
     </div>
+  );
+}
+
+function AppStoreSticker() {
+  return (
+    <a
+      href="https://apps.apple.com/us/app/mlbbl/id6759076576"
+      target="_blank"
+      rel="noopener noreferrer"
+      style={{
+        // Sticker affixed to the notebook — slight 3° rotation + a torn
+        // white border to read as "stuck on after the fact".
+        position: 'absolute',
+        left: 88,
+        bottom: 22,
+        display: 'inline-flex',
+        alignItems: 'center',
+        gap: 8,
+        padding: '8px 14px 9px 12px',
+        minHeight: 46,
+        background: '#000',
+        color: '#fff',
+        textDecoration: 'none',
+        borderRadius: 8,
+        // Outer white "sticker peel" border
+        boxShadow:
+          '0 0 0 3px #fff, 0 0 0 4px rgba(0,0,0,.18), 0 10px 18px rgba(0,0,0,.45), 0 2px 0 rgba(0,0,0,.5)',
+        transform: 'rotate(3deg)',
+        transformOrigin: 'bottom left',
+        transition: 'transform .14s ease, box-shadow .18s ease',
+        whiteSpace: 'nowrap',
+      }}
+      onMouseEnter={(e) => {
+        e.currentTarget.style.transform = 'rotate(3deg) translateY(-2px)';
+        e.currentTarget.style.boxShadow = '0 0 0 3px #fff, 0 0 0 5px rgba(0,0,0,.22), 0 16px 28px rgba(0,0,0,.55), 0 3px 0 rgba(0,0,0,.5)';
+      }}
+      onMouseLeave={(e) => {
+        e.currentTarget.style.transform = 'rotate(3deg)';
+        e.currentTarget.style.boxShadow = '0 0 0 3px #fff, 0 0 0 4px rgba(0,0,0,.18), 0 10px 18px rgba(0,0,0,.45), 0 2px 0 rgba(0,0,0,.5)';
+      }}
+    >
+      {/* Apple logo */}
+      <svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true">
+        <path fill="#fff" d="M16.36 1.43c.05 1.36-.47 2.69-1.31 3.66-.83.97-2.21 1.72-3.56 1.62-.06-1.33.5-2.7 1.36-3.62.86-.93 2.32-1.62 3.51-1.66Zm4.04 16.6c-.64 1.41-.94 2.04-1.76 3.29-1.15 1.74-2.77 3.9-4.78 3.92-1.79.02-2.25-1.16-4.68-1.14-2.43.01-2.94 1.17-4.73 1.15-2.01-.02-3.55-1.99-4.7-3.72C-3.7 17.4-3.96 11.2.34 8.36c1.69-1.12 3.84-1.32 5.4-.78 1.5.52 2.59 1.18 4.18 1.18 1.54 0 2.5-.66 4.25-1.27 1.46-.51 2.94-.55 4.32-.07 1.91.67 3.06 2.16 3.51 4.06-3.34 1.86-2.79 6.71 2.4 6.55Z"/>
+      </svg>
+      <div style={{ display: 'flex', flexDirection: 'column', lineHeight: 1 }}>
+        <span style={{ font: '8.5px "JetBrains Mono", monospace', letterSpacing: '.06em', color: '#cfd2d8', textTransform: 'uppercase' }}>Download on the</span>
+        <span style={{ font: '700 18px var(--rw-sans)', letterSpacing: '-.01em', marginTop: 3, color: '#fff' }}>App Store</span>
+      </div>
+    </a>
   );
 }
 
