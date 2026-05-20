@@ -262,7 +262,17 @@ export function LandingPage({ onOpenQuick, onOpenWorld }: LandingPageProps) {
         />
       </section>
 
-      <div className="qv-bottom-note">Either way, same panels, same content, same person.</div>
+      <div className="qv-bottom-note">
+        <span>Either way, same panels, same content, same person.</span>
+        <a
+          className="qv-built-link"
+          href="https://github.com/parthivFarazi/self-portfolio"
+          target="_blank"
+          rel="noopener noreferrer"
+        >
+          How I built this →
+        </a>
+      </div>
     </main>
   );
 }
