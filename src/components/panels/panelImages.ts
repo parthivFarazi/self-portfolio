@@ -17,6 +17,7 @@ import sootheMorningCheckIn from '../../../images/sootheZenGarden/morningCheckIn
 import updtPlayerSearch from '../../../images/updt/playerSearch.png';
 import updtPlayerTracking from '../../../images/updt/playerTracking.png';
 import updtTacticalPattern from '../../../images/updt/tacticalPattern.png';
+import updtCreateX from '../../../images/updt/createX.png';
 
 export const panelImages = {
   athletic: {
@@ -49,5 +50,6 @@ export const panelImages = {
     playerSearch: updtPlayerSearch,
     playerTracking: updtPlayerTracking,
     tacticalPattern: updtTacticalPattern,
+    createX: updtCreateX,
   },
 } as const;

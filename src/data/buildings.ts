@@ -65,7 +65,7 @@ export const BUILDINGS: BuildingDef[] = [
     color: '#b3dfd7',
     triggerRadius: 18,
     panel: UPDTPanel,
-    panelSize: { w: 820, h: 780 },
+    panelSize: { w: 820, h: 980 },
   },
   {
     id: 'rmaict',
