@@ -39,7 +39,7 @@ export function HeatmapPanel({ width = 820, height = 880 }: PanelProps) {
               <h1 style={{ font: '34px/1 "Caveat", cursive', margin: '4px 0 4px', color: '#fffaee', letterSpacing: '.01em' }}>
                 Off-ball runs, in color.
               </h1>
-              <div style={{ font: '13.5px/1.4 var(--rw-sans, system-ui)', color: 'rgba(244,236,214,.78)', margin: '0 0 4px', maxWidth: '52ch' }}>
+              <div style={{ font: '16px/1.45 var(--rw-sans, system-ui)', color: 'rgba(244,236,214,.82)', margin: '2px 0 5px', maxWidth: '52ch' }}>
                 A pipeline that scores the runs soccer players make without the ball.
               </div>
               <div style={{ font: '10.5px "JetBrains Mono", monospace', color: 'rgba(244,236,214,.65)', letterSpacing: '.04em' }}>
@@ -51,10 +51,10 @@ export function HeatmapPanel({ width = 820, height = 880 }: PanelProps) {
                 <span style={{ width: 14, height: 2, background: '#fffaee', display: 'inline-block' }}/>run
               </span>
               <span style={{ display: 'inline-flex', alignItems: 'center', gap: 5 }}>
-                <span style={{ width: 8, height: 8, background: 'radial-gradient(circle, #e07ec3, rgba(224,126,195,0))', borderRadius: '50%', display: 'inline-block' }}/>heat
+                <span style={{ width: 8, height: 8, background: 'radial-gradient(circle, #e07ec3, rgba(224,126,195,0))', borderRadius: '50%', display: 'inline-block' }}/>opponent
               </span>
               <span style={{ display: 'inline-flex', alignItems: 'center', gap: 5 }}>
-                <span style={{ width: 6, height: 6, background: '#f5d97a', display: 'inline-block', boxShadow: '0 0 6px #f5d97a' }}/>impact
+                <span style={{ width: 6, height: 6, background: '#f5d97a', display: 'inline-block', boxShadow: '0 0 6px #f5d97a' }}/>ball
               </span>
             </div>
           </div>
@@ -82,10 +82,9 @@ export function HeatmapPanel({ width = 820, height = 880 }: PanelProps) {
           </div>
 
           {/* ── Tactical chalkboard diagram ──────────────────────────── */}
-          {/* 340 tall keeps the 720×360 viewBox close to its native 2:1
-              aspect, so the center circle is round and the penalty boxes
-              don't read as squished. */}
-          <div style={{ position: 'relative', height: 340, border: '1px dashed rgba(244,236,214,.25)', padding: 10 }}>
+          {/* Trimmed from 340 → 286 so the methodology steps below can be
+              noticeably larger — the steps carry the project explanation. */}
+          <div style={{ position: 'relative', height: 286, border: '1px dashed rgba(244,236,214,.25)', padding: 10 }}>
             <ChalkPitch/>
             <div style={{ position: 'absolute', top: 24, right: 38, font: '22px "Caveat", cursive', color: '#fffaee', transform: 'rotate(-4deg)' }}>
               decoy run →
@@ -115,16 +114,6 @@ export function HeatmapPanel({ width = 820, height = 880 }: PanelProps) {
               sub="output: tagged match windows"
               icon={<TimelineIcon/>}
             />
-          </div>
-
-          {/* ── Output caption ───────────────────────────────────────── */}
-          <div style={{
-            font: '14.5px "Caveat", cursive',
-            color: '#cfe4ff',
-            textAlign: 'center',
-            marginTop: -4,
-          }}>
-            Heatmaps · Bar charts · Scatter plots — built to surface where impact lives.
           </div>
 
           {/* ── Devpost CTA ──────────────────────────────────────────── */}
@@ -186,23 +175,24 @@ export function HeatmapPanel({ width = 820, height = 880 }: PanelProps) {
 }
 
 // ── Methodology step card ────────────────────────────────────────────
+// Number, title and sub all stack flush-left so the three cards read
+// consistently (no mixed left/right justification).
 function MethodStep({ n, title, sub, icon }: { n: string; title: string; sub: string; icon: ReactNode }) {
   return (
     <div style={{
-      padding: 10,
+      padding: 16,
       border: '1px dashed rgba(244,236,214,.4)',
       background: 'rgba(255,255,255,.02)',
-      display: 'flex', flexDirection: 'column', gap: 6,
+      display: 'flex', flexDirection: 'column', gap: 9,
+      textAlign: 'left',
       position: 'relative',
     }}>
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-        <span style={{ font: '700 11px "JetBrains Mono", monospace', letterSpacing: '.2em', color: '#f5d97a' }}>{n}</span>
-        <span style={{ font: '9.5px "JetBrains Mono", monospace', letterSpacing: '.14em', color: 'rgba(244,236,214,.45)', textTransform: 'uppercase' }}>{sub}</span>
-      </div>
+      <span style={{ font: '700 13px "JetBrains Mono", monospace', letterSpacing: '.2em', color: '#f5d97a' }}>{n}</span>
       <div style={{ display: 'flex', alignItems: 'center', gap: 10 }}>
         <div style={{ flexShrink: 0 }}>{icon}</div>
-        <div style={{ font: '15px/1.18 "Caveat", cursive', color: '#fffaee' }}>{title}</div>
+        <div style={{ font: '19px/1.22 "Caveat", cursive', color: '#fffaee', flex: 1, minWidth: 0 }}>{title}</div>
       </div>
+      <span style={{ font: '10.5px "JetBrains Mono", monospace', letterSpacing: '.1em', color: 'rgba(244,236,214,.55)', textTransform: 'uppercase' }}>{sub}</span>
     </div>
   );
 }
