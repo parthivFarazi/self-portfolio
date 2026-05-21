@@ -1,7 +1,7 @@
 import { P2Header, P2StatStrip } from './_shared';
 import type { PanelProps } from './UPDTPanel';
 
-export function RMAICTPanel({ width = 760, height = 780 }: PanelProps) {
+export function RMAICTPanel({ width = 760, height = 850 }: PanelProps) {
   const borderW = 28;
   return (
     <div style={{

@@ -65,7 +65,7 @@ export const BUILDINGS: BuildingDef[] = [
     shape: { kind: 'box', width: 5, depth: 5, height: 14 },
     color: '#c97e58',
     triggerRadius: 6.5,
-    panelSize: { w: 760, h: 780 },
+    panelSize: { w: 760, h: 850 },
   },
   {
     id: 'du',
@@ -155,7 +155,7 @@ export const BUILDINGS: BuildingDef[] = [
     shape: { kind: 'oval', radiusX: 12, radiusZ: 8, height: 6 },
     color: '#bcb6a0',
     triggerRadius: 14,
-    panelSize: { w: 880, h: 900 },
+    panelSize: { w: 880, h: 1020 },
   },
   {
     id: 'archive',

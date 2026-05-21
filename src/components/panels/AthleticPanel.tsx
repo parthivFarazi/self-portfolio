@@ -24,7 +24,7 @@ function PctSlot({
   return createElement('image-slot', { id, placeholder, shape, fit, src, style: { width: w, height: h } });
 }
 
-export function AthleticPanel({ width = 880, height = 900 }: PanelProps) {
+export function AthleticPanel({ width = 880, height = 1020 }: PanelProps) {
   return (
     <div style={{
       width, height, position: 'relative', overflow: 'hidden',
