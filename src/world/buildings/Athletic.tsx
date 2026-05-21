@@ -75,24 +75,6 @@ export function Athletic({ def }: { def: BuildingDef }) {
         <meshStandardMaterial map={pitch} roughness={0.95} color="#3e8a3e" />
       </mesh>
 
-      {/* Tiered seating — three concentric ovals stepping up */}
-      {[0, 1, 2].map((i) => {
-        const r = i * 0.6;
-        return (
-          <mesh
-            key={i}
-            castShadow
-            receiveShadow
-            position={[0, 0.5 + 1 + i * 1.4, 0]}
-            material={stoneFoundation}
-            scale={[rx - r, 1, rz - r]}
-          >
-            <ringGeometry args={[0.78, 1, 64]} />
-            <meshStandardMaterial color={i % 2 ? '#c9c2b0' : '#a8a298'} roughness={0.9} />
-          </mesh>
-        );
-      })}
-
       {/* Concrete bowl walls */}
       <mesh castShadow position={[0, 0.5 + wallH / 2, 0]} scale={[rx, 1, rz]}>
         <cylinderGeometry args={[1, 1.02, wallH, 64, 1, true]} />
@@ -112,8 +94,8 @@ export function Athletic({ def }: { def: BuildingDef }) {
         );
       })}
 
-      {/* Top cornice — concrete cap ring above the bowl wall */}
-      <mesh castShadow position={[0, 0.5 + wallH + 0.18, 0]} scale={[rx + 0.05, 1, rz + 0.05]}>
+      {/* Top cornice — flat concrete cap ring lying on the bowl rim */}
+      <mesh castShadow position={[0, 0.5 + wallH + 0.18, 0]} rotation={[-Math.PI / 2, 0, 0]} scale={[rx + 0.05, rz + 0.05, 1]}>
         <ringGeometry args={[0.98, 1.05, 64]} />
         <meshStandardMaterial color="#a8a298" roughness={0.85} side={2} />
       </mesh>

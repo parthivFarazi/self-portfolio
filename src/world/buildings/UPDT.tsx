@@ -196,12 +196,6 @@ export function UPDT({ def }: { def: BuildingDef }) {
         </group>
       ))}
 
-      {/* Outer ring stand — concrete tier surrounding the pitch */}
-      <mesh castShadow receiveShadow position={[0, 1.8, 0]} material={stoneFoundation} scale={[rx, 1, rz]}>
-        <ringGeometry args={[0.86, 1, 64]} />
-        <meshStandardMaterial color="#bfb6a0" roughness={0.9} />
-      </mesh>
-
       {/* Translucent glass curtain walls — outer shell */}
       <mesh castShadow position={[0, 0.5 + wallH / 2, 0]} scale={[rx, 1, rz]}>
         <cylinderGeometry args={[1, 1, wallH, 64, 1, true]} />
@@ -215,11 +209,6 @@ export function UPDT({ def }: { def: BuildingDef }) {
           emissiveIntensity={0.55}
           side={2}
         />
-      </mesh>
-
-      {/* Roof ring — open center but a structural beam ring around top */}
-      <mesh castShadow position={[0, wallH + 0.7, 0]} material={metalSilverDark} scale={[rx, 1, rz]}>
-        <torusGeometry args={[1, 0.06, 8, 64]} />
       </mesh>
 
       {/* Stadium lights (internal warm glow visible through translucent walls) */}
