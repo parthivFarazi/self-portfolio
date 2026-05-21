@@ -60,19 +60,22 @@ export function DeltaUpsilon({ def }: { def: BuildingDef }) {
         <boxGeometry args={[W - 0.6, 0.1, 2.8]} />
       </mesh>
 
-      {/* Four white columns across the front porch */}
+      {/* Four white columns across the front porch.
+          Group sits on the porch-floor top (world y 0.7); the shaft is
+          sized so the capital meets the cornice underside (world y 6.5) —
+          base seated on the floor, capital into the entablature, no float. */}
       {[-3.2, -1.05, 1.05, 3.2].map((cx, i) => (
-        <group key={i} position={[cx, 0.6, D / 2 + 2.6]}>
-          {/* Column base */}
+        <group key={i} position={[cx, 0.7, D / 2 + 2.6]}>
+          {/* Column base — seated on the porch floor */}
           <mesh castShadow material={trimMat} position={[0, 0.15, 0]}>
             <boxGeometry args={[0.55, 0.3, 0.55]} />
           </mesh>
-          {/* Fluted column shaft */}
-          <mesh castShadow material={trimMat} position={[0, 0.3 + 2.4, 0]}>
-            <cylinderGeometry args={[0.22, 0.24, 4.8, 16]} />
+          {/* Fluted column shaft — base top (0.3) → capital bottom (5.6) */}
+          <mesh castShadow material={trimMat} position={[0, 2.95, 0]}>
+            <cylinderGeometry args={[0.22, 0.24, 5.3, 16]} />
           </mesh>
-          {/* Capital */}
-          <mesh castShadow material={trimMat} position={[0, 0.3 + 4.85, 0]}>
+          {/* Capital — top meets the cornice underside */}
+          <mesh castShadow material={trimMat} position={[0, 5.7, 0]}>
             <boxGeometry args={[0.45, 0.2, 0.45]} />
           </mesh>
         </group>
