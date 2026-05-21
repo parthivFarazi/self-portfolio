@@ -21,8 +21,6 @@ export function PongPanelV2({ width = 760, height = 880 }: PanelProps) {
           background: '#fbf6e6',
           boxShadow: '0 18px 36px rgba(0,0,0,.55), 0 2px 0 rgba(0,0,0,.25)',
           padding: '28px 36px 28px 60px',
-          backgroundImage: `linear-gradient(to bottom, transparent 0 31px, rgba(80,40,40,.18) 31px 32px)`,
-          backgroundSize: '100% 32px',
         }}>
           <div style={{ position: 'absolute', left: 50, top: 0, bottom: 0, width: 1, background: '#c44a3a', opacity: .55 }}/>
           <div style={{ position: 'absolute', left: 18, top: 24, bottom: 24, display: 'flex', flexDirection: 'column', justifyContent: 'space-between', alignItems: 'center', width: 12 }}>
@@ -33,7 +31,7 @@ export function PongPanelV2({ width = 760, height = 880 }: PanelProps) {
 
           <PanelHeader
             kicker="Pong · baseball logging app"
-            title={<>From the porch:<br/>a cleaner scorebook.</>}
+            title="A cleaner scorebook."
             subtitle="A baseball stat-tracking app, live on the App Store, used by 70+ people."
             meta="Nov 2025 — Jan 2026 · React Native · Expo · Supabase · PostgreSQL"
           />
@@ -50,10 +48,19 @@ export function PongPanelV2({ width = 760, height = 880 }: PanelProps) {
             </PhoneFrame>
           </div>
 
-          <div style={{ font: '20px/1.5 "Caveat", cursive', color: '#1a1410', paddingBottom: 78 }}>
-            <p style={{ margin: '0 0 6px' }}><span style={{ color: '#c44a3a' }}>★</span> Cross-platform mobile app. <em>70+ users</em>, multiple locations.</p>
-            <p style={{ margin: '0 0 6px' }}><span style={{ color: '#c44a3a' }}>★</span> Supabase backend — secure auth, real-time, persistent storage.</p>
-            <p style={{ margin: '0 0 6px' }}><span style={{ color: '#c44a3a' }}>★</span> Replaced paper logging — saved <strong style={{ background: '#f5d97a' }}>2+ hrs</strong> of post-game entry.</p>
+          {/* Ruled lines live on the body block itself and the text is
+              locked to a 32px line-height, so every line rests cleanly in
+              a rule cell instead of striking through the rule. */}
+          <div style={{
+            font: '21px/32px "Caveat", cursive',
+            color: '#1a1410',
+            paddingBottom: 78,
+            backgroundImage: 'linear-gradient(to bottom, transparent 0 31px, rgba(80,40,40,.22) 31px 32px)',
+            backgroundSize: '100% 32px',
+          }}>
+            <p style={{ margin: 0 }}><span style={{ color: '#c44a3a' }}>★</span> Cross-platform mobile app. <em>70+ users</em>, multiple locations.</p>
+            <p style={{ margin: 0 }}><span style={{ color: '#c44a3a' }}>★</span> Supabase backend — secure auth, real-time, persistent storage.</p>
+            <p style={{ margin: 0 }}><span style={{ color: '#c44a3a' }}>★</span> Replaced paper logging — saved <strong style={{ background: '#f5d97a' }}>2+ hrs</strong> of post-game entry.</p>
           </div>
 
           <AppStoreSticker/>
@@ -124,7 +131,7 @@ function PhoneFrame({ children, caption }: { children: ReactNode; caption: React
         <div style={{ position: 'absolute', top: 8, left: '50%', transform: 'translateX(-50%)', width: 38, height: 10, background: '#0a0805', borderRadius: 6, zIndex: 1 }}/>
         {children}
       </div>
-      <div style={{ font: '14px "Caveat", cursive', color: '#5a4a3e' }}>{caption}</div>
+      <div style={{ font: '17px "Caveat", cursive', color: '#5a4a3e' }}>{caption}</div>
     </div>
   );
 }

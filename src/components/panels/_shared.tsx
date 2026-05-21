@@ -46,7 +46,7 @@ export function PanelHeader({ kicker, title, subtitle, meta }: PanelHeaderProps)
       <div style={{ font: '10.5px var(--rw-mono)', letterSpacing: '.16em', textTransform: 'uppercase', color: 'rgba(0,0,0,.55)' }}>{kicker}</div>
       <h1 style={{ font: 'italic 38px/1 var(--rw-serif)', margin: '4px 0 4px', color: 'var(--rw-ink)' }}>{title}</h1>
       {subtitle && (
-        <div style={{ font: '15px/1.45 var(--rw-sans, system-ui)', color: 'rgba(0,0,0,.62)', maxWidth: '60ch', margin: '2px 0 6px' }}>
+        <div style={{ font: '16px/1.5 var(--rw-sans, system-ui)', color: 'rgba(0,0,0,.62)', maxWidth: '60ch', margin: '2px 0 6px' }}>
           {subtitle}
         </div>
       )}
@@ -80,7 +80,7 @@ export function P2Header({
       <div style={{ font: '10.5px var(--rw-mono)', letterSpacing: '.16em', textTransform: 'uppercase', color: kickerColor }}>{kicker}</div>
       <h1 style={{ font: 'italic 38px/1 var(--rw-serif)', margin: '4px 0 4px', color: titleColor }}>{title}</h1>
       {subtitle && (
-        <div style={{ font: '15px/1.45 var(--rw-sans, system-ui)', color: subtitleColor, maxWidth: '60ch', margin: '2px 0 6px' }}>
+        <div style={{ font: '16px/1.5 var(--rw-sans, system-ui)', color: subtitleColor, maxWidth: '60ch', margin: '2px 0 6px' }}>
           {subtitle}
         </div>
       )}
