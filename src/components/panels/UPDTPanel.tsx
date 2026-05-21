@@ -134,9 +134,9 @@ export function UPDTPanel({ width = 1280, height = 1300 }: PanelProps) {
         flexShrink: 0,
       }}>
         <div style={{
-          display: 'flex', gap: 14, flexWrap: 'wrap',
-          font: '10px "JetBrains Mono", monospace',
-          letterSpacing: '.14em',
+          display: 'flex', gap: 12, flexWrap: 'wrap',
+          font: '700 15px "JetBrains Mono", monospace',
+          letterSpacing: '.1em',
           textTransform: 'uppercase',
           color: TEXT_MED,
         }}>
@@ -234,11 +234,12 @@ function Quadrant({ label, accent, body }: { label: string; accent: string; body
 function Pill({ children }: { children: ReactNode }) {
   return (
     <span style={{
-      padding: '5px 10px',
-      border: `1px solid ${MINT}44`,
-      background: `${MINT}0c`,
-      color: TEXT_DIM,
-      borderRadius: 2,
+      padding: '11px 18px',
+      border: `1px solid ${MINT}88`,
+      background: `linear-gradient(180deg, ${MINT}1f, ${MINT}0a)`,
+      color: '#eafef5',
+      borderRadius: 4,
+      boxShadow: `0 0 16px ${MINT}2e, inset 0 0 0 1px rgba(255,255,255,.05)`,
     }}>
       {children}
     </span>
