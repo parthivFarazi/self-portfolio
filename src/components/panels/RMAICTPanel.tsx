@@ -34,7 +34,7 @@ export function RMAICTPanel({ width = 760, height = 850 }: PanelProps) {
             metaColor="rgba(245,217,122,.65)"
           />
 
-          <div style={{ marginTop: 14, display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: 14, alignItems: 'stretch' }}>
+          <div style={{ marginTop: 14, display: 'grid', gridTemplateColumns: 'repeat(3, minmax(0, 1fr))', gap: 14, alignItems: 'stretch' }}>
             <StepFrame label="01 · INPUT" sub="raw receipt"><IllustratedReceipt/></StepFrame>
             <StepFrame label="02 · DONUT" sub="reads the image"><IllustratedScanBeam/></StepFrame>
             <StepFrame label="03 · OUTPUT" sub="structured JSON"><IllustratedJSON/></StepFrame>
@@ -150,9 +150,12 @@ function StepFrame({ label, sub, children }: { label: React.ReactNode; sub: Reac
       boxShadow: '0 0 18px rgba(245,217,122,.06)',
       display: 'flex', flexDirection: 'column', gap: 8,
     }}>
-      <div style={{ display: 'flex', justifyContent: 'space-between', font: '9.5px "JetBrains Mono", monospace', letterSpacing: '.18em', color: '#f5d97a' }}>
-        <span>{label}</span>
-        <span style={{ color: 'rgba(245,217,122,.55)' }}>{sub}</span>
+      {/* Label and sub stacked so every step header reads the same — the
+          old space-between row wrapped unevenly once a column got
+          squeezed by a wider neighbour. */}
+      <div style={{ font: '9.5px "JetBrains Mono", monospace', letterSpacing: '.18em' }}>
+        <div style={{ color: '#f5d97a' }}>{label}</div>
+        <div style={{ color: 'rgba(245,217,122,.55)', marginTop: 3 }}>{sub}</div>
       </div>
       <div style={{ flex: 1, display: 'grid', placeItems: 'center', minHeight: 220 }}>
         {children}
@@ -215,7 +218,7 @@ function IllustratedScanBeam() {
 
 function IllustratedJSON() {
   return (
-    <div style={{ position: 'relative', width: 200, height: 220 }}>
+    <div style={{ position: 'relative', width: '100%', height: 220 }}>
       <div style={{
         position: 'absolute', inset: 0,
         background: 'linear-gradient(180deg, #0a141c, #050a10)',
