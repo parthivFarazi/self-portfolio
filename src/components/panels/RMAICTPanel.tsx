@@ -28,7 +28,7 @@ export function RMAICTPanel({ width = 760, height = 780 }: PanelProps) {
             title={<>The Donut that<br/>learned to read.</>}
             subtitle="An AI internship building document-reading models for receipts and invoices."
             subtitleColor="rgba(255,250,238,0.78)"
-            meta="2024 · Donut (Hugging Face) · OCR · transfer learning · PyTorch"
+            meta="2024 · Donut (Hugging Face) · document understanding · transfer learning · PyTorch"
             kickerColor="#c44a3a"
             titleColor="#fffaee"
             metaColor="rgba(245,217,122,.65)"
@@ -36,7 +36,7 @@ export function RMAICTPanel({ width = 760, height = 780 }: PanelProps) {
 
           <div style={{ marginTop: 14, display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: 14, alignItems: 'stretch' }}>
             <StepFrame label="01 · INPUT" sub="raw receipt"><IllustratedReceipt/></StepFrame>
-            <StepFrame label="02 · DONUT" sub="OCR pass"><IllustratedScanBeam/></StepFrame>
+            <StepFrame label="02 · DONUT" sub="reads the image"><IllustratedScanBeam/></StepFrame>
             <StepFrame label="03 · OUTPUT" sub="structured JSON"><IllustratedJSON/></StepFrame>
           </div>
 
@@ -45,7 +45,15 @@ export function RMAICTPanel({ width = 760, height = 780 }: PanelProps) {
             <span style={{ color: '#c44a3a' }}>● live · Petronas line</span>
           </div>
 
-          <div style={{ marginTop: 16, font: '13px/1.55 var(--rw-serif)', color: '#fffaee', fontStyle: 'italic', maxWidth: 560 }}>
+          <div style={{
+            marginTop: 18,
+            paddingLeft: 16,
+            borderLeft: '3px solid #c44a3a',
+            font: '20px/1.5 var(--rw-serif)',
+            color: '#fffaee',
+            fontStyle: 'italic',
+            maxWidth: 580,
+          }}>
             "First the model only read receipts. Then we taught it invoices — same architecture, two more weekends of training. The Donut, now reading two languages."
           </div>
 

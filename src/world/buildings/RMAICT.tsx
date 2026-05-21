@@ -114,7 +114,7 @@ export function RMAICT({ def }: { def: BuildingDef }) {
     return m;
   }, [glassTex]);
 
-  // OCR scan beam — vertical cyan line that fades up the tower
+  // Document-scan beam — vertical cyan line that fades up the tower
   const scanBeam = useRef<Mesh>(null);
   useFrame(({ clock }) => {
     if (!scanBeam.current) return;
@@ -187,7 +187,7 @@ export function RMAICT({ def }: { def: BuildingDef }) {
         );
       })}
 
-      {/* OCR scan beam — sweeps vertically through the glass */}
+      {/* Document-scan beam — sweeps vertically through the glass */}
       <mesh ref={scanBeam} position={[0, 0.4 + baseH + 1, D / 2 - 0.05]}>
         <boxGeometry args={[W - 0.4, 0.08, 0.04]} />
         <meshStandardMaterial color="#6fd5e0" emissive="#6fd5e0" emissiveIntensity={1.5} transparent opacity={0.7} />
