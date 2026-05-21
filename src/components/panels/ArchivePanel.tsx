@@ -1,7 +1,7 @@
 import { P2StatStrip } from './_shared';
 import type { PanelProps } from './UPDTPanel';
 
-export function ArchivePanel({ width = 820, height = 780 }: PanelProps) {
+export function ArchivePanel({ width = 900, height = 780 }: PanelProps) {
   return (
     <div style={{
       width, height, position: 'relative', overflow: 'hidden',
@@ -21,14 +21,14 @@ export function ArchivePanel({ width = 820, height = 780 }: PanelProps) {
       }}>
         <div style={{ position: 'absolute', left: '50%', top: 0, bottom: 0, width: 26, transform: 'translateX(-50%)', background: 'linear-gradient(90deg, transparent, rgba(80,40,10,.4), transparent)', pointerEvents: 'none', zIndex: 2 }}/>
 
-        <div style={{ padding: '30px 26px 24px 32px', position: 'relative' }}>
+        <div style={{ padding: '30px 26px 24px 32px', position: 'relative', minWidth: 0, overflow: 'hidden' }}>
           <div style={{ position: 'absolute', inset: 0, pointerEvents: 'none', background: 'radial-gradient(ellipse at 0% 0%, rgba(120,70,20,.18), transparent 35%), radial-gradient(ellipse at 0% 100%, rgba(120,70,20,.15), transparent 35%)' }}/>
 
           <div style={{ font: '10px var(--rw-mono)', letterSpacing: '.24em', textTransform: 'uppercase', color: '#7a5a30' }}>
             The Whispering Archive · Vol. III
           </div>
-          <h1 style={{ font: 'italic 38px/1.05 var(--rw-serif)', margin: '8px 0 4px', color: '#2a1a0e' }}>
-            490,000 whispers,<br/>indexed.
+          <h1 style={{ font: 'italic 38px/1.1 var(--rw-serif)', margin: '8px 0 4px', color: '#2a1a0e', whiteSpace: 'nowrap' }}>
+            490,000<br/>whispers, indexed.
           </h1>
           <div style={{ font: '11.5px var(--rw-mono)', color: '#7a5a30', marginBottom: 14 }}>
             2024 · FAISS · Gemma-3 · PACE H100 cluster
@@ -49,14 +49,14 @@ export function ArchivePanel({ width = 820, height = 780 }: PanelProps) {
             <div style={{ position: 'absolute', right: 6, top: '50%', font: '8px var(--rw-mono)', color: '#7a5a30', transform: 'rotate(90deg) translateY(-50%)' }}>dim · 2</div>
           </div>
 
-          <div style={{ marginTop: 14, font: 'italic 14px/1.5 var(--rw-serif)', color: '#5a3e20', maxWidth: 320 }}>
+          <div style={{ marginTop: 14, font: 'italic 16px/1.55 var(--rw-serif)', color: '#5a3e20', maxWidth: 360 }}>
             "Each whisper takes a coordinate. Speakers of similar mind find themselves seated, as if by chance, at the same table."
           </div>
 
           <div style={{ position: 'absolute', bottom: 14, left: 32, font: '10px var(--rw-mono)', color: '#7a5a30' }}>p. 1</div>
         </div>
 
-        <div style={{ padding: '30px 32px 24px 26px', position: 'relative' }}>
+        <div style={{ padding: '30px 32px 24px 26px', position: 'relative', minWidth: 0, overflow: 'hidden' }}>
           <div style={{ position: 'absolute', inset: 0, pointerEvents: 'none', background: 'radial-gradient(ellipse at 100% 0%, rgba(120,70,20,.18), transparent 35%), radial-gradient(ellipse at 100% 100%, rgba(120,70,20,.15), transparent 35%)' }}/>
 
           <div style={{ font: '10px var(--rw-mono)', letterSpacing: '.24em', textTransform: 'uppercase', color: '#7a5a30', textAlign: 'right' }}>
@@ -103,8 +103,8 @@ export function ArchivePanel({ width = 820, height = 780 }: PanelProps) {
               </span>
             </div>
 
-            <div style={{ font: '12px/1.55 var(--rw-serif)', color: '#2a1a0e', marginBottom: 12 }}>
-              <div style={{ font: '9.5px var(--rw-mono)', letterSpacing: '.16em', color: '#7a5a30', marginBottom: 4, textTransform: 'uppercase' }}>readme · excerpt</div>
+            <div style={{ font: '16px/1.55 var(--rw-serif)', color: '#2a1a0e', marginBottom: 12 }}>
+              <div style={{ font: '9.5px var(--rw-mono)', letterSpacing: '.16em', color: '#7a5a30', marginBottom: 5, textTransform: 'uppercase' }}>readme · excerpt</div>
               A semantic search engine over 490k quotations. Encodes each quote with Gemma-3 embeddings, indexes them in FAISS, and serves nearest-neighbor retrieval in single-digit milliseconds. Trained on the PACE H100 cluster at Georgia Tech.
             </div>
 
@@ -120,20 +120,22 @@ export function ArchivePanel({ width = 820, height = 780 }: PanelProps) {
               target="_blank"
               rel="noopener noreferrer"
               style={{
-              display: 'inline-flex', alignItems: 'center', gap: 8,
-              padding: '10px 14px',
-              background: 'linear-gradient(180deg, #2a1a0e, #1a1006)',
-              color: '#f5d97a',
-              font: '11px "JetBrains Mono", monospace',
-              letterSpacing: '.18em',
-              textTransform: 'uppercase',
-              boxShadow: '0 0 18px rgba(245,217,122,.45), inset 0 0 0 1px rgba(245,217,122,.4)',
-              textDecoration: 'none',
-            }}
+                display: 'flex', flexDirection: 'column', gap: 5,
+                alignItems: 'flex-start',
+                padding: '11px 14px',
+                background: 'linear-gradient(180deg, #2a1a0e, #1a1006)',
+                color: '#f5d97a',
+                boxShadow: '0 0 18px rgba(245,217,122,.45), inset 0 0 0 1px rgba(245,217,122,.4)',
+                textDecoration: 'none',
+                boxSizing: 'border-box',
+                maxWidth: '100%',
+              }}
             >
-              ◈ View on GitHub
-              <span style={{ font: '11px var(--rw-mono)', color: 'rgba(245,217,122,.65)', letterSpacing: '.06em', textTransform: 'none' }}>
-                github.com/parthivFarazi/embeddingSearchLLM
+              <span style={{ font: '12px "JetBrains Mono", monospace', letterSpacing: '.18em', textTransform: 'uppercase' }}>
+                ◈ View on GitHub
+              </span>
+              <span style={{ font: '11px var(--rw-mono)', color: 'rgba(245,217,122,.7)', letterSpacing: '.04em', whiteSpace: 'nowrap' }}>
+                parthivFarazi/embeddingSearchLLM
               </span>
             </a>
           </div>
@@ -151,7 +153,9 @@ export function ArchivePanel({ width = 820, height = 780 }: PanelProps) {
           <div style={{ position: 'absolute', bottom: 14, right: 32, font: '10px var(--rw-mono)', color: '#7a5a30' }}>p. 2</div>
         </div>
 
-        <div style={{ position: 'absolute', top: -6, left: 80, width: 20, height: 80, background: 'linear-gradient(180deg, #c44a3a, #8a1a14)', clipPath: 'polygon(0 0, 100% 0, 100% 100%, 50% 84%, 0 100%)', boxShadow: '2px 2px 4px rgba(0,0,0,.3)', zIndex: 6 }}/>
+        {/* Ribbon bookmark — hung near the spine so it clears both page
+            headers instead of covering the left-page title. */}
+        <div style={{ position: 'absolute', top: -6, left: 400, width: 20, height: 80, background: 'linear-gradient(180deg, #c44a3a, #8a1a14)', clipPath: 'polygon(0 0, 100% 0, 100% 100%, 50% 84%, 0 100%)', boxShadow: '2px 2px 4px rgba(0,0,0,.3)', zIndex: 6 }}/>
       </div>
     </div>
   );

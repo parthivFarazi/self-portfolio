@@ -167,7 +167,7 @@ export const BUILDINGS: BuildingDef[] = [
     shape: { kind: 'box', width: 7, depth: 7, height: 4 },
     color: '#d6c5a0',
     triggerRadius: 8,
-    panelSize: { w: 820, h: 780 },
+    panelSize: { w: 900, h: 780 },
   },
   {
     id: 'zen',
