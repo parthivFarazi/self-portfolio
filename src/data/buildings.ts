@@ -105,7 +105,7 @@ export const BUILDINGS: BuildingDef[] = [
     shape: { kind: 'twin', width: 5, depth: 5, height: 28, spacing: 8 },
     color: '#c5cdd2',
     triggerRadius: 12,
-    panelSize: { w: 760, h: 760 },
+    panelSize: { w: 900, h: 820 },
   },
   {
     id: 'forge',

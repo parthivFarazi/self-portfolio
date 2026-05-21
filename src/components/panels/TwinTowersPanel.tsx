@@ -1,45 +1,52 @@
 import type { ReactNode } from 'react';
 import type { PanelProps } from './UPDTPanel';
 
-export function TwinTowersPanel({ width = 760, height = 760 }: PanelProps) {
+export function TwinTowersPanel({ width = 900, height = 820 }: PanelProps) {
   return (
     <div style={{
       width, height, position: 'relative', overflow: 'hidden',
       background: 'repeating-linear-gradient(12deg, #5a3a22 0 26px, #4a2e1c 26px 28px, #6a4628 28px 54px), #4a2e1c',
     }}>
       <div style={{ position: 'absolute', inset: 0, background: 'radial-gradient(ellipse at 50% 0%, rgba(245,217,122,.3), transparent 60%)' }}/>
-      <Globe x={width - 150} y={height - 170} />
-      <div style={{ position: 'absolute', left: 40, bottom: 40, width: 160, height: 64, background: 'linear-gradient(180deg, #6db862 0%, #4a8a48 100%)', border: '4px solid #2e2520', display: 'grid', placeItems: 'center', font: 'italic 24px/1 var(--rw-serif)', color: '#fffaee', letterSpacing: '.04em', boxShadow: '0 6px 12px rgba(0,0,0,.5)', transform: 'rotate(-3deg)', padding: '0 10px', textAlign: 'center' }}>
-        — Parthiv —
-      </div>
 
-      <div style={{ position: 'absolute', left: 32, top: 32, background: '#f6f1e4', padding: '10px 18px', font: 'italic 22px var(--rw-serif)', color: '#2a1a0e', boxShadow: '0 4px 12px rgba(0,0,0,.4)', transform: 'rotate(-2deg)' }}>
-        <div style={{ font: '10px var(--rw-mono)', letterSpacing: '.18em', textTransform: 'uppercase', color: '#7a5a30' }}>Twin Towers · About</div>
+      {/* Title card — top-left, kept clear of every photo */}
+      <div style={{ position: 'absolute', left: 32, top: 32, width: 300, background: '#f6f1e4', padding: '12px 20px 14px', font: 'italic 24px var(--rw-serif)', color: '#2a1a0e', boxShadow: '0 4px 12px rgba(0,0,0,.4)', transform: 'rotate(-2deg)', zIndex: 4 }}>
+        <div style={{ font: '11px var(--rw-mono)', letterSpacing: '.18em', textTransform: 'uppercase', color: '#7a5a30' }}>Twin Towers · About</div>
         About me, in five photos
-        <div style={{ font: '14px/1.4 var(--rw-sans, system-ui)', color: 'rgba(42,26,14,.72)', fontStyle: 'normal', marginTop: 4, maxWidth: 320 }}>
+        <div style={{ font: '16px/1.45 var(--rw-sans, system-ui)', color: 'rgba(42,26,14,.74)', fontStyle: 'normal', marginTop: 6 }}>
           Who I am, where I'm from, and what I build.
         </div>
       </div>
 
-      <Polaroid x={120} y={88} rotate={6} caption="KL · Petronas · home base"><SilhouetteTwinTowers/></Polaroid>
-      <Polaroid x={300} y={120} rotate={-4} caption="Tech Square · Atlanta"><SilhouetteCollegiate/></Polaroid>
-      <Polaroid x={480} y={92} rotate={3} caption="UPDT · ScoutPro dashboard"><SilhouetteDashboard/></Polaroid>
-      <Polaroid x={170} y={340} rotate={-7} caption="On the pitch · data → decisions"><SilhouetteField/></Polaroid>
-      <Polaroid x={400} y={360} rotate={2} caption="Hello — I'm Parthiv"><PortraitMini/></Polaroid>
-
+      {/* Bio note — top-right */}
       <div style={{
-        position: 'absolute', right: 24, top: 200, width: 260, padding: '20px 22px 24px',
+        position: 'absolute', right: 32, top: 30, width: 280, padding: '20px 22px 24px',
         background: 'linear-gradient(180deg, #fbf3da, #f1e6c0)',
         boxShadow: '0 6px 14px rgba(0,0,0,.45)',
-        transform: 'rotate(4deg)',
-        font: '15px/1.55 "Caveat", var(--rw-serif)',
+        transform: 'rotate(3deg)',
+        font: '16px/1.55 "Caveat", var(--rw-serif)',
         color: '#2a1a0e',
+        zIndex: 4,
       }}>
         Hey, I'm Parthiv. CS @ Georgia Tech (Dec '26), CTO of UPDT.<br/>
         Grew up between Kuala Lumpur and Atlanta. I build things at the seam of <em>sports, AI, and product</em>.<br/><br/>
         Most of my work comes from the same instinct: data should turn into decisions.<br/>
-        <span style={{ display: 'inline-block', marginTop: 6, font: 'italic 18px var(--rw-serif)' }}>— Parthiv Farazi</span>
+        <span style={{ display: 'inline-block', marginTop: 6, font: 'italic 19px var(--rw-serif)' }}>— Parthiv Farazi</span>
       </div>
+
+      {/* Five scattered photos — two loose rows, every caption left clear */}
+      <Polaroid x={40} y={200} rotate={-5} caption="KL · Petronas · home base"><SilhouetteTwinTowers/></Polaroid>
+      <Polaroid x={250} y={172} rotate={4} caption="Tech Square · Atlanta"><SilhouetteCollegiate/></Polaroid>
+      <Polaroid x={455} y={196} rotate={-3} caption="UPDT · ScoutPro dashboard"><SilhouetteDashboard/></Polaroid>
+      <Polaroid x={120} y={470} rotate={-7} caption="On the pitch · data → decisions"><SilhouetteField/></Polaroid>
+      <Polaroid x={360} y={452} rotate={3} caption="Hello — I'm Parthiv"><PortraitMini/></Polaroid>
+
+      {/* — Parthiv — wooden tag, bottom-left */}
+      <div style={{ position: 'absolute', left: 44, bottom: 44, width: 180, height: 70, background: 'linear-gradient(180deg, #6db862 0%, #4a8a48 100%)', border: '4px solid #2e2520', display: 'grid', placeItems: 'center', font: 'italic 26px/1 var(--rw-serif)', color: '#fffaee', letterSpacing: '.04em', boxShadow: '0 6px 12px rgba(0,0,0,.5)', transform: 'rotate(-3deg)', padding: '0 10px', textAlign: 'center', zIndex: 4 }}>
+        — Parthiv —
+      </div>
+
+      <Globe x={width - 230} y={height - 250} />
     </div>
   );
 }
@@ -52,7 +59,7 @@ function Polaroid({ x, y, rotate = 0, caption, children }: { x: number; y: numbe
       transform: `rotate(${rotate}deg)`, transformOrigin: 'center',
     }}>
       <div style={{ width: 160, height: 160, background: '#1a1410', overflow: 'hidden' }}>{children}</div>
-      <div style={{ font: '15px "Caveat", var(--rw-serif)', color: '#2a1a0e', textAlign: 'center', marginTop: 8 }}>{caption}</div>
+      <div style={{ font: '17px "Caveat", var(--rw-serif)', color: '#2a1a0e', textAlign: 'center', marginTop: 8 }}>{caption}</div>
     </div>
   );
 }
@@ -177,18 +184,20 @@ function PortraitMini() {
 
 function Globe({ x, y }: { x: number; y: number }) {
   return (
-    <svg viewBox="0 0 120 130" width="120" height="130" style={{ position: 'absolute', left: x, top: y, filter: 'drop-shadow(0 6px 8px rgba(0,0,0,.5))' }}>
+    <svg viewBox="0 0 120 138" width="210" height="242" style={{ position: 'absolute', left: x, top: y, filter: 'drop-shadow(0 6px 8px rgba(0,0,0,.5))' }}>
       <rect x="44" y="106" width="32" height="6" fill="#3a2410"/>
       <rect x="52" y="112" width="16" height="14" fill="#3a2410"/>
       <ellipse cx="60" cy="60" rx="48" ry="48" fill="none" stroke="#b3a369" strokeWidth="2"/>
       <circle cx="60" cy="60" r="40" fill="#5a9598" />
       <path d="M30 40 Q40 32 52 36 Q66 32 78 42 Q88 52 84 64 Q92 72 86 84 Q70 90 56 84 Q44 88 32 78 Q24 64 28 52 Z" fill="#6db862"/>
       <path d="M40 56 Q52 50 62 56 Q72 62 68 70 Q60 74 48 70 Q40 66 40 56 Z" fill="#4a8a48"/>
-      <circle cx="78" cy="60" r="4" fill="#e07ec3" stroke="#fff" strokeWidth="1"/>
-      <text x="82" y="62" fontFamily="JetBrains Mono,monospace" fontSize="6" fill="#fff">KL</text>
-      <circle cx="42" cy="48" r="4" fill="#6fd5e0" stroke="#fff" strokeWidth="1"/>
-      <text x="22" y="50" fontFamily="JetBrains Mono,monospace" fontSize="6" fill="#fff">ATL</text>
-      <path d="M42 48 Q58 22 78 60" stroke="#f5d97a" strokeWidth="1.4" fill="none" strokeDasharray="2 3"/>
+      <path d="M42 48 Q58 22 78 60" stroke="#f5d97a" strokeWidth="1.6" fill="none" strokeDasharray="3 3"/>
+      {/* KL pin + label */}
+      <circle cx="78" cy="60" r="5" fill="#e07ec3" stroke="#fff" strokeWidth="1.4"/>
+      <text x="80" y="74" fontFamily="JetBrains Mono,monospace" fontSize="9" fontWeight="700" fill="#fff" paintOrder="stroke" stroke="#2a1a0e" strokeWidth="0.7">KL</text>
+      {/* ATL pin + label */}
+      <circle cx="42" cy="48" r="5" fill="#6fd5e0" stroke="#fff" strokeWidth="1.4"/>
+      <text x="14" y="42" fontFamily="JetBrains Mono,monospace" fontSize="9" fontWeight="700" fill="#fff" paintOrder="stroke" stroke="#2a1a0e" strokeWidth="0.7">ATL</text>
     </svg>
   );
 }
