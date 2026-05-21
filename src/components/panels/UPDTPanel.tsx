@@ -185,22 +185,22 @@ export function UPDTPanel({ width = 1280, height = 1300 }: PanelProps) {
 function CreateXBadge() {
   return (
     <div style={{
-      display: 'flex', alignItems: 'center', gap: 10,
-      padding: '8px 12px',
+      display: 'flex', alignItems: 'center', gap: 13,
+      padding: '12px 18px',
       background: 'rgba(245,217,122,.08)',
       border: `1px solid ${GOLD}88`,
-      boxShadow: `0 0 12px ${GOLD}33, inset 0 0 0 1px rgba(255,255,255,.04)`,
+      boxShadow: `0 0 16px ${GOLD}3a, inset 0 0 0 1px rgba(255,255,255,.04)`,
       flexShrink: 0,
-      maxWidth: 220,
+      maxWidth: 280,
     }}>
       <img
         src={panelImages.updt.createX}
         alt="CREATE-X Georgia Tech logo"
-        style={{ height: 36, width: 'auto', display: 'block', filter: 'drop-shadow(0 0 6px rgba(245,217,122,.3))' }}
+        style={{ height: 50, width: 'auto', display: 'block', filter: 'drop-shadow(0 0 6px rgba(245,217,122,.3))' }}
       />
       <div>
-        <div style={{ font: '700 9.5px "JetBrains Mono", monospace', letterSpacing: '.16em', color: GOLD, textTransform: 'uppercase' }}>CREATE-X</div>
-        <div style={{ font: '9.5px "JetBrains Mono", monospace', letterSpacing: '.1em', color: TEXT_DIM, marginTop: 2 }}>Georgia Tech</div>
+        <div style={{ font: '700 13px "JetBrains Mono", monospace', letterSpacing: '.16em', color: GOLD, textTransform: 'uppercase' }}>CREATE-X</div>
+        <div style={{ font: '11.5px "JetBrains Mono", monospace', letterSpacing: '.1em', color: TEXT_DIM, marginTop: 3 }}>Georgia Tech</div>
       </div>
     </div>
   );
