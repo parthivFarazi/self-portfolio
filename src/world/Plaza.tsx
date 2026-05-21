@@ -1,6 +1,6 @@
 import { useMemo } from 'react';
 import { CanvasTexture, RepeatWrapping } from 'three';
-import { COLORS, PLAZA_RADIUS, PATH_WIDTH, PATH_LENGTH } from '@/constants/world';
+import { COLORS, PLAZA_RADIUS, PATH_WIDTH } from '@/constants/world';
 
 function makeStoneTileTexture() {
   const c = document.createElement('canvas');
@@ -38,12 +38,18 @@ function makeStoneTileTexture() {
   return tex;
 }
 
+// Solid portion of each path. The remaining reach is covered by a
+// scatter of loose pavers so the path melts into the lawn rather than
+// stopping on a hard rectangular cut.
+const MAIN_LEN = 11;
+
 export function Plaza() {
   const tile = useMemo(makeStoneTileTexture, []);
 
   const pathTile = useMemo(() => {
     const t = tile.clone();
-    t.repeat.set(1, PATH_LENGTH / (PATH_WIDTH * 1.4));
+    // U runs along the strip length (MAIN_LEN), V across its width.
+    t.repeat.set(MAIN_LEN / (PATH_WIDTH * 1.4), 1);
     t.needsUpdate = true;
     return t;
   }, [tile]);
@@ -54,6 +60,35 @@ export function Plaza() {
     t.needsUpdate = true;
     return t;
   }, [tile]);
+
+  // Deterministic loose-paver scatter that spills from the end of every
+  // path into the grass. Same set reused for all four paths (rotated by
+  // the group), so the four endings read consistently.
+  const scatter = useMemo(() => {
+    let s = 0x9e3779b9;
+    const rnd = () => { s = (s * 1664525 + 1013904223) >>> 0; return s / 4294967296; };
+    const arr: Array<{
+      k: number; x: number; z: number; w: number; h: number; rot: number; color: string;
+    }> = [];
+    const N = 24;
+    for (let i = 0; i < N; i++) {
+      const t = i / (N - 1);                       // 0 (path edge) → 1 (far)
+      // Thin the scatter out as it reaches into the lawn.
+      if (t > 0.4 && rnd() < (t - 0.4) * 1.25) continue;
+      const sc = 1 - t * 0.4;
+      const spread = PATH_WIDTH * 0.6 + t * 1.35;
+      arr.push({
+        k: i,
+        x: PLAZA_RADIUS + MAIN_LEN - 1.2 + t * 5.6,
+        z: (rnd() * 2 - 1) * spread,
+        w: (0.72 + rnd() * 0.46) * sc,
+        h: (0.5 + rnd() * 0.32) * sc,
+        rot: (rnd() * 2 - 1) * 0.95,
+        color: `rgb(${214 + Math.floor(rnd() * 20)}, ${190 + Math.floor(rnd() * 16)}, ${142 + Math.floor(rnd() * 20)})`,
+      });
+    }
+    return arr;
+  }, []);
 
   return (
     <group position={[0, 0.015, 0]}>
@@ -69,17 +104,24 @@ export function Plaza() {
         <meshStandardMaterial color="#cdb582" roughness={0.85} />
       </mesh>
 
-      {/* 4 cardinal paths */}
-      {[
-        { rot: 0, pos: [0, 0, -(PLAZA_RADIUS + PATH_LENGTH / 2)] as [number, number, number] },
-        { rot: 0, pos: [0, 0, PLAZA_RADIUS + PATH_LENGTH / 2] as [number, number, number] },
-        { rot: Math.PI / 2, pos: [PLAZA_RADIUS + PATH_LENGTH / 2, 0, 0] as [number, number, number] },
-        { rot: Math.PI / 2, pos: [-(PLAZA_RADIUS + PATH_LENGTH / 2), 0, 0] as [number, number, number] },
-      ].map((p, i) => (
-        <mesh key={i} receiveShadow position={p.pos} rotation={[-Math.PI / 2, 0, p.rot]}>
-          <planeGeometry args={[PATH_WIDTH * 1.4, PATH_LENGTH]} />
-          <meshStandardMaterial map={pathTile} roughness={0.92} />
-        </mesh>
+      {/* 4 cardinal paths — solid strip + loose-paver scatter so each
+          path dissolves into the lawn instead of ending on a hard cut.
+          The group yaw aligns local +X with the outward direction. */}
+      {[Math.PI / 2, -Math.PI / 2, 0, Math.PI].map((yaw, i) => (
+        <group key={i} rotation={[0, yaw, 0]}>
+          {/* Solid brick strip */}
+          <mesh receiveShadow position={[PLAZA_RADIUS + MAIN_LEN / 2, 0, 0]} rotation={[-Math.PI / 2, 0, 0]}>
+            <planeGeometry args={[MAIN_LEN, PATH_WIDTH * 1.4]} />
+            <meshStandardMaterial map={pathTile} roughness={0.92} />
+          </mesh>
+          {/* Loose pavers spilling into the grass */}
+          {scatter.map((b) => (
+            <mesh key={b.k} receiveShadow position={[b.x, 0.008, b.z]} rotation={[-Math.PI / 2, 0, b.rot]}>
+              <planeGeometry args={[b.w, b.h]} />
+              <meshStandardMaterial color={b.color} roughness={0.95} />
+            </mesh>
+          ))}
+        </group>
       ))}
 
       {/* Welcome sign */}
