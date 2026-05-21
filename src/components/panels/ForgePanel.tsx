@@ -17,21 +17,18 @@ export function ForgePanel({ width = 760, height = 780 }: PanelProps) {
       <div style={{ position: 'relative', padding: '28px 32px', height: '100%', display: 'flex', flexDirection: 'column' }}>
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline' }}>
           <div style={{ font: '10.5px "JetBrains Mono", monospace', letterSpacing: '.22em', color: '#f5d97a', textTransform: 'uppercase' }}>
-            The Forge · skills · DWG-007
+            The Forge · skills
           </div>
           <div style={{ font: '10.5px "JetBrains Mono", monospace', letterSpacing: '.18em', color: 'rgba(205,243,226,.55)' }}>
-            P. FARAZI · SCALE 1:1
+            P. FARAZI
           </div>
         </div>
-        <h1 style={{ font: 'italic 44px/1 var(--rw-serif)', margin: '8px 0 4px', color: '#fffaee' }}>Every language,<br/>forged.</h1>
-        <div style={{ font: '15px/1.45 var(--rw-sans, system-ui)', color: 'rgba(255,250,238,.78)', margin: '2px 0 4px', maxWidth: '52ch' }}>
+        <h1 style={{ font: 'italic 44px/1 var(--rw-serif)', margin: '8px 0 6px', color: '#fffaee' }}>Every language,<br/>forged.</h1>
+        <div style={{ font: '16px/1.5 var(--rw-sans, system-ui)', color: 'rgba(255,250,238,.8)', margin: '2px 0 4px', maxWidth: '52ch' }}>
           The languages, frameworks, and tools I work with.
         </div>
-        <div style={{ font: '11px "JetBrains Mono", monospace', color: 'rgba(205,243,226,.65)' }}>
-          The tools on the wall — picked up over four years of building.
-        </div>
 
-        <div style={{ marginTop: 6, display: 'flex', alignItems: 'center', gap: 8 }}>
+        <div style={{ marginTop: 12, display: 'flex', alignItems: 'center', gap: 8 }}>
           <AnvilGlyph/>
           <div style={{ flex: 1, height: 1, background: 'linear-gradient(90deg, #f5d97a, transparent)', opacity: .6 }}/>
         </div>
