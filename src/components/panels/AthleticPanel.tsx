@@ -112,11 +112,9 @@ export function AthleticPanel({ width = 880, height = 1020 }: PanelProps) {
           </div>
 
           <div style={{ marginTop: 'auto', paddingTop: 14 }}>
-            <div style={{ borderTop: '2px solid #1a1410', borderBottom: '1px solid #1a1410', padding: '12px 0 10px', display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: 0 }}>
+            <div style={{ borderTop: '2px solid #1a1410', borderBottom: '1px solid #1a1410', padding: '14px 0 12px', display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: 0 }}>
               <AthleticStat n="60+" k="schools modeled" first/>
-              <AthleticStat n="4" k="conferences"/>
-              <AthleticStat n="14pp" k="featured in The Athletic"/>
-              <AthleticStat n="GT" k="partner · athletics"/>
+              <AthleticStat n="4" k="power conferences"/>
             </div>
           </div>
 
@@ -129,9 +127,9 @@ export function AthleticPanel({ width = 880, height = 1020 }: PanelProps) {
 
 function AthleticStat({ n, k, first }: { n: string; k: string; first?: boolean }) {
   return (
-    <div style={{ padding: '0 14px', borderLeft: first ? 'none' : '1px solid #c8b585' }}>
-      <div style={{ font: 'italic 700 28px var(--rw-serif)', color: '#c44a3a', lineHeight: 1 }}>{n}</div>
-      <div style={{ font: '10.5px "JetBrains Mono", monospace', letterSpacing: '.1em', textTransform: 'uppercase', color: '#7a5a30', marginTop: 5 }}>{k}</div>
+    <div style={{ padding: '0 14px', borderLeft: first ? 'none' : '1px solid #c8b585', textAlign: 'center' }}>
+      <div style={{ font: 'italic 700 34px var(--rw-serif)', color: '#c44a3a', lineHeight: 1 }}>{n}</div>
+      <div style={{ font: '11.5px "JetBrains Mono", monospace', letterSpacing: '.1em', textTransform: 'uppercase', color: '#7a5a30', marginTop: 7 }}>{k}</div>
     </div>
   );
 }

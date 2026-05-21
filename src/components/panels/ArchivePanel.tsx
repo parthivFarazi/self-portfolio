@@ -92,13 +92,11 @@ export function ArchivePanel({ width = 900, height = 780 }: PanelProps) {
               </div>
             </div>
 
-            <div style={{ display: 'flex', gap: 12, alignItems: 'center', font: '10.5px var(--rw-mono)', color: '#5a3e20', borderTop: '1px dashed #b89860', borderBottom: '1px dashed #b89860', padding: '8px 0', margin: '6px 0 10px' }}>
-              <span><span style={{ color: '#f5d97a', textShadow: '0 0 4px #f5d97a' }}>★</span> 142</span>
-              <span style={{ color: '#7a5a30' }}>⑂ 18</span>
-              <span style={{ display: 'inline-flex', alignItems: 'center', gap: 4 }}>
+            <div style={{ display: 'flex', gap: 16, alignItems: 'center', font: '10.5px var(--rw-mono)', color: '#5a3e20', borderTop: '1px dashed #b89860', borderBottom: '1px dashed #b89860', padding: '8px 0', margin: '6px 0 10px' }}>
+              <span style={{ display: 'inline-flex', alignItems: 'center', gap: 5 }}>
                 <span style={{ width: 8, height: 8, borderRadius: '50%', background: '#3a6ec8', display: 'inline-block' }}/>Python
               </span>
-              <span style={{ display: 'inline-flex', alignItems: 'center', gap: 4 }}>
+              <span style={{ display: 'inline-flex', alignItems: 'center', gap: 5 }}>
                 <span style={{ width: 8, height: 8, borderRadius: '50%', background: '#7a5a30', display: 'inline-block' }}/>Shell
               </span>
             </div>

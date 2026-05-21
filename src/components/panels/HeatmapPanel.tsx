@@ -153,11 +153,10 @@ export function HeatmapPanel({ width = 820, height = 880 }: PanelProps) {
 
           {/* ── Stat strip ───────────────────────────────────────────── */}
           <div style={{ marginTop: 'auto', paddingTop: 10, borderTop: '1px dashed rgba(244,236,214,.3)' }}>
-            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, minmax(0, 1fr))', gap: 10 }}>
+            <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, minmax(0, 1fr))', gap: 10 }}>
               <ChalkStat n="4" k="datasets"/>
               <ChalkStat n="1,000+" k="movements / game"/>
               <ChalkStat n="USSF" k="data partner"/>
-              <ChalkStat n="xRun" k="off-ball score" italic/>
             </div>
           </div>
         </div>
