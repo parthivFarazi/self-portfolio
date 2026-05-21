@@ -53,7 +53,7 @@ export const BUILDINGS: BuildingDef[] = [
     shape: { kind: 'cylinder', radius: 13, height: 8 },
     color: '#b3dfd7',
     triggerRadius: 18,
-    panelSize: { w: 820, h: 980 },
+    panelSize: { w: 820, h: 1020 },
   },
   {
     id: 'rmaict',

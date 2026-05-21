@@ -1,5 +1,5 @@
 import type { ReactNode } from 'react';
-import { Slot, P2Header } from './_shared';
+import { Slot } from './_shared';
 import { panelImages } from './panelImages';
 
 export interface PanelProps {
@@ -14,7 +14,7 @@ const GOLD = '#f5d97a';
 const TEXT_DIM = 'rgba(205,243,226,.78)';
 const TEXT_MED = 'rgba(205,243,226,.65)';
 
-export function UPDTPanel({ width = 820, height = 980 }: PanelProps) {
+export function UPDTPanel({ width = 820, height = 1020 }: PanelProps) {
   return (
     <div style={{
       width, height, position: 'relative', overflow: 'hidden',
@@ -25,50 +25,42 @@ export function UPDTPanel({ width = 820, height = 980 }: PanelProps) {
       {/* Background grid */}
       <div style={{ position: 'absolute', inset: 0, backgroundImage: 'linear-gradient(rgba(148,226,192,.05) 1px, transparent 1px), linear-gradient(90deg, rgba(148,226,192,.05) 1px, transparent 1px)', backgroundSize: '24px 24px', pointerEvents: 'none' }}/>
 
-      {/* ── Top status bar ─────────────────────────────────────────── */}
-      <div style={{ position: 'relative', padding: '20px 28px 14px', borderBottom: `1px solid ${CYAN}22`, display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexShrink: 0 }}>
-        <div style={{ display: 'flex', alignItems: 'baseline', gap: 16 }}>
-          <span style={{ font: '900 28px "JetBrains Mono", monospace', letterSpacing: '4px', color: MINT }}>UPDT.</span>
-          <span style={{ font: '10px "JetBrains Mono", monospace', letterSpacing: '.22em', color: CYAN, textTransform: 'uppercase' }}>ScoutPro · build 2.4</span>
-        </div>
-        <div style={{ display: 'flex', gap: 18, font: '10.5px "JetBrains Mono", monospace', color: TEXT_MED, letterSpacing: '.14em', textTransform: 'uppercase' }}>
-          <span><span style={{ width: 6, height: 6, borderRadius: '50%', background: '#7cd17a', display: 'inline-block', marginRight: 6 }}/>Live · CV tracking</span>
-          <span>co-founder · p.farazi</span>
-        </div>
-      </div>
-
-      {/* ── Header row: title + subtitle + CREATE-X badge ─────────── */}
-      <div style={{ position: 'relative', padding: '14px 28px 0', display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', gap: 18, flexShrink: 0 }}>
+      {/* ── Header: label + lead line + meta + CREATE-X badge ─────── */}
+      <div style={{ position: 'relative', padding: '30px 28px 0', display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', gap: 20, flexShrink: 0 }}>
         <div style={{ flex: 1 }}>
-          <P2Header
-            kicker="UPDT · soccer analytics platform"
-            kickerColor={TEXT_DIM}
-            titleColor="#fffaee"
-            title={<>From video<br/>to decisions.</>}
-            subtitle="An AI platform that turns soccer broadcast footage into scouting data."
-            subtitleColor="rgba(255,250,238,0.78)"
-            meta="Co-founder & Primary Technical Engineer · updt.pro · 2025 — Present · Atlanta, GA"
-            metaColor={TEXT_DIM}
-          />
+          <div style={{ font: '12px "JetBrains Mono", monospace', letterSpacing: '.18em', textTransform: 'uppercase', color: TEXT_DIM }}>
+            UPDT · Soccer Analytics Platform
+          </div>
+          <div style={{ font: '23px/1.4 var(--rw-sans)', color: '#fffaee', margin: '12px 0 12px', maxWidth: '30ch' }}>
+            An AI platform that turns soccer broadcast footage into scouting data.
+          </div>
+          <div style={{ font: '13px "JetBrains Mono", monospace', color: TEXT_DIM, letterSpacing: '.04em' }}>
+            Co-founder &amp; Primary Technical Engineer · 2025 — Present · Atlanta, GA
+          </div>
         </div>
         <CreateXBadge />
       </div>
 
       {/* ── Screenshot grid: hero + 2 stacked ──────────────────────── */}
-      <div style={{ position: 'relative', padding: '6px 28px 0', flexShrink: 0 }}>
-        <div style={{ display: 'grid', gridTemplateColumns: '1.4fr 1fr', gap: 12 }}>
-          <HoloFrame>
-            <div style={{ font: '9.5px "JetBrains Mono", monospace', letterSpacing: '.18em', color: CYAN, textTransform: 'uppercase' }}>scoutpro · player search</div>
-            <Slot id="updt-scoutpro" w={400} h={228} placeholder="ScoutPro dashboard · screenshot" shape="rounded" radius={4} fit="contain" src={panelImages.updt.playerSearch}/>
-          </HoloFrame>
-          <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
+      <div style={{ position: 'relative', padding: '18px 28px 0', flexShrink: 0 }}>
+        <div style={{ display: 'grid', gridTemplateColumns: '1.4fr 1fr', gap: 14, alignItems: 'stretch' }}>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
+            <HoloFrame>
+              <div style={{ font: '13px "JetBrains Mono", monospace', letterSpacing: '.14em', color: CYAN, textTransform: 'uppercase' }}>scoutpro · player search</div>
+              <Slot id="updt-scoutpro" w={410} h={234} placeholder="ScoutPro dashboard · screenshot" shape="rounded" radius={4} fit="contain" src={panelImages.updt.playerSearch}/>
+            </HoloFrame>
+            <div style={{ font: '16px/1.5 var(--rw-sans)', color: TEXT_DIM }}>
+              ScoutPro — search any player, filter by metric, and build a scouting shortlist from broadcast-derived stats.
+            </div>
+          </div>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: 14 }}>
             <HoloFrame magenta>
-              <div style={{ font: '9.5px "JetBrains Mono", monospace', letterSpacing: '.18em', color: MAGENTA, textTransform: 'uppercase' }}>CV · player + ball tracking</div>
-              <Slot id="updt-cv" w={260} h={102} placeholder="CV tracking · clip frame" shape="rounded" radius={4} src={panelImages.updt.playerTracking}/>
+              <div style={{ font: '13px "JetBrains Mono", monospace', letterSpacing: '.14em', color: MAGENTA, textTransform: 'uppercase' }}>CV · player + ball tracking</div>
+              <Slot id="updt-cv" w={285} h={135} placeholder="CV tracking · clip frame" shape="rounded" radius={4} fit="cover" src={panelImages.updt.playerTracking}/>
             </HoloFrame>
             <HoloFrame>
-              <div style={{ font: '9.5px "JetBrains Mono", monospace', letterSpacing: '.18em', color: CYAN, textTransform: 'uppercase' }}>game prep + team analysis</div>
-              <Slot id="updt-tactics" w={260} h={102} placeholder="tactics · screenshot" shape="rounded" radius={4} src={panelImages.updt.tacticalPattern}/>
+              <div style={{ font: '13px "JetBrains Mono", monospace', letterSpacing: '.14em', color: CYAN, textTransform: 'uppercase' }}>game prep + team analysis</div>
+              <Slot id="updt-tactics" w={285} h={135} placeholder="tactics · screenshot" shape="rounded" radius={4} fit="cover" src={panelImages.updt.tacticalPattern}/>
             </HoloFrame>
           </div>
         </div>
@@ -118,8 +110,8 @@ export function UPDTPanel({ width = 820, height = 980 }: PanelProps) {
           display: 'flex', alignItems: 'center', gap: 14,
         }}>
           <span style={{ font: '20px var(--rw-serif)', color: GOLD, flexShrink: 0 }}>🏆</span>
-          <div style={{ font: '13px/1.45 var(--rw-sans)', color: '#fffaee' }}>
-            <b style={{ color: CYAN, letterSpacing: '.06em', textTransform: 'uppercase', font: '700 10.5px "JetBrains Mono", monospace', display: 'block', marginBottom: 4 }}>In the field</b>
+          <div style={{ font: '16px/1.5 var(--rw-sans)', color: '#fffaee' }}>
+            <b style={{ color: CYAN, letterSpacing: '.08em', textTransform: 'uppercase', font: '700 12px "JetBrains Mono", monospace', display: 'block', marginBottom: 6 }}>In the field</b>
             Earlier scouting workflow supported real-world player evaluation — including analysis related to <b style={{ color: GOLD }}>Miguel Berry during Charlotte Battery scouting</b>.
           </div>
         </div>
@@ -211,7 +203,7 @@ function CreateXBadge() {
 function Quadrant({ label, accent, body }: { label: string; accent: string; body: ReactNode }) {
   return (
     <div style={{
-      padding: '10px 12px',
+      padding: '14px 16px',
       background: `linear-gradient(135deg, ${accent}12, transparent 70%)`,
       border: `1px solid ${accent}55`,
       boxShadow: `inset 0 0 0 1px rgba(255,255,255,.03), 0 0 16px ${accent}1a`,
@@ -223,10 +215,10 @@ function Quadrant({ label, accent, body }: { label: string; accent: string; body
       <span style={{ position: 'absolute', bottom: -1, left: -1, width: 8, height: 8, borderBottom: `2px solid ${accent}`, borderLeft: `2px solid ${accent}` }}/>
       <span style={{ position: 'absolute', bottom: -1, right: -1, width: 8, height: 8, borderBottom: `2px solid ${accent}`, borderRight: `2px solid ${accent}` }}/>
 
-      <div style={{ font: '700 9.5px "JetBrains Mono", monospace', letterSpacing: '.18em', color: accent, marginBottom: 6 }}>
+      <div style={{ font: '700 12px "JetBrains Mono", monospace', letterSpacing: '.16em', color: accent, marginBottom: 8 }}>
         {label}
       </div>
-      <div style={{ font: '11.5px/1.4 var(--rw-sans)', color: '#fffaee', opacity: 0.92 }}>
+      <div style={{ font: '16px/1.5 var(--rw-sans)', color: '#fffaee', opacity: 0.92 }}>
         {body}
       </div>
     </div>
