@@ -14,7 +14,7 @@ const GOLD = '#f5d97a';
 const TEXT_DIM = 'rgba(205,243,226,.78)';
 const TEXT_MED = 'rgba(205,243,226,.65)';
 
-export function UPDTPanel({ width = 1180, height = 1250 }: PanelProps) {
+export function UPDTPanel({ width = 1280, height = 1300 }: PanelProps) {
   return (
     <div style={{
       width, height, position: 'relative', overflow: 'hidden',
@@ -25,13 +25,18 @@ export function UPDTPanel({ width = 1180, height = 1250 }: PanelProps) {
       {/* Background grid */}
       <div style={{ position: 'absolute', inset: 0, backgroundImage: 'linear-gradient(rgba(148,226,192,.05) 1px, transparent 1px), linear-gradient(90deg, rgba(148,226,192,.05) 1px, transparent 1px)', backgroundSize: '24px 24px', pointerEvents: 'none' }}/>
 
-      {/* ── Header: label + lead line + meta + CREATE-X badge ─────── */}
-      <div style={{ position: 'relative', padding: '30px 30px 0', display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', gap: 22, flexShrink: 0 }}>
+      {/* ── Header: kicker + poetic quote + description + meta + badge ── */}
+      <div style={{ position: 'relative', padding: '30px 32px 0', display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', gap: 24, flexShrink: 0 }}>
         <div style={{ flex: 1 }}>
           <div style={{ font: '12px "JetBrains Mono", monospace', letterSpacing: '.18em', textTransform: 'uppercase', color: TEXT_DIM }}>
             UPDT · Soccer Analytics Platform
           </div>
-          <div style={{ font: '24px/1.4 var(--rw-sans)', color: '#fffaee', margin: '12px 0 12px', maxWidth: '46ch' }}>
+          {/* Poetic line — italic serif, the same family every other panel
+              uses for its title, just held in a more compact size. */}
+          <div style={{ font: 'italic 31px/1.15 var(--rw-serif)', color: '#fffaee', margin: '10px 0 6px' }}>
+            Soccer analytics, enhanced.
+          </div>
+          <div style={{ font: '18px/1.5 var(--rw-sans)', color: TEXT_DIM, margin: '0 0 10px', maxWidth: '66ch' }}>
             An AI platform that turns soccer broadcast footage into scouting data.
           </div>
           <div style={{ font: '13px "JetBrains Mono", monospace', color: TEXT_DIM, letterSpacing: '.04em' }}>
@@ -48,20 +53,20 @@ export function UPDTPanel({ width = 1180, height = 1250 }: PanelProps) {
       <div style={{
         position: 'relative', flex: 1, minHeight: 0,
         display: 'grid', gridTemplateColumns: '1.5fr 1fr', gap: 18,
-        padding: '20px 30px 0', alignItems: 'start',
+        padding: '20px 32px 0', alignItems: 'start',
       }}>
         {/* LEFT — the two detail-heavy dashboards, shown large */}
         <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
           <HoloFrame>
             <div style={{ font: '13px "JetBrains Mono", monospace', letterSpacing: '.14em', color: CYAN, textTransform: 'uppercase' }}>scoutpro · player search</div>
-            <Slot id="updt-scoutpro" w={636} h={372} placeholder="ScoutPro dashboard · screenshot" shape="rounded" radius={4} fit="contain" src={panelImages.updt.playerSearch}/>
+            <Slot id="updt-scoutpro" w={700} h={410} placeholder="ScoutPro dashboard · screenshot" shape="rounded" radius={4} fit="contain" src={panelImages.updt.playerSearch}/>
           </HoloFrame>
           <div style={{ font: '16px/1.5 var(--rw-sans)', color: TEXT_DIM }}>
             Search any player, filter by metric, and build a scouting shortlist from broadcast-derived stats.
           </div>
           <HoloFrame>
             <div style={{ font: '13px "JetBrains Mono", monospace', letterSpacing: '.14em', color: CYAN, textTransform: 'uppercase' }}>game prep + team analysis</div>
-            <Slot id="updt-tactics" w={636} h={392} placeholder="tactics · screenshot" shape="rounded" radius={4} fit="contain" src={panelImages.updt.tacticalPattern}/>
+            <Slot id="updt-tactics" w={700} h={435} placeholder="tactics · screenshot" shape="rounded" radius={4} fit="contain" src={panelImages.updt.tacticalPattern}/>
           </HoloFrame>
           <div style={{ font: '16px/1.5 var(--rw-sans)', color: TEXT_DIM }}>
             Auto-built team reports — radar profiles, position coverage, and role-fit summaries for match prep.
@@ -72,7 +77,7 @@ export function UPDTPanel({ width = 1180, height = 1250 }: PanelProps) {
         <div style={{ display: 'flex', flexDirection: 'column', gap: 12 }}>
           <HoloFrame magenta>
             <div style={{ font: '13px "JetBrains Mono", monospace', letterSpacing: '.14em', color: MAGENTA, textTransform: 'uppercase' }}>CV · player + ball tracking</div>
-            <Slot id="updt-cv" w={420} h={246} placeholder="CV tracking · clip frame" shape="rounded" radius={4} fit="cover" src={panelImages.updt.playerTracking}/>
+            <Slot id="updt-cv" w={458} h={268} placeholder="CV tracking · clip frame" shape="rounded" radius={4} fit="cover" src={panelImages.updt.playerTracking}/>
           </HoloFrame>
           <Quadrant
             label="01 · CO-FOUNDER CONTEXT"
@@ -122,7 +127,7 @@ export function UPDTPanel({ width = 1180, height = 1250 }: PanelProps) {
       <div style={{
         position: 'relative',
         marginTop: 'auto',
-        padding: '16px 30px 24px',
+        padding: '16px 32px 24px',
         display: 'flex', alignItems: 'center', justifyContent: 'space-between',
         gap: 16,
         borderTop: `1px solid ${CYAN}22`,
