@@ -40,14 +40,35 @@ function makeFootballPitchTexture() {
   return tex;
 }
 
-function Banner({ x, label, color }: { x: number; label: string; color: string }) {
+// Conference banner on a flag pole planted on the bowl's back rim.
+// `x` is the lateral offset; the pole's z is derived so it stands on the
+// wall ellipse (rx,rz) rather than floating in mid-air.
+function Banner({
+  x, rx, rz, label, color,
+}: { x: number; rx: number; rz: number; label: string; color: string }) {
+  const z = -rz * Math.sqrt(Math.max(0, 1 - (x / rx) ** 2));
+  const baseY = 6.0;            // bowl wall top
+  const poleH = 3.5;
+  const topY = baseY + poleH;
+  const bw = 1.7;
+  const bh = 1.05;
+  const cy = topY - 0.32 - bh / 2; // banner sits just below the finial
   return (
-    <group position={[x, 9, -7]}>
-      <mesh castShadow>
-        <boxGeometry args={[1.6, 0.9, 0.08]} />
-        <meshStandardMaterial color={color} roughness={0.4} emissive={color} emissiveIntensity={0.18} />
+    <group position={[x, 0, z]}>
+      {/* Flag pole — planted on the rim, runs up through the cornice */}
+      <mesh castShadow position={[0, baseY + poleH / 2, 0]} material={metalSilverDark}>
+        <cylinderGeometry args={[0.07, 0.09, poleH, 8]} />
       </mesh>
-      <Text position={[0, 0, 0.06]} fontSize={0.32} color="#fffaee" anchorX="center" anchorY="middle">
+      {/* Finial */}
+      <mesh castShadow position={[0, topY, 0]} material={metalSilverDark}>
+        <sphereGeometry args={[0.14, 10, 8]} />
+      </mesh>
+      {/* Banner panel — mounted on the front face of the pole */}
+      <mesh castShadow position={[0, cy, 0.12]}>
+        <boxGeometry args={[bw, bh, 0.08]} />
+        <meshStandardMaterial color={color} roughness={0.5} emissive={color} emissiveIntensity={0.16} />
+      </mesh>
+      <Text position={[0, cy, 0.17]} fontSize={0.36} color="#fffaee" anchorX="center" anchorY="middle">
         {label}
       </Text>
     </group>
@@ -144,11 +165,11 @@ export function Athletic({ def }: { def: BuildingDef }) {
         </group>
       ))}
 
-      {/* Floating conference banners above the upper deck */}
-      <Banner x={-6} label="B1G" color="#1a3458" />
-      <Banner x={-2} label="SEC" color="#c44a3a" />
-      <Banner x={2} label="ACC" color="#3a6a8c" />
-      <Banner x={6} label="B12" color="#7a3a4a" />
+      {/* Conference banners — flag poles planted on the back rim */}
+      <Banner x={-6} rx={rx} rz={rz} label="B1G" color="#1a3458" />
+      <Banner x={-2} rx={rx} rz={rz} label="SEC" color="#c44a3a" />
+      <Banner x={2} rx={rx} rz={rz} label="ACC" color="#3a6a8c" />
+      <Banner x={6} rx={rx} rz={rz} label="B12" color="#7a3a4a" />
 
       {/* "THE VALUATION ISSUE" jumbotron — mounted on the north (-z) interior
           wall instead of floating over the field, so the pitch reads clearly
