@@ -203,7 +203,7 @@ export const BUILDINGS: BuildingDef[] = [
     shape: { kind: 'box', width: 4, depth: 4, height: 3 },
     color: '#8b5a3c',
     triggerRadius: 5.5,
-    panelSize: { w: 760, h: 780 },
+    panelSize: { w: 940, h: 780 },
   },
   {
     // The Cartridge — oversized GBA lying on the grass. Outer ring, south

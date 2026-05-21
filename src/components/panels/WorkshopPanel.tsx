@@ -3,7 +3,7 @@ import { Slot } from './_shared';
 import type { PanelProps } from './UPDTPanel';
 import { panelImages } from './panelImages';
 
-export function WorkshopPanel({ width = 760, height = 780 }: PanelProps) {
+export function WorkshopPanel({ width = 940, height = 780 }: PanelProps) {
   return (
     <div style={{
       width, height, position: 'relative', overflow: 'hidden',
@@ -24,29 +24,29 @@ export function WorkshopPanel({ width = 760, height = 780 }: PanelProps) {
         where it all started · 2021
       </div>
 
-      <div style={{ position: 'absolute', left: 60, top: 110, width: width - 360, height: height - 180, background: '#1f3a5c', boxShadow: '0 12px 24px rgba(0,0,0,.45)', padding: 18, transform: 'rotate(-1deg)' }}>
+      <div style={{ position: 'absolute', left: 52, top: 110, width: 540, height: height - 180, background: '#1f3a5c', boxShadow: '0 12px 24px rgba(0,0,0,.45)', padding: 18, transform: 'rotate(-1deg)' }}>
         <Pin x="left"/><Pin x="right"/>
         <div style={{ position: 'absolute', inset: 14, backgroundImage: 'linear-gradient(rgba(255,255,255,.12) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,.12) 1px, transparent 1px)', backgroundSize: '24px 24px' }}/>
 
         <div style={{ position: 'relative', color: '#cfe4ff', font: '10.5px "JetBrains Mono", monospace', letterSpacing: '.18em', textTransform: 'uppercase', display: 'flex', justifyContent: 'space-between' }}>
           <span>P. Farazi · model 01 · litter unit</span>
-          <span>KL · 2021 · DWG—001</span>
+          <span>KL · 2021</span>
         </div>
         <h2 style={{ position: 'relative', font: 'italic 36px/1 var(--rw-serif)', margin: '8px 0 4px', color: '#fffaee' }}>The robot,<br/>in three views.</h2>
-        <div style={{ position: 'relative', font: '15px/1.45 var(--rw-sans, system-ui)', color: 'rgba(207,228,255,.82)', margin: '2px 0 6px', maxWidth: '52ch' }}>
+        <div style={{ position: 'relative', font: '16px/1.45 var(--rw-sans, system-ui)', color: 'rgba(207,228,255,.85)', margin: '4px 0 6px', maxWidth: '52ch' }}>
           A solar-powered robot that cleared litter from soccer fields.
         </div>
         <div style={{ position: 'relative', font: '11px "JetBrains Mono", monospace', color: 'rgba(207,228,255,.65)' }}>C++ · Arduino IDE · TinkerCAD · Fusion 360</div>
 
         <div style={{ position: 'relative', marginTop: 22, display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: 14 }}>
           <BluprintView label="Front" callouts={[['solar panel', '↑'], ['sensor', '→']]}>
-            <Slot id="robot-view-front" w={120} h={140} placeholder="robot · front photo" shape="rect" fit="contain" src={panelImages.robot.frontView}/>
+            <Slot id="robot-view-front" w={132} h={152} placeholder="robot · front photo" shape="rect" fit="contain" src={panelImages.robot.frontView}/>
           </BluprintView>
           <BluprintView label="Side" callouts={[['drive wheel', '↓'], ['arm', '→']]}>
-            <Slot id="robot-view-side" w={120} h={140} placeholder="robot · side photo" shape="rect" fit="contain" src={panelImages.robot.sideView}/>
+            <Slot id="robot-view-side" w={132} h={152} placeholder="robot · side photo" shape="rect" fit="contain" src={panelImages.robot.sideView}/>
           </BluprintView>
           <BluprintView label="Circuit" callouts={[['frame · Al', '↑'], ['MCU', '→']]}>
-            <Slot id="robot-view-top" w={120} h={140} placeholder="robot · top photo" shape="rect" fit="contain" src={panelImages.robot.circuitDiagram}/>
+            <Slot id="robot-view-top" w={132} h={152} placeholder="robot · top photo" shape="rect" fit="contain" src={panelImages.robot.circuitDiagram}/>
           </BluprintView>
         </div>
 
@@ -58,7 +58,7 @@ export function WorkshopPanel({ width = 760, height = 780 }: PanelProps) {
         </div>
       </div>
 
-      <div style={{ position: 'absolute', right: 36, top: 110, width: 240, display: 'flex', flexDirection: 'column', gap: 14 }}>
+      <div style={{ position: 'absolute', right: 40, top: 110, width: 256, display: 'flex', flexDirection: 'column', gap: 14 }}>
         <div style={{ padding: '10px 10px 32px', background: '#fffaee', boxShadow: '0 8px 16px rgba(0,0,0,.4)', transform: 'rotate(3deg)', position: 'relative' }}>
           <Pin x="center"/>
           <Slot id="robot-action" w={220} h={220} placeholder="robot on the field · photo" shape="rect" fit="contain" src={panelImages.robot.action}/>
