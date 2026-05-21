@@ -20,16 +20,16 @@ export function SoothePanel({ width = 760, height = 780 }: PanelProps) {
           <div style={{ position: 'absolute', left: '50%', top: 0, bottom: 0, width: 18, transform: 'translateX(-50%)', background: 'linear-gradient(90deg, transparent, rgba(80,50,20,.35), transparent)', pointerEvents: 'none' }}/>
 
           <div style={{ padding: '34px 30px 30px', position: 'relative' }}>
-            <div style={{ font: '10.5px "JetBrains Mono", monospace', letterSpacing: '.18em', textTransform: 'uppercase', color: '#7a5a30' }}>Soothe · journal</div>
-            <h2 style={{ font: 'italic 30px/1.05 var(--rw-serif)', margin: '4px 0 6px', color: '#2a1a0e' }}>What if a journal<br/>could listen back?</h2>
-            <div style={{ font: '14.5px/1.45 var(--rw-sans, system-ui)', color: 'rgba(42,26,14,.72)', margin: '0 0 12px', maxWidth: '40ch' }}>
+            <div style={{ font: '11px "JetBrains Mono", monospace', letterSpacing: '.18em', textTransform: 'uppercase', color: '#7a5a30' }}>Soothe · journal</div>
+            <h2 style={{ font: 'italic 36px/1.08 var(--rw-serif)', margin: '6px 0 8px', color: '#2a1a0e' }}>What if a journal<br/>could listen back?</h2>
+            <div style={{ font: '17px/1.5 var(--rw-sans, system-ui)', color: 'rgba(42,26,14,.74)', margin: '0 0 14px', maxWidth: '40ch' }}>
               An AI mental-health journaling app with mood analysis and prompts.
             </div>
-            <div style={{ font: '16px/1.55 "Caveat", cursive', color: '#2a1a0e' }}>
-              <p style={{ margin: '0 0 6px' }}>· Cross-platform app — daily prompts, mood scoring, and gentle wellness suggestions.</p>
-              <p style={{ margin: '0 0 6px' }}>· GPT-4 powers the prompt + analysis layer; Firebase, GCP App Engine, Firestore hold it together.</p>
-              <p style={{ margin: '0 0 6px' }}>· 90%+ test coverage. CI/CD via GitHub Actions.</p>
-              <p style={{ margin: '8px 0 4px', font: 'italic 14px var(--rw-serif)', color: '#5a3e20' }}>May — Jul 2025 · React Native · FastAPI · Firebase · GCP · GPT-4</p>
+            <div style={{ font: '21px/1.5 "Caveat", cursive', color: '#2a1a0e' }}>
+              <p style={{ margin: '0 0 7px' }}>· Cross-platform app — daily prompts, mood scoring, and gentle wellness suggestions.</p>
+              <p style={{ margin: '0 0 7px' }}>· GPT-4 powers the prompt + analysis layer; Firebase, GCP App Engine, Firestore hold it together.</p>
+              <p style={{ margin: '0 0 7px' }}>· 90%+ test coverage. CI/CD via GitHub Actions.</p>
+              <p style={{ margin: '10px 0 4px', font: 'italic 16px var(--rw-serif)', color: '#5a3e20' }}>May — Jul 2025 · React Native · FastAPI · Firebase · GCP · GPT-4</p>
               <SootheDemoBookmark/>
             </div>
             <div style={{ position: 'absolute', right: 14, bottom: 24, width: 36, height: 70, transform: 'rotate(20deg)' }}>
@@ -48,20 +48,20 @@ export function SoothePanel({ width = 760, height = 780 }: PanelProps) {
             <div style={{ font: '10.5px "JetBrains Mono", monospace', letterSpacing: '.18em', textTransform: 'uppercase', color: '#7a5a30' }}>· Pages from the app</div>
 
             <div style={{ position: 'relative', height: 'calc(100% - 24px)', marginTop: 14 }}>
-              <div style={{ position: 'absolute', top: 0, left: 4, padding: '10px 10px 30px', background: '#fffaee', boxShadow: '0 6px 12px rgba(0,0,0,.3)', transform: 'rotate(-5deg)' }}>
+              <div style={{ position: 'absolute', top: 0, left: 0, padding: '10px 10px 30px', background: '#fffaee', boxShadow: '0 6px 12px rgba(0,0,0,.3)', transform: 'rotate(-5deg)' }}>
                 <Slot id="soothe-screen-1" w={120} h={210} placeholder="Soothe · home" shape="rounded" radius={6} fit="contain" src={panelImages.soothe.morningCheckIn}/>
-                <div style={{ font: '13px "Caveat", cursive', color: '#2a1a0e', textAlign: 'center', marginTop: 4 }}>journal</div>
+                <div style={{ font: '15px "Caveat", cursive', color: '#2a1a0e', textAlign: 'center', marginTop: 4 }}>journal</div>
               </div>
-              <div style={{ position: 'absolute', top: 30, right: 12, padding: '10px 10px 30px', background: '#fffaee', boxShadow: '0 6px 12px rgba(0,0,0,.3)', transform: 'rotate(6deg)' }}>
+              <div style={{ position: 'absolute', top: 0, right: 0, padding: '10px 10px 30px', background: '#fffaee', boxShadow: '0 6px 12px rgba(0,0,0,.3)', transform: 'rotate(6deg)' }}>
                 <Slot id="soothe-screen-2" w={120} h={210} placeholder="Soothe · mood graph" shape="rounded" radius={6} fit="contain" src={panelImages.soothe.moodArc}/>
-                <div style={{ font: '13px "Caveat", cursive', color: '#2a1a0e', textAlign: 'center', marginTop: 4 }}>mood tracker</div>
+                <div style={{ font: '15px "Caveat", cursive', color: '#2a1a0e', textAlign: 'center', marginTop: 4 }}>mood tracker</div>
               </div>
               <div style={{ position: 'absolute', bottom: 0, left: '20%', padding: '10px 10px 30px', background: '#fffaee', boxShadow: '0 6px 12px rgba(0,0,0,.3)', transform: 'rotate(-2deg)' }}>
                 <Slot id="soothe-screen-3" w={120} h={210} placeholder="Soothe · check-in" shape="rounded" radius={6} fit="contain" src={panelImages.soothe.eveningCheckIn}/>
-                <div style={{ font: '13px "Caveat", cursive', color: '#2a1a0e', textAlign: 'center', marginTop: 4 }}>entree logs</div>
+                <div style={{ font: '15px "Caveat", cursive', color: '#2a1a0e', textAlign: 'center', marginTop: 4 }}>entree logs</div>
               </div>
-              <div style={{ position: 'absolute', top: 4, left: 30, width: 60, height: 18, background: 'rgba(220,205,160,.7)', border: '1px dashed rgba(140,110,40,.5)', transform: 'rotate(-12deg)' }}/>
-              <div style={{ position: 'absolute', top: 24, right: 32, width: 60, height: 18, background: 'rgba(220,205,160,.7)', border: '1px dashed rgba(140,110,40,.5)', transform: 'rotate(10deg)' }}/>
+              <div style={{ position: 'absolute', top: -7, left: 34, width: 60, height: 18, background: 'rgba(220,205,160,.7)', border: '1px dashed rgba(140,110,40,.5)', transform: 'rotate(-12deg)' }}/>
+              <div style={{ position: 'absolute', top: -7, right: 34, width: 60, height: 18, background: 'rgba(220,205,160,.7)', border: '1px dashed rgba(140,110,40,.5)', transform: 'rotate(10deg)' }}/>
             </div>
           </div>
 
