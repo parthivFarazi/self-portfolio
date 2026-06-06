@@ -42,7 +42,7 @@ export default function LandingRoute({
         <h1>Hi, I&apos;m Parthiv.</h1>
         <p>
           CS at Georgia Tech. Co-founder & CTO of <strong>UPDT.</strong>, an AI soccer analytics platform.
-          Atlanta-based, originally Kuala Lumpur. I build at the intersection of sports, AI, and product.
+          Born in Bangladesh and raised in Malaysia, now Atlanta-based. I build at the intersection of sports, AI, and product.
         </p>
       </section>
 
@@ -75,7 +75,7 @@ export default function LandingRoute({
           title="Exploration Mode"
           desc="Move through the island and open the same themed panels inside each building."
           preview={<IslandMini />}
-          cta="Enter the Island"
+          cta="Enter the World"
           accent="sage"
           onClick={onOpenWorld}
           onHover={onPreloadWorld}

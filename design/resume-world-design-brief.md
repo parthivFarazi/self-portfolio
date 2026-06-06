@@ -32,7 +32,7 @@ The avatar spawns at the center of the island on a small plaza with a "Welcome" 
 
 **MID RING** — resume essentials, visible from spawn:
 4. **The Tech Tower** (Education)
-5. **The Petronas Twin Towers** (About Me)
+5. **The Petronas Towers** (About Me)
 6. **The Forge** (Skills)
 7. **The Lighthouse** (Contact)
 
@@ -73,8 +73,8 @@ Two-story Greek revival fraternity house. White fluted columns, wide front porch
 **4. The Tech Tower — Education**
 Stylized homage to Georgia Tech's Tech Tower — Victorian red brick clock tower, white trim, gold "TECH" letters on top glowing softly. Plaza paved in GT gold. Floating bookshelf of coursework visible through the doorway.
 
-**5. The Petronas Twin Towers — About Me**
-Stylized rendition of KLCC Petronas Twin Towers — twin silver shafts, ribbed metallic facade, double-decker sky bridge at floors 41–42, tapered tops with slender pinnacles. Base: wooden welcome bench, globe with two glowing pins (KL + Atlanta), doormat "PF". Warm gold window lights.
+**5. The Petronas Towers — About Me**
+Stylized rendition of KLCC Petronas Towers — twin silver shafts, ribbed metallic facade, double-decker sky bridge at floors 41–42, tapered tops with slender pinnacles. Base: wooden welcome bench, globe with two glowing pins (KL + Atlanta), doormat "PF". Warm gold window lights.
 
 **6. The Forge — Skills**
 Half medieval blacksmith, half AI lab. Floating glowing language icons (Python, Java, C++, JS, etc.) hammered on an anvil that's actually a glowing GPU. Small H100 rack hums in the back. Sparks fly. Chimney puffs warm light.
@@ -123,13 +123,13 @@ South Asian man, early twenties, semi-realistic Sims-proportioned avatar.
 
 ## Reference Cues
 
-The Sims 4 build mode · Studio Ghibli backgrounds (Castle in the Sky) · Stardew Valley warmth · Monument Valley geometry · Animal Crossing: New Horizons island layout · Death Stranding's minimalist UI · UPDT's own ScoutPro dashboard · Football Manager data viz · the actual Petronas Twin Towers and Tech Tower as architectural references
+The Sims 4 build mode · Studio Ghibli backgrounds (Castle in the Sky) · Stardew Valley warmth · Monument Valley geometry · Animal Crossing: New Horizons island layout · Death Stranding's minimalist UI · UPDT's own ScoutPro dashboard · Football Manager data viz · the actual Petronas Towers and Tech Tower as architectural references
 
 ---
 
 ## Content Bank
 
-### Petronas Twin Towers (About Me)
+### Petronas Towers (About Me)
 
 Hey, I'm Parthiv Farazi — a CS major at Georgia Tech (graduating Dec 2026) and Co-founder & CTO of Update Analytics (UPDT.). I grew up between Kuala Lumpur and Atlanta and I build things that sit at the intersection of sports, AI, and product. Most of my work comes from the same instinct: data should turn into decisions. Whether it's a soccer scouting platform, a baseball logging app, or an ML pipeline for quote retrieval — I like building things people actually use.
 

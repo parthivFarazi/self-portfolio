@@ -1,6 +1,6 @@
 import { useMemo } from 'react';
 import { CanvasTexture, RepeatWrapping } from 'three';
-import { COLORS, PLAZA_RADIUS, PATH_WIDTH } from '@/constants/world';
+import { PLAZA_RADIUS, PATH_WIDTH } from '@/constants/world';
 
 function makeStoneTileTexture() {
   const c = document.createElement('canvas');
@@ -123,18 +123,6 @@ export function Plaza() {
           ))}
         </group>
       ))}
-
-      {/* Welcome sign */}
-      <group position={[0, 0, PLAZA_RADIUS - 1.4]}>
-        <mesh castShadow position={[0, 1.1, 0]}>
-          <cylinderGeometry args={[0.08, 0.08, 2.2, 8]} />
-          <meshStandardMaterial color={COLORS.sign} roughness={0.8} />
-        </mesh>
-        <mesh castShadow position={[0, 2.1, 0]}>
-          <boxGeometry args={[1.8, 0.6, 0.12]} />
-          <meshStandardMaterial color="#f1e4c4" roughness={0.7} />
-        </mesh>
-      </group>
     </group>
   );
 }

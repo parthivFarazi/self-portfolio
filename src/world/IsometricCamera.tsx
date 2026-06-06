@@ -18,6 +18,7 @@ const BREATH_FREQ = 0.1;            // Hz
 const BREATH_AMPLITUDE = 0.05;      // ±0.05 units
 const APPROACH_DISTANCE = 5;        // u from building edge
 const APPROACH_ZOOM_MULT = 1.10;    // ~10% closer
+const MOBILE_APPROACH_ZOOM_MULT = 1.04;
 const ZOOM_LERP = 2.2;              // smoothing rate (per second)
 
 function distanceToBuildingEdge(px: number, pz: number, b: BuildingDef): number {
@@ -45,13 +46,19 @@ const BIAS_DAMP = 0.40;      // how much of (top - threshold) to apply at the cl
 const BIAS_FALLOFF = 22;     // beyond this many units from a building, bias = 0
 const BIAS_LERP = 3.5;       // how quickly the bias eases (per second)
 
+function responsiveZoomMultiplier(width: number, height: number): number {
+  if (width >= 768) return 1;
+  const aspect = width / Math.max(height, 1);
+  return MathUtils.clamp(0.58 + aspect * 0.35, 0.72, 0.9);
+}
+
 export function IsometricCamera() {
+  const { size } = useThree();
   const camRef = useRef<any>(null);
   const target = useRef(new Vector3());
   const desired = useRef(new Vector3());
   const biasY = useRef(0);
-  const zoomCurrent = useRef(CAMERA_ZOOM);
-  const { size } = useThree();
+  const zoomCurrent = useRef(CAMERA_ZOOM * responsiveZoomMultiplier(size.width, size.height));
 
   useFrame((state, delta) => {
     if (!camRef.current) return;
@@ -85,12 +92,12 @@ export function IsometricCamera() {
       0,
       1,
     );
-    // Narrow viewports (mobile) zoom out a touch so buildings stay legible.
-    // Drei's OrthographicCamera renders zoom in CSS-pixel space, so a lower
-    // multiplier shows more world per pixel.
-    const narrow = size.width < 768;
-    const mobileMult = narrow ? 0.85 : 1.0;
-    const targetZoom = CAMERA_ZOOM * mobileMult * (1 + (APPROACH_ZOOM_MULT - 1) * tZoom);
+    // Narrow portrait viewports need more world visible around the player.
+    // Drei's OrthographicCamera zooms in CSS-pixel space, so lower zoom shows
+    // more map without changing building placement or the isometric angle.
+    const viewportZoomMult = responsiveZoomMultiplier(size.width, size.height);
+    const approachZoomMult = size.width < 768 ? MOBILE_APPROACH_ZOOM_MULT : APPROACH_ZOOM_MULT;
+    const targetZoom = CAMERA_ZOOM * viewportZoomMult * (1 + (approachZoomMult - 1) * tZoom);
     zoomCurrent.current = MathUtils.damp(
       zoomCurrent.current,
       targetZoom,

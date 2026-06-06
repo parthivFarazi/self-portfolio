@@ -128,7 +128,7 @@ function ElevDoor({ x, y, w, h, lit, kind = 'wood' }) {
   );
 }
 
-// ─── 1. PETRONAS TWIN TOWERS ────────────────────────────────────────────
+// ─── 1. PETRONAS TOWERS ────────────────────────────────────────────
 // Two tapered silver shafts, stepped setbacks, double-deck sky bridge,
 // tall slender pinnacles. Scale: ~720px tall total.
 function PetronasTowers({ tod }) {

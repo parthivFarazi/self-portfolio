@@ -37,10 +37,10 @@ export function UPDTPanel({ width = 1280, height = 1300 }: PanelProps) {
             Soccer analytics, enhanced.
           </div>
           <div style={{ font: '18px/1.5 var(--rw-sans)', color: TEXT_DIM, margin: '0 0 10px', maxWidth: '66ch' }}>
-            An AI platform that turns soccer broadcast footage into scouting data.
+            An AI platform that turns wide-angle match footage into scouting data.
           </div>
           <div style={{ font: '13px "JetBrains Mono", monospace', color: TEXT_DIM, letterSpacing: '.04em' }}>
-            Co-founder &amp; Primary Technical Engineer · 2025 — Present · Atlanta, GA
+            Co-founder &amp; CTO · Jan 2026 — Present · Atlanta, GA
           </div>
         </div>
         <CreateXBadge />
@@ -62,7 +62,7 @@ export function UPDTPanel({ width = 1280, height = 1300 }: PanelProps) {
             <Slot id="updt-scoutpro" w={700} h={410} placeholder="ScoutPro dashboard · screenshot" shape="rounded" radius={4} fit="contain" src={panelImages.updt.playerSearch}/>
           </HoloFrame>
           <div style={{ font: '16px/1.5 var(--rw-sans)', color: TEXT_DIM }}>
-            Search any player, filter by metric, and build a scouting shortlist from broadcast-derived stats.
+            Search any player, filter by metric, and build a scouting shortlist from match-derived stats.
           </div>
           <HoloFrame>
             <div style={{ font: '13px "JetBrains Mono", monospace', letterSpacing: '.14em', color: CYAN, textTransform: 'uppercase' }}>game prep + team analysis</div>
@@ -83,28 +83,28 @@ export function UPDTPanel({ width = 1280, height = 1300 }: PanelProps) {
             label="01 · CO-FOUNDER CONTEXT"
             accent={MINT}
             body={<>
-              Co-founded with a <b>UEFA B-licensed analyst</b>. I own CV/ML, infra, and product end-to-end.
+              Co-founded with a <b>UEFA B-licensed analyst</b>. I own CV/ML, infra, and product end-to-end — building directly with the analyst as the <b>first user</b>.
             </>}
           />
           <Quadrant
             label="02 · COMPUTER VISION"
             accent={MAGENTA}
             body={<>
-              <b>YOLOv8</b> player + ball detection. Custom-trained on <b>100+ hand-labeled clips</b>. Tuned for motion blur, white-line confusion, and noisy broadcasts.
+              <b>YOLOv8</b> player + ball detection from raw <b>wide-angle match video (Veo camera)</b>. One combined model couldn&apos;t reliably detect the ball — so I split it into a <b>two-model design</b> that fixed it (24 clips · 480 frames · ball mAP50 0.42).
             </>}
           />
           <Quadrant
-            label="03 · PITCH GEOMETRY"
+            label="03 · GEOMETRY + QC"
             accent={CYAN}
             body={<>
-              <b>Keypoint detection + homography</b>. Broadcast → tactical coordinates. Survives pans, zooms, partial views. Analyst-in-the-loop QA.
+              <b>Keypoint detection + homography</b> map the pitch to tactical coordinates. A <b>quality-check layer</b> grades every output GOOD / MEDIUM / BAD / FAILED on three signals, catching errors the overall accuracy score hides (3,097 frames · 1.4-px mean reprojection).
             </>}
           />
           <Quadrant
             label="04 · INFRASTRUCTURE"
             accent={GOLD}
             body={<>
-              Trained on <b>GT PACE ICE</b> (H100 · Slurm · CUDA). Stack: <b>FastAPI · Supabase/Postgres · Cloudflare R2</b>.
+              Trained on <b>GT PACE-ICE</b> (Slurm · CUDA). Stack: <b>FastAPI · Supabase/Postgres · Cloudflare R2</b>.
             </>}
           />
           <div style={{
@@ -140,8 +140,8 @@ export function UPDTPanel({ width = 1280, height = 1300 }: PanelProps) {
           textTransform: 'uppercase',
           color: TEXT_MED,
         }}>
-          <Pill>100+ labeled clips</Pill>
-          <Pill>H100 cluster</Pill>
+          <Pill>Two-model CV</Pill>
+          <Pill>PACE-ICE cluster</Pill>
           <Pill>CREATE-X</Pill>
           <Pill>UEFA B-licensed co-founder</Pill>
         </div>

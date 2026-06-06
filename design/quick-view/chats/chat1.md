@@ -44,7 +44,7 @@ INNER RING — closest to spawn, the three buildings that define my active core:
 1. UPDT. Soccer Stadium — directly north of spawn (the centerpiece, largest structure on the island)
 2. RMAICT Tower — east of spawn
 3. Pong Frat House — south of spawn
-MID RING — resume essentials, visible from spawn: 4. The Tech Tower (Education) 5. The Petronas Twin Towers (About Me) 6. The Forge (Skills) 7. The Lighthouse (Contact)
+MID RING — resume essentials, visible from spawn: 4. The Tech Tower (Education) 5. The Petronas Towers (About Me) 6. The Forge (Skills) 7. The Lighthouse (Contact)
 OUTER RING — projects, scattered around the island's edge with winding paths leading to each: 8. The Qard Greenhouse 9. The Athletic Stadium (College Football Valuation) 10. The Whispering Archive (Embedding-Based Quote Retrieval) 11. The Zen Garden (Soothe) 12. The Heatmap Garden (xGenius) 13. The Robot's Workshop (Litter-Picking Robot — the origin story)
 A main loop path connects them all with smaller branching paths to the outer ring.
 Color Palette
@@ -66,8 +66,8 @@ A classic American frat house with white columns, a wide front porch, Greek lett
 MID RING (Resume Essentials)
 4. The Tech Tower — Education
 A faithful, stylized homage to Georgia Tech's actual Tech Tower — the iconic brick clock tower with white trim and the gold "TECH" letters on top, glowing softly. Buzz the Yellow Jacket mascot perched somewhere subtle (lamppost or roof corner). Surrounding plaza paved in GT gold. Inside (through doorway): a floating bookshelf of coursework. Register: realistic Atlanta landmark.
-5. The Petronas Twin Towers — About Me
-A stylized rendition of Kuala Lumpur's Petronas Twin Towers, scaled down to fit the island but unmistakable — the twin silver shafts with the sky bridge connecting them. This is "home" — the building that says where I'm from. Small detail at the base: a wooden welcome bench, a globe with two glowing pins (KL + Atlanta), and a doormat that reads "PF". The towers' lights are warm gold at sunset. Register: real-world landmark, stylized.
+5. The Petronas Towers — About Me
+A stylized rendition of Kuala Lumpur's Petronas Towers, scaled down to fit the island but unmistakable — the twin silver shafts with the sky bridge connecting them. This is "home" — the building that says where I'm from. Small detail at the base: a wooden welcome bench, a globe with two glowing pins (KL + Atlanta), and a doormat that reads "PF". The towers' lights are warm gold at sunset. Register: real-world landmark, stylized.
 6. The Forge — Skills
 A workshop where languages and tools are literally forged. Half medieval blacksmith, half AI lab. Through the open front: floating glowing language icons (Python, Java, C++, JS, etc.) being hammered on an anvil that's actually a glowing GPU. A small H100 rack hums in the back. Sparks fly. The chimney puffs warm light. Register: the most hybrid building — realism and futurism literally fused.
 7. The Lighthouse — Contact
@@ -113,7 +113,7 @@ When the avatar enters a building, a styled panel opens. Each panel's frame shou
 * RMAICT Tower → Malaysian-pattern bordered scan UI
 * Pong Frat House → notebook page taped to a beer pong table
 * Tech Tower → parchment scroll with a gold wax seal stamped "GT"
-* Petronas Twin Towers → polaroid stack on a wooden desk
+* Petronas Towers → polaroid stack on a wooden desk
 * The Forge → glowing engineering schematic / blueprint with neon grid
 * The Lighthouse → opened letter on a desk with a glowing terminal beside it
 * Qard Greenhouse → rotating glass 3D card frame with neon trim
@@ -132,9 +132,9 @@ Please generate:
 5. Color and material palette swatches
 6. One detail study — the Qard Greenhouse interior with floating card-flowers in bloom
 Reference Cues
-The Sims 4 build mode · Studio Ghibli backgrounds (Castle in the Sky floating islands) · Stardew Valley warmth · Monument Valley geometry · Animal Crossing: New Horizons island layout · Death Stranding's minimalist UI · UPDT's own ScoutPro dashboard aesthetic · Football Manager's data visualization style · The actual Petronas Twin Towers and Georgia Tech Tech Tower as architectural references
+The Sims 4 build mode · Studio Ghibli backgrounds (Castle in the Sky floating islands) · Stardew Valley warmth · Monument Valley geometry · Animal Crossing: New Horizons island layout · Death Stranding's minimalist UI · UPDT's own ScoutPro dashboard aesthetic · Football Manager's data visualization style · The actual Petronas Towers and Georgia Tech Tech Tower as architectural references
 APPENDIX — Content Bank (for when we build)
-Petronas Twin Towers (About Me)
+Petronas Towers (About Me)
 Hey, I'm Parthiv Farazi — a CS major at Georgia Tech (graduating Dec 2026) and Co-founder & CTO of Update Analytics (UPDT.). I grew up between Kuala Lumpur and Atlanta and I build things that sit at the intersection of sports, AI, and product. Most of my work comes from the same instinct: data should turn into decisions. Whether it's a soccer scouting platform, a baseball logging app, or an ML pipeline for quote retrieval — I like building things people actually use.
 Tech Tower (Education)
 Georgia Institute of Technology — B.S. Computer Science (Expected Dec 2026) Coursework: Data Structures · Algorithms · Discrete Math · OOP · Operating Systems · Algorithm Design & Analysis · Software Engineering · Linear Algebra · Machine Learning · Artificial Intelligence · Combinatorics · Systems and Networks · Cognitive Science
@@ -214,7 +214,7 @@ _[tool: questions_v2]_
 Before I dive in, I want to flag two things and ask some scoping questions — this is a big brief and I want to make sure I deliver something useful rather than guess wrong.
 
 **Heads up on a couple of brief details:**
-- I'll need to use **original architectural designs** instead of literal recreations of Georgia Tech's Tech Tower, the Petronas Twin Towers, *The Athletic* magazine layout, or Buzz the mascot. I can absolutely capture the *spirit* (a brick collegiate clock tower with gold lettering on top; iconic twin silver shafts with a sky bridge; a sports-mag tear-out aesthetic) — they'll be unmistakable in *register* without being copies. Same applies to UI panel framing.
+- I'll need to use **original architectural designs** instead of literal recreations of Georgia Tech's Tech Tower, the Petronas Towers, *The Athletic* magazine layout, or Buzz the mascot. I can absolutely capture the *spirit* (a brick collegiate clock tower with gold lettering on top; iconic twin silver shafts with a sky bridge; a sports-mag tear-out aesthetic) — they'll be unmistakable in *register* without being copies. Same applies to UI panel framing.
 - I can't generate AI concept art / painterly Ghibli-style renders directly. What I *can* deliver in HTML is everything design-system-adjacent: palette + materials, character sheet (stylized SVG/CSS), an isometric island map (CSS/SVG diagrammatic, not painterly), UI panel mockups (these will be gorgeous — they're literally HTML), and an interactive prototype shell. For the painterly concept art itself, you'd want to take this brief to Midjourney/SDXL — I can help you craft those prompts.
 
 Quick questions so I can scope this correctly:
@@ -224,7 +224,7 @@ Quick questions so I can scope this correctly:
 Questions answered:
 - primary_deliverable: All three, in one design_canvas document — system + panels + prototype side-by-side. Larger scope, longer turn.
 - island_map_fidelity: Top-down schematic map — flatter, blueprint/cartographer feel. Cleaner, more legible, less 'Sims-y'.
-- ui_panel_priority: Collegiate Tower (Education) — parchment scroll + wax seal, Twin Towers (About Me) — polaroid stack, Pong Frat House — notebook on pong table
+- ui_panel_priority: Collegiate Tower (Education) — parchment scroll + wax seal, Petronas Towers (About Me) — polaroid stack, Pong Frat House — notebook on pong table
 - character_sheet: Both — spec sheet + a simple SVG avatar as a placeholder
 - interactive_behavior: Click-to-walk — click a building, avatar pathfinds to it, panel opens
 - tone_register: Recruiter-facing teaser — polished, minimal, marketing-y. 'Coming soon: Parthiv's World' vibes.
@@ -262,7 +262,7 @@ Now system.jsx with palette, materials, type, and teaser cards:
 
 _[tool: write_file]_
 
-Now the 3 UI panels (Collegiate Tower, Twin Towers, Pong) — each themed to its building:
+Now the 3 UI panels (Collegiate Tower, Petronas Towers, Pong) — each themed to its building:
 
 _[tool: write_file]_
 
@@ -299,7 +299,7 @@ Built and surfaced. Here's what's in the canvas:
 
 **UI Panels** (3 of 13, themed to their buildings)
 - **Collegiate Tower → parchment scroll** with wax seal ("PF"), course catalog typography, handwritten signature
-- **Twin Towers → polaroid stack** on lacquered wood, five photos, handwritten letter, KL/ATL globe, "PF" doormat
+- **Petronas Towers → polaroid stack** on lacquered wood, five photos, handwritten letter, KL/ATL globe, "PF" doormat
 - **Pong Frat House → spiral notebook** taped to the pong table, with cups arranged in classic 10-cup triangles (each cup shows a live "score")
 
 **Prototype** · top-down schematic island, spawn plaza centered, all 13 buildings laid out in the inner/mid/outer ring layout from your brief. **Click any building** → Parthiv pathfinds along the cobblestone paths → panel opens on arrival → "Return to plaza" sends him back.
@@ -308,7 +308,7 @@ Built and surfaced. Here's what's in the canvas:
 
 **Things I deliberately changed to keep things original** (your email isn't @gatech.edu / @petronas / etc, so I avoided literal brand recreations):
 - "Tech Tower" → **Collegiate Tower** (original brick clock tower; gold plaque reads "PF · CS")
-- "Petronas Twin Towers" → **Twin Towers** (original tapered twin-spire silhouette with sky bridge)
+- "Petronas Towers" → **Petronas Towers** (original tapered twin-spire silhouette with sky bridge)
 - No Buzz mascot, no GT wordmark, no *The Athletic* magazine layout — the Athletic Stadium uses a generic sports-mag tear-out aesthetic
 - Greek letters on the frat house are the custom "ΠΒΠ" you suggested
 
@@ -397,7 +397,7 @@ Interior glimpses through windows where appropriate
 
 
 3. Specific architectural corrections
-Twin Towers → must be KLCC / Petronas Twin Towers (Kuala Lumpur)
+Petronas Towers → must be KLCC / Petronas Towers (Kuala Lumpur)
 The current rendering looks like generic glass towers. The real Petronas Towers have:
 
 Two identical silver/steel shafts with a stepped Islamic geometric floor plan (8-pointed star cross-section)
@@ -430,7 +430,7 @@ Instead of one overview map, I need a series of ground-level scenes from the pla
 
 Spawn plaza scene — player avatar standing on the welcome plaza with UPDT Stadium looming in the background, close enough to see the stadium's architectural detail
 Player approaching the Tech Tower — looking up at the brick clock tower with the gold "TECH" letters visible
-Player at the Petronas Twin Towers — wide low-angle showing both towers and the sky bridge, with the player tiny at the base
+Player at the Petronas Towers — wide low-angle showing both towers and the sky bridge, with the player tiny at the base
 Player at the Delta Upsilon house — front-lawn view with the white columned facade and "ΔΥ" letters
 Player at the Qard Greenhouse — peering into the geodesic glass dome where floating credit-card flowers bloom
 Player at the Athletic Stadium — entrance view with floating Athletic magazine banners
@@ -487,7 +487,7 @@ Major rebuild done. **The prototype is now side-scrolling Sims-style:**
 - **Camera follows the avatar** as you walk. Whole island is never visible at once.
 - **Architectural-scale buildings** — towers stretch up off-screen, the avatar is ~1 floor tall by comparison.
 - **Real-world landmarks** rebuilt to reference:
-  - **Petronas Twin Towers** — stepped setbacks, ribbed silver shafts, double-decker sky bridge mid-tower, tall slender pinnacles with red aircraft lights, KLCC plaza fountain at the base
+  - **Petronas Towers** — stepped setbacks, ribbed silver shafts, double-decker sky bridge mid-tower, tall slender pinnacles with red aircraft lights, KLCC plaza fountain at the base
   - **Tech Tower** — Victorian red brick, white stone trim every floor, slate pyramidal roof with corner pinnacles, big lit channel-letter "TECH" wordmark in gold, central clock face, flanking brick wings with arched windows and dormers
   - **Delta Upsilon** — 2-story Greek revival red brick, 4 white fluted columns on the front porch, white pediment with "ΔΥ" letters, slate gable roof, Solo cups on the porch railing, ΔΥ welcome mat
 - **All other 10 buildings** redrawn at architectural scale with windows, doors, materials, shading: UPDT (huge glass stadium with floodlights, holo pitch glowing through, drones overhead, big "UPDT." sign, four entrance arches), RMAICT (songket-pattern terracotta base + climbing tropical greenery + glass tower + neural-diagram halo), Forge (half-timber wattle and daub + shingled roof + chimney sparks + GPU racks glowing inside + floating language icons), Lighthouse (red-and-white striped tapered tower + sweeping golden beam + porthole windows + mailbox + terminal screen), Qard greenhouse (massive geodesic glass dome with credit-card flower garden inside), Athletic Stadium (brick exterior + conference banners + floating valuation magazine + dollar signs), Whispering Archive (stone library with glowing dome + ivy + firefly quote-tags + GPU glimpse through arched windows), Zen Garden (raked sand + koi pond + cherry tree + glowing journal on stone bench), Heatmap Garden (soccer-formation flower bed with hot-to-cold gradient + ORIS placard), Robot Workshop (weathered wooden shed + corrugated roof + solar panel + the original litter robot rolling on the lawn outside)
@@ -551,7 +551,7 @@ The whole island is never visible in one frame; each render shows ONE area the p
 
 Building scale
 
-Buildings DOMINATE the frame. When the player stands at the Petronas Twin Towers, the towers fill the vertical frame and the player is a small figure at the base looking up.
+Buildings DOMINATE the frame. When the player stands at the Petronas Towers, the towers fill the vertical frame and the player is a small figure at the base looking up.
 When the player approaches the Tech Tower, it looms over them.
 The player should be a small but clearly visible character in every render — about 1/4 to 1/6 the height of a single building floor.
 Architectural details should be readable: window panes, brick texture, door details, signage, roof tiles.
@@ -562,7 +562,7 @@ Each is its own image. Each shows the player avatar in one specific area:
 
 Spawn Plaza — player on the welcome plaza, paths radiating in 4 cardinal directions, UPDT Stadium glimpsed to the north
 UPDT. Soccer Stadium — player at the entrance, holographic pitch visible inside
-Petronas Twin Towers (KLCC) — player tiny at the base, both shafts and the sky bridge visible
+Petronas Towers (KLCC) — player tiny at the base, both shafts and the sky bridge visible
 Tech Tower — red brick Victorian clock tower with glowing gold "TECH" letters on top
 Delta Upsilon house — white-columned Greek revival frat house, "ΔΥ" letters prominent on the facade
 RMAICT Tower — futuristic glass tower with Malaysian-pattern tilework at the base, OCR scan beams in the upper floors
@@ -581,7 +581,7 @@ Reference images to attach with this prompt
 Please review these before generating — they're the single most important inputs:
 
 3+ Sims 4 in-game screenshots (build mode and live mode) — for CAMERA ANGLE, this is critical
-2 photos of Petronas Twin Towers (KLCC), Kuala Lumpur — sky bridge visible
+2 photos of Petronas Towers (KLCC), Kuala Lumpur — sky bridge visible
 2 photos of Georgia Tech's Tech Tower — brick + gold "TECH" letters
 1 photo of a white-columned Southern fraternity house
 1 Studio Ghibli landscape still (Spirited Away or Castle in the Sky) — for sky and atmosphere
@@ -672,7 +672,7 @@ Both fixes shipped:
 - **Qard — Fintech frontend** · 3 slots (hero card + 2 detail blooms) in neon-corner holographic frames
 - **Soothe — Mental health app** · 3 polaroid slots taped onto an open journal on a stone bench, with a pressed leaf
 - **Robot Workshop** · 4 slots (front/side/top blueprint views + an action photo polaroid) pinned to a corkboard with red thumbtacks
-- Plus the existing Tech Tower (parchment scroll) and Twin Towers (polaroid stack) panels
+- Plus the existing Tech Tower (parchment scroll) and Petronas Towers (polaroid stack) panels
 
 Each slot has a unique id so dropped images persist across reload. Drag any image file onto a slot — it stays.
 
@@ -691,7 +691,7 @@ Verifier agent check completed
 
 Love the panels so far. The design language is exactly right: each panel feels handcrafted to its building, with a poetic title, drag-and-drop image slots, and a unique material/format that matches the building's identity.
 
-**You've delivered 7 panels:** UPDT Stadium · Pong (Baseball) · Qard · Soothe · Robot Workshop · Tech Tower · Twin Towers.
+**You've delivered 7 panels:** UPDT Stadium · Pong (Baseball) · Qard · Soothe · Robot Workshop · Tech Tower · Petronas Towers.
 
 **6 more are still needed** to cover the full set of 13 buildings. Please produce these in the same style, scale, and quality as the existing seven. **Each panel should match its building's register and have a poetic title in the same voice as "From the porch: a cleaner scorebook" or "What if a journal could listen back?"**
 
@@ -873,7 +873,7 @@ Visual treatment: each card is a small parchment tile with a glowing gold number
 - Robot's Workshop — Solar litter-picking robot, the origin story
 
 **Group C — "About" (4 tiles, smaller)**
-- Petronas Twin Towers — Bio / story
+- Petronas Towers — Bio / story
 - Tech Tower — Education / Georgia Tech
 - The Forge — Skills (languages, frameworks, AI/ML, DevOps)
 - Lighthouse — Contact
@@ -943,10 +943,10 @@ Shipped. New section **"Quick View · the fast path"** at the top of the canvas 
 **2. Quick View dashboard (1440×2200, scrolling)**
 - **Identity strip** — avatar in a parchment frame, name + role line, location pins (ATL ↔ KL), four quick-link buttons (✉/GH/in/↗), "Switch to Exploration" button top-right
 - **Stats strip** — 6 parchment tiles with the embossed gold Pixelify Sans numbers: 200+ Qard users · 70+ Pong users · 490k+ quotes · 60+ NCAA schools · 1,000+ receipts · updt.pro live
-- **Tile grid** in three groups: **The work** (3 large tiles · UPDT/Qard/RMAICT) · **Projects** (6 medium · Pong/Athletic/Archive/Soothe/xGenius/Workshop) · **About me** (4 small · Twin Towers/Tech Tower/Forge/Lighthouse)
+- **Tile grid** in three groups: **The work** (3 large tiles · UPDT/Qard/RMAICT) · **Projects** (6 medium · Pong/Athletic/Archive/Soothe/xGenius/Workshop) · **About me** (4 small · Petronas Towers/Tech Tower/Forge/Lighthouse)
 - Each tile has a small stylized SVG building thumbnail in the warm palette, title in Pixelify Sans, role + sub line, a black stat chip (e.g. "490k+ quotes"), and a building tag at the bottom of the thumb
-- **Hover state** — tile lifts 3px, gets a gold border + soft gold halo, the "↳ Open panel →" affordance brightens
-- **Click** → opens the existing UI panel as a modal overlay (UPDT/Qard/Pong/Soothe/Workshop/Tech Tower/Twin Towers use their real themed panels; the 6 others get a parchment placeholder until those panels are designed)
+- **Hover state** — tile lifts 3px, gets a gold border + soft gold halo, the "Press to open →" affordance brightens
+- **Click** → opens the existing UI panel as a modal overlay (UPDT/Qard/Pong/Soothe/Workshop/Tech Tower/Petronas Towers use their real themed panels; the 6 others get a parchment placeholder until those panels are designed)
 
 **3 & 4. Mobile views (390 wide)** · landing restacks the two choices vertically with horizontal preview/text cards · dashboard goes single-column with 2-up stats and 2-up tile grid · iOS-style status bar at the top
 
@@ -955,4 +955,3 @@ Shipped. New section **"Quick View · the fast path"** at the top of the canvas 
 **Aesthetic ground rules followed:** parchment-cream backgrounds, gold + sage accents, material drop shadows + 2px gold "lift" shadow on every card, dashed dividers, monospace metadata in caps, no dark mode, no gamified language. The Pixelify Sans title weight echoes the slightly pixelated feel of game UI without going full RPG.
 
 Tweaks toggle still cycles the time-of-day across the landing page sky.
-

@@ -11,7 +11,7 @@ const NODES = [
   { id: 'pong',       ring: 'inner', x: 700,  y: 690,  label: 'Pong Frat House',       sub: 'Baseball logging · 2025–26',   reg: 'real',     shape: 'frat' },
 
   { id: 'edu',        ring: 'mid',   x: 440,  y: 250,  label: 'Collegiate Tower',      sub: 'B.S. Computer Science',        reg: 'real',     shape: 'collegiate' },
-  { id: 'about',      ring: 'mid',   x: 980,  y: 200,  label: 'Twin Towers',           sub: 'About me · KL + ATL',          reg: 'real',     shape: 'twins' },
+  { id: 'about',      ring: 'mid',   x: 980,  y: 200,  label: 'Petronas Towers',           sub: 'About me · KL + ATL',          reg: 'real',     shape: 'twins' },
   { id: 'forge',      ring: 'mid',   x: 1030, y: 700,  label: 'The Forge',             sub: 'Skills · languages + GPUs',    reg: 'fusion',   shape: 'forge' },
   { id: 'lighthouse', ring: 'mid',   x: 320,  y: 720,  label: 'The Lighthouse',        sub: 'Contact',                      reg: 'real',     shape: 'lighthouse' },
 
@@ -650,7 +650,7 @@ function PanelOverlay({ nodeId, onClose }) {
 
 const THEMED_PANEL_BY_ID = {
   edu:   () => <window.CollegiateTowerPanel width={680} height={720} />,
-  about: () => <window.TwinTowersPanel       width={680} height={720} />,
+  about: () => <window.PetronasTowersPanel       width={680} height={720} />,
   pong:  () => <window.PongPanel             width={680} height={720} />,
 };
 

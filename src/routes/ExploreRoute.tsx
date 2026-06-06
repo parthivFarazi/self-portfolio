@@ -22,7 +22,7 @@ export default function ExploreRoute({ onBackHome }: { onBackHome: () => void })
   }, []);
 
   return (
-    <div className="relative h-full w-full overflow-hidden bg-[#efeae0]">
+    <div className="rw-explore-shell relative h-full w-full overflow-hidden bg-[#efeae0]">
       <Scene
         onReady={() => {
           const elapsed = performance.now() - loadStartedAt.current;
@@ -51,7 +51,7 @@ function WorldHomeButton({ onClick }: { onClick: () => void }) {
     <button
       type="button"
       onClick={onClick}
-      className="absolute left-4 top-14 z-50 rounded-full border border-[#d4c178] bg-[#fff8e2]/95 px-4 py-2 text-[11px] font-mono font-semibold uppercase tracking-[0.18em] text-[#2a1a0e] shadow-[0_2px_0_#d4c178,0_10px_24px_rgba(40,20,8,0.16)] backdrop-blur transition hover:-translate-y-0.5 hover:border-[#b3a369] focus:outline-none focus:ring-2 focus:ring-[#b3a369]/35"
+      className="rw-world-home-button absolute left-4 top-14 z-50 rounded-full border border-[#d4c178] bg-[#fff8e2]/95 px-4 py-2 text-[11px] font-mono font-semibold uppercase tracking-[0.18em] text-[#2a1a0e] shadow-[0_2px_0_#d4c178,0_10px_24px_rgba(40,20,8,0.16)] backdrop-blur transition hover:-translate-y-0.5 hover:border-[#b3a369] focus:outline-none focus:ring-2 focus:ring-[#b3a369]/35"
     >
       Home Screen
     </button>

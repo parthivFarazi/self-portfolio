@@ -36,7 +36,7 @@ function App() {
           <window.DCArtboard id="s-updt" label="02 · UPDT. Soccer Stadium" width={1280} height={720}>
             <window.SceneUPDTStadium tod={tod} />
           </window.DCArtboard>
-          <window.DCArtboard id="s-petronas" label="03 · Petronas Twin Towers" width={1280} height={720}>
+          <window.DCArtboard id="s-petronas" label="03 · Petronas Towers" width={1280} height={720}>
             <window.ScenePetronas tod={tod} />
           </window.DCArtboard>
           <window.DCArtboard id="s-tech" label="04 · Tech Tower" width={1280} height={720}>
@@ -108,8 +108,8 @@ function App() {
           <window.DCArtboard id="panel-edu" label="Tech Tower — Education" width={680} height={760}>
             <window.CollegiateTowerPanel width={680} height={760} />
           </window.DCArtboard>
-          <window.DCArtboard id="panel-about" label="Twin Towers — About Me" width={720} height={760}>
-            <window.TwinTowersPanel width={720} height={760} />
+          <window.DCArtboard id="panel-about" label="Petronas Towers — About Me" width={720} height={760}>
+            <window.PetronasTowersPanel width={720} height={760} />
           </window.DCArtboard>
         </window.DCSection>
       </window.DesignCanvas>

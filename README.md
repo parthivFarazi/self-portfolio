@@ -13,7 +13,7 @@ Instead of a landing page followed by a few generic sections, the portfolio is p
 
 - UPDT becomes a soccer stadium.
 - Georgia Tech becomes a stylized Tech Tower.
-- About Me becomes the Petronas Twin Towers.
+- About Me becomes the Petronas Towers.
 - Contact becomes a lighthouse.
 - Projects become outer-ring structures like a greenhouse, archive, zen garden, workshop, and even a Game Boy cartridge.
 
@@ -122,7 +122,7 @@ The next layer contains the core identity pieces of the portfolio:
 | Building | Meaning |
 | --- | --- |
 | Tech Tower | Education |
-| Petronas Twin Towers | About Me / personal background |
+| Petronas Towers | About Me / personal background |
 | The Forge | Skills and tools |
 | The Lighthouse | Contact |
 

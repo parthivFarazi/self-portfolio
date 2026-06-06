@@ -14,7 +14,7 @@ const WORLD_NODES = [
   { id: 'lighthouse', x: 600,   label: 'The Lighthouse',     sub: 'Contact · find me here' },
   { id: 'archive',    x: 1500,  label: 'Whispering Archive', sub: 'FAISS · Gemma-3 · semantic search' },
   { id: 'edu',        x: 2400,  label: 'Tech Tower',         sub: 'B.S. Computer Science · GT' },
-  { id: 'about',      x: 3350,  label: 'Petronas Twin Towers', sub: 'About me · KL + Atlanta' },
+  { id: 'about',      x: 3350,  label: 'Petronas Towers', sub: 'About me · KL + Atlanta' },
   // Spawn plaza at x = 4250
   { id: 'updt',       x: 5150,  label: 'UPDT. Stadium',      sub: 'Co-founder & CTO' },
   { id: 'pong',       x: 6200,  label: 'Delta Upsilon',      sub: 'Pong · baseball app' },
@@ -579,7 +579,7 @@ function Minimap({ avatarX, hovered, onJump }) {
 const PANEL_BY_ID = {
   // Resume-essentials panels (themed paper/material)
   edu:   () => <window.CollegiateTowerPanel width={680} height={760} />,
-  about: () => <window.TwinTowersPanel       width={720} height={760} />,
+  about: () => <window.PetronasTowersPanel       width={720} height={760} />,
   // Project panels (with image slots)
   updt:      () => <window.UPDTPanel        width={820} height={780} />,
   pong:      () => <window.PongPanelV2      width={760} height={780} />,

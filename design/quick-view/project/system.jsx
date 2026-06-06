@@ -65,7 +65,7 @@ function TeaserCard({ tod = 'golden' }) {
           boxShadow: '0 8px 32px rgba(40,30,20,.18)',
           display: 'inline-flex', alignItems: 'center', gap: 10,
         }}>
-          <span>Enter the island</span>
+          <span>Enter the world</span>
           <span style={{ width: 22, height: 22, borderRadius: '50%', background: 'var(--rw-ink)', color: 'var(--rw-cream)', display: 'inline-grid', placeItems: 'center', font: '11px var(--rw-mono)' }}>↗</span>
         </div>
         <div style={{ font: '11px var(--rw-mono)', color: sky.inkSoft, letterSpacing: '.14em', textTransform: 'uppercase', textAlign: 'right' }}>
@@ -283,7 +283,7 @@ const BUILDINGS = [
   { id: 'rmaict',    name: 'RMAICT Tower',          ring: 'inner', cat: 'work',    kw: 'AI internship · KL' },
   { id: 'pong',      name: 'Pong Frat House',       ring: 'inner', cat: 'project', kw: 'Baseball logging app' },
   { id: 'edu',       name: 'Collegiate Tower',      ring: 'mid',   cat: 'edu',     kw: 'Education · CS' },
-  { id: 'about',     name: 'Twin Towers',           ring: 'mid',   cat: 'about',   kw: 'About me · KL + ATL' },
+  { id: 'about',     name: 'Petronas Towers',           ring: 'mid',   cat: 'about',   kw: 'About me · KL + ATL' },
   { id: 'forge',     name: 'The Forge',             ring: 'mid',   cat: 'skills',  kw: 'Languages + GPUs' },
   { id: 'lighthouse',name: 'The Lighthouse',        ring: 'mid',   cat: 'contact', kw: 'Contact · find me' },
   { id: 'qard',      name: 'Qard Greenhouse',       ring: 'outer', cat: 'project', kw: 'Fintech frontend · Three.js' },

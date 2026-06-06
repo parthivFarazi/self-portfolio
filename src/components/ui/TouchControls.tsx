@@ -113,8 +113,8 @@ function Joystick() {
       role="application"
       style={{
         position: 'absolute',
-        left: 'max(env(safe-area-inset-left, 0px), 20px)',
-        bottom: 'max(env(safe-area-inset-bottom, 0px), 24px)',
+        left: 'calc(env(safe-area-inset-left, 0px) + 20px)',
+        bottom: 'calc(env(safe-area-inset-bottom, 0px) + 24px)',
         width: STICK_SIZE,
         height: STICK_SIZE,
         borderRadius: '50%',
@@ -189,8 +189,8 @@ function InteractButton() {
       aria-label="Interact (E)"
       style={{
         position: 'absolute',
-        right: 'max(env(safe-area-inset-right, 0px), 20px)',
-        bottom: 'max(env(safe-area-inset-bottom, 0px), 24px)',
+        right: 'calc(env(safe-area-inset-right, 0px) + 20px)',
+        bottom: 'calc(env(safe-area-inset-bottom, 0px) + 24px)',
         width: 64,
         height: 64,
         borderRadius: '50%',

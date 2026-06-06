@@ -2,7 +2,7 @@
 // viewport.
 //
 // All 13 themed panels were authored at fixed pixel dimensions (e.g. UPDT
-// 820×780, Heatmap 820×880, Twin Towers 760×760). Rather than refactor each
+// 820×780, Heatmap 820×880, Petronas Towers 760×760). Rather than refactor each
 // one to CSS-flex/wrap on mobile (which would compromise the
 // chalkboard/parchment compositions), we uniformly scale the entire panel
 // with CSS transform. Internal proportions are preserved — typography, drag
@@ -18,7 +18,22 @@
 
 import { useEffect, useState, type ReactNode } from 'react';
 
-const MARGIN_PCT = 0.92; // leave 4% padding on each side
+// Desktop & tablet: leave 8% padding around the panel so the design
+// breathes inside the modal overlay.
+const MARGIN_PCT_DESKTOP = 0.92;
+// Mobile: panels look tiny if we also keep an 8% gutter on a 390px
+// viewport. Push to ~98% width so every panel — whatever its native
+// aspect ratio — fills roughly the same horizontal area on screen,
+// which is what makes the set feel uniform.
+const MARGIN_PCT_MOBILE_W = 0.98;
+// Vertical headroom on mobile: panels are allowed to be tall (the
+// overlay scrolls), so we don't constrain by height as aggressively.
+// Allow up to 1.4× the visible viewport height before we let height
+// kick in as the limiting factor — in practice this means width is
+// almost always the binding constraint, so all mobile panels render
+// at the same on-screen width.
+const MOBILE_H_HEADROOM = 1.4;
+const MOBILE_BREAKPOINT = 700;
 
 export function ResponsivePanel({
   width,
@@ -42,8 +57,13 @@ export function ResponsivePanel({
     };
   }, []);
 
-  const maxW = viewport.w * MARGIN_PCT;
-  const maxH = viewport.h * MARGIN_PCT;
+  const isMobile = viewport.w <= MOBILE_BREAKPOINT;
+  const marginW = isMobile ? MARGIN_PCT_MOBILE_W : MARGIN_PCT_DESKTOP;
+  const maxW = viewport.w * marginW;
+  // On mobile we let the panel be taller than the viewport (the modal
+  // overlay scrolls). On desktop we keep the original behavior so the
+  // panel always fits in the viewport without scrolling.
+  const maxH = viewport.h * (isMobile ? MOBILE_H_HEADROOM : MARGIN_PCT_DESKTOP);
   const scale = Math.min(maxW / width, maxH / height, 1);
 
   return (

@@ -9,11 +9,11 @@ export function HUD() {
 
   return (
     <div className="pointer-events-none absolute inset-0 z-10 select-none">
-      <div className="absolute left-4 top-4 rounded-full bg-rw-paper/85 px-3 py-1 text-[11px] font-mono tracking-[0.22em] text-rw-ink shadow-sm backdrop-blur">
+      <div className="rw-hud-title absolute left-4 top-4 rounded-full bg-rw-paper/85 px-3 py-1 text-[11px] font-mono tracking-[0.22em] text-rw-ink shadow-sm backdrop-blur">
         PARTHIV&apos;S WORLD
       </div>
-      <div className="absolute right-4 top-4 flex items-center gap-2">
-        <div className="rounded-full bg-rw-paper/85 px-3 py-1 text-[11px] font-mono tracking-[0.18em] text-rw-ink-soft shadow-sm backdrop-blur">
+      <div className="rw-hud-status absolute right-4 top-4 flex items-center gap-2">
+        <div className="rw-hud-zone rounded-full bg-rw-paper/85 px-3 py-1 text-[11px] font-mono tracking-[0.18em] text-rw-ink-soft shadow-sm backdrop-blur">
           {zone}
         </div>
         <MuteButton />
@@ -48,4 +48,3 @@ function MuteButton() {
     </button>
   );
 }
-

@@ -146,7 +146,7 @@ const DASH_BUILDINGS: DashboardTileData[] = [
   {
     id: 'about',
     group: 'about',
-    title: 'Twin Towers',
+    title: 'Petronas Towers',
     role: 'About me',
     sub: 'Kuala Lumpur to Atlanta',
     tag: 'Story',
@@ -225,7 +225,7 @@ export function LandingPage({ onOpenQuick, onOpenWorld }: LandingPageProps) {
         <h1>Hi, I&apos;m Parthiv.</h1>
         <p>
           CS at Georgia Tech. Co-founder & CTO of <strong>UPDT.</strong>, an AI soccer analytics platform.
-          Atlanta-based, originally Kuala Lumpur. I build at the intersection of sports, AI, and product.
+          Born in Bangladesh and raised in Malaysia, now Atlanta-based. I build at the intersection of sports, AI, and product.
         </p>
       </section>
 
@@ -257,7 +257,7 @@ export function LandingPage({ onOpenQuick, onOpenWorld }: LandingPageProps) {
           title="Exploration Mode"
           desc="Move through the island and open the same themed panels inside each building."
           preview={<IslandMini />}
-          cta="Enter the Island"
+          cta="Enter the World"
           accent="sage"
           onClick={onOpenWorld}
         />
@@ -419,8 +419,8 @@ function DashboardTile({ tile, layout, onOpen }: { tile: DashboardTileData; layo
           <p className="qv-tile-sub">{tile.sub}</p>
         </div>
         <span className="qv-tile-affordance">
-          <span>Open panel</span>
-          <span>-&gt;</span>
+          <span>Press to open</span>
+          <span className="qv-tile-affordance-arrow" aria-hidden="true">-&gt;</span>
         </span>
       </div>
     </button>
@@ -510,7 +510,7 @@ function IdentityStrip() {
             <Pin c="#a8553c" /> Atlanta, GA
           </span>
           <span>
-            <Pin c="#6fd5e0" /> Originally Kuala Lumpur
+            <Pin c="#6fd5e0" /> Born in Bangladesh · Raised in Malaysia
           </span>
         </div>
       </div>

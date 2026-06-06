@@ -359,9 +359,9 @@ function CollegiateTower({ tod }) {
   );
 }
 
-// ─── 5. TWIN TOWERS (About Me) ──────────────────────────────────────────
+// ─── 5. PETRONAS TOWERS (About Me) ──────────────────────────────────────────
 // Twin tapered silver spires with sky bridge.
-function TwinTowers({ tod }) {
+function PetronasTowers({ tod }) {
   const lit = tod === 'night' ? .95 : tod === 'dusk' ? .85 : .55;
   return (
     <g>
@@ -834,7 +834,7 @@ const BUILDING_ART = {
   rmaict: RMAICTTower,
   pong: PongFrat,
   edu: CollegiateTower,
-  about: TwinTowers,
+  about: PetronasTowers,
   forge: Forge,
   lighthouse: Lighthouse,
   qard: QardGreenhouse,

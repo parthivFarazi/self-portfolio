@@ -29,7 +29,7 @@ export function RobotWorkshop({ def }: { def: BuildingDef }) {
     const t = clock.getElapsedTime() * 0.4;
     robot.current.position.x = Math.cos(t) * 3.5;
     robot.current.position.z = Math.sin(t) * 3.5;
-    robot.current.rotation.y = -t + Math.PI / 2;
+    robot.current.rotation.y = -t;
   });
 
   return (

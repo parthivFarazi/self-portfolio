@@ -667,11 +667,11 @@ function ScaleAnnotation({ worldX, worldY, text, color = '#fffaee' }) {
   );
 }
 
-// ─── SCENE 3: PETRONAS TWIN TOWERS ──────────────────────────────────────
+// ─── SCENE 3: PETRONAS TOWERS ──────────────────────────────────────
 
 function ScenePetronas({ tod = 'golden' }) {
   return (
-    <window.IsoScene tod={tod} location="03 · home" label="Petronas Twin Towers (KLCC)" sub="About me · Kuala Lumpur">
+    <window.IsoScene tod={tod} location="03 · home" label="Petronas Towers (KLCC)" sub="About me · Kuala Lumpur">
       {/* KLCC plaza base */}
       <PlazaTile x={0} y={0} w={420} d={300}/>
       {/* Plaza fountain */}

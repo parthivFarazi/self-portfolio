@@ -9,7 +9,7 @@ const panelLoaders: Record<BuildingId, () => Promise<{ default: PanelComponent }
   rmaict: () => import('./RMAICTPanel').then((m) => ({ default: m.RMAICTPanel })),
   du: () => import('./PongPanelV2').then((m) => ({ default: m.PongPanelV2 })),
   tech: () => import('./CollegiateTowerPanel').then((m) => ({ default: m.CollegiateTowerPanel })),
-  petronas: () => import('./TwinTowersPanel').then((m) => ({ default: m.TwinTowersPanel })),
+  petronas: () => import('./PetronasTowersPanel').then((m) => ({ default: m.PetronasTowersPanel })),
   forge: () => import('./ForgePanel').then((m) => ({ default: m.ForgePanel })),
   lighthouse: () => import('./LighthousePanel').then((m) => ({ default: m.LighthousePanel })),
   qard: () => import('./QardPanel').then((m) => ({ default: m.QardPanel })),

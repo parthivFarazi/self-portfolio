@@ -9,7 +9,7 @@ import { CanvasTexture } from 'three';
 // Category routing (computed once, encoded as rotations):
 //   • EXPERIENCE    → UPDT(0,-30) / RMAICT(30,0) / Qard(-50,-10) — lean
 //                     north-east (avg ~-30°). Use yaw=-90° (east, RMAICT).
-//   • ABOUT & EDU   → Twin Towers(35,-55) / Tech Tower(-30,-30) — north.
+//   • ABOUT & EDU   → Petronas Towers(35,-55) / Tech Tower(-30,-30) — north.
 //   • PROJECTS      → Heatmap(10,50) / Workshop(45,50) / GBA(-15,60) /
 //                     Athletic(55,-20) / Zen(-40,45) — broadly south-east.
 //   • CONTACT       → Lighthouse(45,30) — south-east-ish, but we point
@@ -28,7 +28,7 @@ interface Arm {
 const ARMS: Arm[] = [
   // EXPERIENCE → east (RMAICT at +X, UPDT north too)
   { label: 'EXPERIENCE',     yaw: -Math.PI / 2,        height: 2.45, color: '#a3784a', textColor: '#2a1a0e' },
-  // ABOUT & EDU → north (Tech Tower / Twin Towers)
+  // ABOUT & EDU → north (Tech Tower / Petronas Towers)
   { label: 'ABOUT · EDU',    yaw:  Math.PI,            height: 2.10, color: '#8b6a45', textColor: '#2a1a0e' },
   // PROJECTS → south (most outer-ring projects)
   { label: 'PROJECTS',       yaw:  0,                  height: 1.75, color: '#9a7244', textColor: '#2a1a0e' },

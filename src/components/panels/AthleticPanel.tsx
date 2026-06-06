@@ -50,7 +50,7 @@ export function AthleticPanel({ width = 880, height = 1020 }: PanelProps) {
               What is a college football program <em>actually</em> worth?
             </h1>
             <div style={{ font: '13px "JetBrains Mono", monospace', letterSpacing: '.08em', color: '#7a5a30', marginBottom: 18 }}>
-              by Parthiv Farazi · with Georgia Tech Athletics · 2024 — 2025
+              by Parthiv Farazi · with Georgia Tech Athletics · 2024 — 2026
             </div>
 
             <div style={{ font: '17px/1.6 var(--rw-serif)', color: '#1a1410', columnCount: 1 }}>

@@ -11,7 +11,7 @@ const DASHBOARD_PANELS = {
   zen:        () => <window.SoothePanel     width={760} height={780}/>,
   workshop:   () => <window.WorkshopPanel   width={760} height={780}/>,
   edu:        () => <window.CollegiateTowerPanel width={680} height={760}/>,
-  about:      () => <window.TwinTowersPanel width={720} height={760}/>,
+  about:      () => <window.PetronasTowersPanel width={720} height={760}/>,
 };
 
 function PanelPlaceholder({ b }) {
@@ -89,7 +89,7 @@ const DASH_BUILDINGS = [
     thumb: 'workshop' },
 
   // About — small
-  { id: 'about',      group: 'about', title: 'Twin Towers',     role: 'About me', sub: 'KL ↔ Atlanta', tag: 'STORY', chip: '', body: '', thumb: 'about' },
+  { id: 'about',      group: 'about', title: 'Petronas Towers',     role: 'About me', sub: 'KL ↔ Atlanta', tag: 'STORY', chip: '', body: '', thumb: 'about' },
   { id: 'edu',        group: 'about', title: 'Tech Tower',      role: 'Education', sub: 'B.S. CS · Georgia Tech · Dec 2026', tag: 'EDUCATION', chip: '', body: '', thumb: 'edu' },
   { id: 'forge',      group: 'about', title: 'The Forge',       role: 'Skills', sub: 'Languages · frameworks · AI/ML · DevOps', tag: 'SKILLS', chip: '', body: '', thumb: 'forge' },
   { id: 'lighthouse', group: 'about', title: 'The Lighthouse',  role: 'Contact', sub: 'Email · GitHub · LinkedIn', tag: 'CONTACT', chip: '', body: '', thumb: 'lighthouse' },
@@ -387,7 +387,7 @@ function thumbBody(kind) {
     </>;
 
     case 'about': return <>
-      {/* Petronas-ish twin towers */}
+      {/* Petronas-ish towers */}
       <path d="M62 100 L62 50 L66 32 L70 22 L74 32 L78 50 L78 100 Z" fill="url(#dt-silver)" stroke="#3a4652" strokeWidth=".4"/>
       <path d="M122 100 L122 50 L126 32 L130 22 L134 32 L138 50 L138 100 Z" fill="url(#dt-silver)" stroke="#3a4652" strokeWidth=".4"/>
       <line x1="70" y1="22" x2="70" y2="14" stroke="#3a4652" strokeWidth="1"/>
@@ -559,7 +559,7 @@ function LandingPage({ tod = 'golden', onPickQuick, onPickExplore }) {
           title={<>Exploration<br/>Mode.</>}
           desc="Walk an avatar around a Sims-style island. Step into 13 buildings to read each chapter."
           preview={<IslandMini/>}
-          cta="Enter the island"
+          cta="Enter the world"
           accent="#6e8b5a"
           onClick={onPickExplore}
           tod={tod}
@@ -924,9 +924,9 @@ function Tile({ b, size, onClick, hovered, onHover }) {
           {b.role ? <div style={{ font: '12.5px var(--rw-sans)', fontWeight: 600, color: '#5a3e20' }}>{b.role}</div> : null}
           {b.sub  ? <div style={{ font: '11.5px var(--rw-mono)', color: '#7a5a30', marginTop: 2 }}>{b.sub}</div> : null}
         </div>
-        <div style={{ marginTop: 10, font: '10.5px var(--rw-term)', letterSpacing: '.18em', color: hovered ? '#b3a369' : '#7a5a30', textTransform: 'uppercase', display: 'flex', justifyContent: 'space-between' }}>
-          <span>↳ Open panel</span>
-          {hovered ? <span>→</span> : <span style={{ opacity: .3 }}>→</span>}
+        <div style={{ marginTop: 10, font: '10.5px var(--rw-term)', letterSpacing: '.18em', color: hovered ? '#b3a369' : '#7a5a30', textTransform: 'uppercase', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+          <span>Press to open</span>
+          {hovered ? <span style={{ fontSize: 18, fontWeight: 700, lineHeight: 1 }}>→</span> : <span style={{ opacity: .3, fontSize: 18, fontWeight: 700, lineHeight: 1 }}>→</span>}
         </div>
       </div>
     </button>

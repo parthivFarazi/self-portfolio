@@ -163,9 +163,9 @@ function Motes({ count = 12 }) {
   );
 }
 
-// ─── 2. TWIN TOWERS — About Me — Polaroid stack on a wooden desk ────────
+// ─── 2. PETRONAS TOWERS — About Me — Polaroid stack on a wooden desk ────────
 
-function TwinTowersPanel({ width = 760, height = 760 }) {
+function PetronasTowersPanel({ width = 760, height = 760 }) {
   return (
     <div style={{
       width, height, position: 'relative', overflow: 'hidden',
@@ -188,13 +188,13 @@ function TwinTowersPanel({ width = 760, height = 760 }) {
 
       {/* Title hand-written on parchment tag */}
       <div style={{ position: 'absolute', left: 32, top: 32, background: '#f6f1e4', padding: '10px 18px', font: 'italic 22px var(--rw-serif)', color: '#2a1a0e', boxShadow: '0 4px 12px rgba(0,0,0,.4)', transform: 'rotate(-2deg)' }}>
-        <div style={{ font: '10px var(--rw-mono)', letterSpacing: '.18em', textTransform: 'uppercase', color: '#7a5a30' }}>Twin Towers · About</div>
+        <div style={{ font: '10px var(--rw-mono)', letterSpacing: '.18em', textTransform: 'uppercase', color: '#7a5a30' }}>Petronas Towers · About</div>
         About me, in five photos
       </div>
 
       {/* Polaroid stack */}
       <Polaroid x={120} y={88} rotate={6} caption="KL · Petronas · home base">
-        <SilhouetteTwinTowers />
+        <SilhouettePetronasTowers />
       </Polaroid>
       <Polaroid x={300} y={120} rotate={-4} caption="Tech Square · Atlanta">
         <SilhouetteCollegiate />
@@ -240,7 +240,7 @@ function Polaroid({ x, y, rotate = 0, caption, children }) {
   );
 }
 
-function SilhouetteTwinTowers() {
+function SilhouettePetronasTowers() {
   // ORIGINAL twin-spire design — NOT Petronas. Tapered silver shafts with a sky bridge, faceted.
   return (
     <svg viewBox="0 0 160 160" width="160" height="160">
@@ -562,4 +562,4 @@ function Stat({ top, bot }) {
   );
 }
 
-Object.assign(window, { CollegiateTowerPanel, TwinTowersPanel, PongPanel });
+Object.assign(window, { CollegiateTowerPanel, PetronasTowersPanel, PongPanel });

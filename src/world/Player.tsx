@@ -27,6 +27,7 @@ const SHIRT = '#f6f1e4';
 const PANTS = '#bfa376';
 const SHOES = '#3a2818';
 const GT_GOLD = '#d4b86a';
+const PLAYER_VISUAL_Y_OFFSET = 0.12;
 
 function collideBuildings(nx: number, nz: number, px: number, pz: number): [number, number] {
   let outX = nx;
@@ -194,7 +195,7 @@ export function Player() {
     walkPhase.current += targetPhaseRate * delta;
     if (bobGroup.current) {
       const moving = speed > 0.1 ? 1 : 0;
-      bobGroup.current.position.y = Math.abs(Math.sin(walkPhase.current)) * 0.06 * moving;
+      bobGroup.current.position.y = PLAYER_VISUAL_Y_OFFSET + Math.abs(Math.sin(walkPhase.current)) * 0.06 * moving;
     }
     const swing = Math.sin(walkPhase.current) * 0.6 * Math.min(1, speed / PLAYER_SPEED);
     if (leftLeg.current) leftLeg.current.rotation.x = swing;
@@ -253,7 +254,7 @@ export function Player() {
 
   return (
     <group ref={group} position={[0, 0, 0]}>
-      <group ref={bobGroup}>
+      <group ref={bobGroup} position={[0, PLAYER_VISUAL_Y_OFFSET, 0]}>
         {/* Legs — pivot at the hip, swing about X */}
         <group ref={leftLeg} position={[-0.16, 0.7, 0]}>
           <mesh castShadow position={[0, -0.35, 0]}>

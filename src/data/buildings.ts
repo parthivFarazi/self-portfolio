@@ -47,7 +47,7 @@ export const BUILDINGS: BuildingDef[] = [
     id: 'updt',
     name: 'UPDT. Soccer Stadium',
     shortLabel: 'UPDT.',
-    subtitle: 'An AI platform that turns soccer broadcast footage into scouting data.',
+    subtitle: 'An AI platform that turns wide-angle match footage into scouting data.',
     ring: 'inner',
     position: [0, 0, -30],
     shape: { kind: 'cylinder', radius: 13, height: 8 },
@@ -95,8 +95,8 @@ export const BUILDINGS: BuildingDef[] = [
   },
   {
     id: 'petronas',
-    name: 'Petronas Twin Towers',
-    shortLabel: 'Twin Towers',
+    name: 'Petronas Towers',
+    shortLabel: 'Petronas Towers',
     subtitle: "Who I am, where I'm from, and what I build.",
     ring: 'mid',
     // Phase 4: nudged ~15u further NW so its base plaza no longer reads as

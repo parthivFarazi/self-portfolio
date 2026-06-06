@@ -360,7 +360,10 @@
 
 .qv-dashboard {
   position: relative;
+  width: 100%;
+  max-width: 100%;
   height: 100%;
+  overflow-x: hidden;
   overflow-y: auto;
   background:
     radial-gradient(circle at 20% 8%, rgba(255, 250, 238, .65), transparent 60%),
@@ -369,6 +372,12 @@
     radial-gradient(circle at 70% 60%, rgba(255, 255, 255, .04) 1px, transparent 2px),
     #f5e9c9;
   background-size: auto, auto, 30px 30px, 28px 28px, auto;
+}
+
+.qv-dashboard *,
+.qv-dashboard *::before,
+.qv-dashboard *::after {
+  box-sizing: border-box;
 }
 
 .qv-dashboard-glow {
@@ -754,12 +763,21 @@
 .qv-tile-affordance {
   display: flex;
   justify-content: space-between;
+  align-items: center;
   gap: .75rem;
   margin-top: .8rem;
   color: #7a5a30;
   font: 400 .66rem var(--rw-term);
   letter-spacing: .15em;
   text-transform: uppercase;
+}
+
+.qv-tile-affordance-arrow {
+  flex: none;
+  font-size: 1rem;
+  font-weight: 700;
+  letter-spacing: 0;
+  line-height: 1;
 }
 
 .qv-tile:hover .qv-tile-affordance,
@@ -1241,31 +1259,44 @@
   }
 
   .qv-dashboard-shell {
-    padding: 1.25rem 1.1rem 2rem;
+    padding: 1.1rem 1rem 2rem;
+    max-width: 100%;
   }
 
   .qv-dashboard-nav {
+    flex-direction: column;
     align-items: flex-start;
+    gap: .75rem;
     margin-bottom: 1.25rem;
   }
 
   .qv-nav-actions {
+    width: 100%;
     justify-content: flex-start;
+    gap: .5rem;
   }
 
   .qv-brand {
     font-size: .66rem;
     letter-spacing: .15em;
+    max-width: 100%;
+    white-space: normal;
+  }
+
+  .qv-brand-button {
+    text-align: left;
   }
 
   .qv-mode-button {
-    padding: .55rem .75rem;
-    font-size: .72rem;
+    padding: .55rem .8rem;
+    font-size: .7rem;
+    white-space: nowrap;
   }
 
   .qv-home-button {
     padding: .55rem .75rem;
-    font-size: .66rem;
+    font-size: .64rem;
+    white-space: nowrap;
   }
 
   .qv-identity {
@@ -1280,18 +1311,29 @@
     height: 3.5rem;
   }
 
+  .qv-identity-copy {
+    min-width: 0;
+  }
+
   .qv-identity-copy h1 {
     font-size: 1.35rem;
   }
 
   .qv-identity-copy p {
     font-size: .78rem;
+    overflow-wrap: anywhere;
+    word-break: break-word;
   }
 
   .qv-locations {
     gap: .45rem;
     font-size: .62rem;
     letter-spacing: .1em;
+  }
+
+  .qv-locations span {
+    overflow-wrap: anywhere;
+    word-break: break-word;
   }
 
   .qv-links {
@@ -1307,15 +1349,28 @@
 
   .qv-stat {
     min-height: 7.3rem;
+    min-width: 0;
     padding: .9rem;
   }
 
   .qv-stat-number {
-    font-size: 1.85rem;
+    font-size: 1.7rem;
+    overflow-wrap: anywhere;
+    word-break: break-word;
   }
 
   .qv-stat-big .qv-stat-number {
-    font-size: 1.3rem;
+    font-size: 1.2rem;
+  }
+
+  .qv-stat-label {
+    overflow-wrap: anywhere;
+    word-break: break-word;
+  }
+
+  .qv-stat-context {
+    overflow-wrap: anywhere;
+    word-break: break-word;
   }
 
   .qv-section {
@@ -1324,6 +1379,7 @@
 
   .qv-section-header {
     gap: .8rem;
+    flex-wrap: wrap;
   }
 
   .qv-section-header h2 {
@@ -1337,13 +1393,32 @@
   }
 
   .qv-tile-grid-work {
-    grid-template-columns: 1fr;
+    grid-template-columns: minmax(0, 1fr);
   }
 
   .qv-tile-grid-projects,
   .qv-tile-grid-about {
     grid-template-columns: repeat(2, minmax(0, 1fr));
     gap: .65rem;
+  }
+
+  .qv-tile {
+    min-width: 0;
+  }
+
+  .qv-tile-body,
+  .qv-tile-projects .qv-tile-body,
+  .qv-tile-about .qv-tile-body {
+    min-width: 0;
+  }
+
+  .qv-tile h3,
+  .qv-tile-projects h3,
+  .qv-tile-about h3,
+  .qv-tile-role,
+  .qv-tile-sub {
+    overflow-wrap: anywhere;
+    word-break: break-word;
   }
 
   .qv-tile-work,
@@ -1396,20 +1471,36 @@
     letter-spacing: .1em;
   }
 
+  .qv-tile-affordance-arrow {
+    font-size: .92rem;
+  }
+
   .qv-footer {
     flex-direction: column;
     font-size: .62rem;
     letter-spacing: .12em;
   }
 
+  /* align-items: flex-start so a tall panel can still scroll from its top;
+     margin: auto on the stage absorbs leftover space, which centers short
+     panels vertically without breaking scroll behavior on tall ones. */
   .qv-panel-overlay {
     align-items: flex-start;
-    justify-content: flex-start;
-    padding: 4.5rem 1rem 1rem;
+    justify-content: center;
+    padding: 4.5rem .5rem 4.5rem;
+  }
+
+  .qv-panel-stage {
+    margin: auto;
   }
 
   .qv-panel-home {
     left: 1rem;
+    top: 1rem;
+  }
+
+  .qv-panel-close {
+    right: 1rem;
     top: 1rem;
   }
 }
@@ -1423,11 +1514,92 @@
     grid-template-columns: 6.25rem minmax(0, 1fr);
   }
 
-  .qv-dashboard-nav {
-    flex-direction: column;
+  .qv-dashboard-shell {
+    padding: 1rem .85rem 1.75rem;
   }
 
   .qv-mode-button {
     align-self: flex-start;
+  }
+
+  .qv-identity {
+    grid-template-columns: 3rem minmax(0, 1fr);
+    gap: .65rem;
+    padding: .75rem;
+  }
+
+  .qv-identity-avatar {
+    width: 3rem;
+    height: 3rem;
+  }
+
+  .qv-identity-copy h1 {
+    font-size: 1.2rem;
+  }
+
+  .qv-identity-copy p {
+    font-size: .72rem;
+  }
+
+  .qv-stats-grid {
+    gap: .55rem;
+  }
+
+  .qv-stat {
+    min-height: 6.5rem;
+    padding: .75rem;
+  }
+
+  .qv-stat-number {
+    font-size: 1.45rem;
+  }
+
+  .qv-stat-big .qv-stat-number {
+    font-size: 1.05rem;
+  }
+
+  .qv-stat-label {
+    font-size: .76rem;
+  }
+
+  .qv-stat-context {
+    font-size: .6rem;
+    letter-spacing: .1em;
+  }
+
+  .qv-tile-grid-projects,
+  .qv-tile-grid-about {
+    grid-template-columns: minmax(0, 1fr);
+    gap: .6rem;
+  }
+
+  .qv-tile-work .qv-tile-thumb {
+    height: 9rem;
+  }
+
+  .qv-tile-projects .qv-tile-thumb,
+  .qv-tile-about .qv-tile-thumb {
+    height: 7rem;
+  }
+
+  .qv-tile h3,
+  .qv-tile-projects h3,
+  .qv-tile-about h3 {
+    font-size: 1rem;
+  }
+
+  .qv-footer {
+    margin-top: 2.5rem;
+    padding-top: 1.25rem;
+  }
+}
+
+@media (max-width: 380px) {
+  .qv-stats-grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .qv-stat {
+    min-height: 0;
   }
 }

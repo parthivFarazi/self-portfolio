@@ -1,5 +1,5 @@
-import { Canvas } from '@react-three/fiber';
-import { useMemo } from 'react';
+import { Canvas, useThree } from '@react-three/fiber';
+import { useEffect, useMemo, useState } from 'react';
 import * as THREE from 'three';
 import { Sky } from './Sky';
 import { Island } from './Island';
@@ -13,6 +13,7 @@ import { Lighting } from './lighting';
 import { PostFX } from './PostFX';
 
 export function Scene({ onReady }: { onReady?: () => void }) {
+  const dpr = useClampedDevicePixelRatio();
   const liteWorld = useMemo(() => {
     // ?lite=1 / ?lite=0 lets you force lite-world on/off for testing
     // the post-processing path at small viewports. Otherwise auto-detect.
@@ -25,7 +26,7 @@ export function Scene({ onReady }: { onReady?: () => void }) {
   return (
     <Canvas
       shadows={!liteWorld}
-      dpr={liteWorld ? 0.85 : [1, 2]}
+      dpr={dpr}
       gl={{
         antialias: !liteWorld,
         powerPreference: 'high-performance',
@@ -42,6 +43,7 @@ export function Scene({ onReady }: { onReady?: () => void }) {
         toneMappingExposure: 1.2,
       }}
       onCreated={({ gl, scene, camera }) => {
+        gl.setPixelRatio(dpr);
         gl.shadowMap.type = THREE.PCFSoftShadowMap;
         if (import.meta.env.DEV) {
           (window as any).__r3f = { gl, scene, camera };
@@ -53,6 +55,7 @@ export function Scene({ onReady }: { onReady?: () => void }) {
         }
       }}
     >
+      <RendererQuality dpr={dpr} />
       <IsometricCamera />
       <Lighting liteWorld={liteWorld} />
       {/* Warm horizon fog — softens the island edge into the peach sky. */}
@@ -71,4 +74,43 @@ export function Scene({ onReady }: { onReady?: () => void }) {
       {liteWorld ? null : <PostFX />}
     </Canvas>
   );
+}
+
+function getClampedDevicePixelRatio() {
+  if (typeof window === 'undefined') return 1;
+  return Math.min(Math.max(window.devicePixelRatio || 1, 1), 2);
+}
+
+function useClampedDevicePixelRatio() {
+  const [dpr, setDpr] = useState(getClampedDevicePixelRatio);
+
+  useEffect(() => {
+    if (typeof window === 'undefined') return;
+    const update = () => setDpr(getClampedDevicePixelRatio());
+    const viewport = window.visualViewport;
+
+    update();
+    window.addEventListener('resize', update);
+    window.addEventListener('orientationchange', update);
+    viewport?.addEventListener('resize', update);
+
+    return () => {
+      window.removeEventListener('resize', update);
+      window.removeEventListener('orientationchange', update);
+      viewport?.removeEventListener('resize', update);
+    };
+  }, []);
+
+  return dpr;
+}
+
+function RendererQuality({ dpr }: { dpr: number }) {
+  const { gl, size } = useThree();
+
+  useEffect(() => {
+    gl.setPixelRatio(dpr);
+    gl.setSize(size.width, size.height, false);
+  }, [dpr, gl, size.height, size.width]);
+
+  return null;
 }
