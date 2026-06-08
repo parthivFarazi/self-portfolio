@@ -1299,20 +1299,26 @@
     white-space: nowrap;
   }
 
+  /* Stack the identity strip into a single centered column on mobile so the
+     avatar (the "me" visual) sits centered above the copy, rather than
+     pinned to the left edge of a 2-column grid. */
   .qv-identity {
-    grid-template-columns: 3.5rem minmax(0, 1fr);
-    gap: .8rem;
+    grid-template-columns: minmax(0, 1fr);
+    justify-items: center;
+    text-align: center;
+    gap: .7rem;
     margin-bottom: 1.75rem;
-    padding: .85rem;
+    padding: 1.1rem .85rem;
   }
 
   .qv-identity-avatar {
-    width: 3.5rem;
-    height: 3.5rem;
+    width: 4.5rem;
+    height: 4.5rem;
   }
 
   .qv-identity-copy {
     min-width: 0;
+    text-align: center;
   }
 
   .qv-identity-copy h1 {
@@ -1326,6 +1332,7 @@
   }
 
   .qv-locations {
+    justify-content: center;
     gap: .45rem;
     font-size: .62rem;
     letter-spacing: .1em;
@@ -1338,7 +1345,7 @@
 
   .qv-links {
     grid-column: 1 / -1;
-    justify-content: flex-start;
+    justify-content: center;
   }
 
   .qv-stats-grid {
@@ -1601,5 +1608,65 @@
 
   .qv-stat {
     min-height: 0;
+  }
+}
+
+/* ── Mobile scroll hint ───────────────────────────────────────────────
+   On phones the dashboard is a long scroll with no cue that more content
+   sits below the fold. This floating pill bounces gently at the bottom of
+   the viewport while the user is near the top, then fades out once they
+   start scrolling (toggled via data-hidden from JS). Desktop never shows
+   it. */
+.qv-scroll-hint {
+  display: none;
+}
+
+@media (max-width: 900px) {
+  .qv-scroll-hint {
+    position: fixed;
+    left: 50%;
+    bottom: calc(env(safe-area-inset-bottom, 0px) + 1rem);
+    transform: translateX(-50%);
+    z-index: 60;
+    display: inline-flex;
+    align-items: center;
+    gap: .5rem;
+    padding: .5rem .95rem;
+    border-radius: 999px;
+    border: 1px solid rgba(245, 217, 122, .35);
+    background: rgba(42, 26, 14, .82);
+    color: #fbf3da;
+    font: 700 .64rem var(--rw-term);
+    letter-spacing: .2em;
+    text-transform: uppercase;
+    box-shadow: 0 6px 22px rgba(0, 0, 0, .32);
+    backdrop-filter: blur(6px);
+    -webkit-backdrop-filter: blur(6px);
+    pointer-events: none;
+    opacity: 1;
+    transition: opacity .3s ease, transform .3s ease;
+  }
+
+  .qv-scroll-hint[data-hidden='true'] {
+    opacity: 0;
+    transform: translateX(-50%) translateY(10px);
+  }
+
+  .qv-scroll-hint__chev {
+    display: inline-block;
+    font-size: .9rem;
+    line-height: 1;
+    animation: qv-scroll-bounce 1.3s ease-in-out infinite;
+  }
+}
+
+@keyframes qv-scroll-bounce {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(3px); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .qv-scroll-hint__chev {
+    animation: none;
   }
 }

@@ -1,5 +1,5 @@
 import { AnimatePresence, motion } from 'framer-motion';
-import { Suspense, useEffect, useState, type ReactNode } from 'react';
+import { Suspense, useEffect, useRef, useState, type ReactNode } from 'react';
 import { getBuilding, type BuildingId } from '@/data/buildings';
 import { AvatarFront } from './Avatar';
 import { Thumb, type ThumbKind } from './Thumb';
@@ -280,6 +280,10 @@ export function LandingPage({ onOpenQuick, onOpenWorld }: LandingPageProps) {
 
 export function QuickViewDashboard({ onOpenWorld, onBackHome }: QuickViewDashboardProps) {
   const [openPanel, setOpenPanel] = useState<BuildingId | null>(null);
+  const mainRef = useRef<HTMLElement>(null);
+  // Mobile "scroll for more" hint — visible while the user is near the top
+  // of a scrollable dashboard, hidden once they begin scrolling.
+  const [showScrollHint, setShowScrollHint] = useState(false);
 
   useEffect(() => {
     if (!openPanel) return undefined;
@@ -294,8 +298,24 @@ export function QuickViewDashboard({ onOpenWorld, onBackHome }: QuickViewDashboa
     };
   }, [openPanel]);
 
+  useEffect(() => {
+    const el = mainRef.current;
+    if (!el) return undefined;
+    const update = () => {
+      const scrollable = el.scrollHeight - el.clientHeight > 80;
+      setShowScrollHint(scrollable && el.scrollTop < 40);
+    };
+    update();
+    el.addEventListener('scroll', update, { passive: true });
+    window.addEventListener('resize', update);
+    return () => {
+      el.removeEventListener('scroll', update);
+      window.removeEventListener('resize', update);
+    };
+  }, []);
+
   return (
-    <main className="qv-dashboard">
+    <main className="qv-dashboard" ref={mainRef}>
       <div className="qv-dashboard-glow" aria-hidden="true" />
       <div className="qv-dashboard-shell">
         <nav className="qv-dashboard-nav" aria-label="Quick View navigation">
@@ -348,6 +368,11 @@ export function QuickViewDashboard({ onOpenWorld, onBackHome }: QuickViewDashboa
           <span>Built by PF | 2026 | same panels as the exploration mode</span>
           <span>parthivfarazi@icloud.com | +1 (404) 203-5379</span>
         </footer>
+      </div>
+
+      <div className="qv-scroll-hint" data-hidden={!showScrollHint || !!openPanel} aria-hidden="true">
+        <span>Scroll for more</span>
+        <span className="qv-scroll-hint__chev">↓</span>
       </div>
 
       <AnimatePresence>
