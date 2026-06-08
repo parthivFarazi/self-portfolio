@@ -1670,3 +1670,64 @@
     animation: none;
   }
 }
+
+/* ── Themed scrollbar ─────────────────────────────────────────────────
+   The default thin overlay scrollbar is nearly invisible on the parchment
+   background. Give the scroll containers an always-visible, on-theme
+   scrollbar: a brown thumb (#7a5a30 — the same tone as the uppercase
+   labels throughout) on a faint inked track, with a gold edge so it reads
+   clearly against the cream. */
+.qv-dashboard,
+.qv-landing,
+.qv-panel-overlay {
+  scrollbar-width: thin;
+  scrollbar-color: #7a5a30 rgba(42, 26, 14, .1);
+}
+
+.qv-dashboard::-webkit-scrollbar,
+.qv-landing::-webkit-scrollbar,
+.qv-panel-overlay::-webkit-scrollbar {
+  width: 12px;
+  height: 12px;
+}
+
+.qv-dashboard::-webkit-scrollbar-track,
+.qv-landing::-webkit-scrollbar-track,
+.qv-panel-overlay::-webkit-scrollbar-track {
+  background: rgba(42, 26, 14, .08);
+  border-radius: 999px;
+}
+
+.qv-dashboard::-webkit-scrollbar-thumb,
+.qv-landing::-webkit-scrollbar-thumb,
+.qv-panel-overlay::-webkit-scrollbar-thumb {
+  background: #7a5a30;
+  border-radius: 999px;
+  border: 2px solid rgba(245, 217, 122, .55);
+  background-clip: padding-box;
+  box-shadow: inset 0 0 0 1px rgba(255, 250, 238, .25);
+}
+
+.qv-dashboard::-webkit-scrollbar-thumb:hover,
+.qv-landing::-webkit-scrollbar-thumb:hover,
+.qv-panel-overlay::-webkit-scrollbar-thumb:hover {
+  background: #5a3e20;
+  background-clip: padding-box;
+}
+
+/* On phones make the thumb a touch chunkier so it's obviously visible
+   and easy to grab. */
+@media (max-width: 900px) {
+  .qv-dashboard::-webkit-scrollbar,
+  .qv-landing::-webkit-scrollbar,
+  .qv-panel-overlay::-webkit-scrollbar {
+    width: 11px;
+    height: 11px;
+  }
+
+  .qv-dashboard::-webkit-scrollbar-thumb,
+  .qv-landing::-webkit-scrollbar-thumb,
+  .qv-panel-overlay::-webkit-scrollbar-thumb {
+    border-width: 2px;
+  }
+}
