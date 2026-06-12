@@ -1,12 +1,21 @@
+import { useEffect, useMemo } from 'react';
+import { useThree } from '@react-three/fiber';
 import {
   EffectComposer,
   Bloom,
   Vignette,
   ToneMapping,
   HueSaturation,
-  SMAA,
 } from '@react-three/postprocessing';
-import { BlendFunction, SMAAPreset, ToneMappingMode } from 'postprocessing';
+import {
+  BlendFunction,
+  EdgeDetectionMode,
+  EffectPass,
+  PredicationMode,
+  SMAAEffect,
+  SMAAPreset,
+  ToneMappingMode,
+} from 'postprocessing';
 
 // Hero-match post-processing pass.
 //
@@ -23,10 +32,45 @@ import { BlendFunction, SMAAPreset, ToneMappingMode } from 'postprocessing';
 //   • ToneMapping (ACES) — owned by the composer so we don't double-tone-map
 //     with the renderer.
 //
-// Phones run the same look in a `lite` trim: the bloom and saturation are
-// what make the world feel vibrant, and they're cheap at the capped mobile
-// DPR — only the multisampling and bloom kernel step down.
+// Anti-aliasing: 4x MSAA on EVERY tier, phones included. The old
+// "multisampling=0 on Apple TBDR GPUs" rule is outdated folklore — the iOS
+// depth/stencil corruption behind it was fixed in WebKit in 2022, and the
+// ANGLE-Metal backend resolves multisampled targets on-tile, so the cost on
+// A15+ is a few percent of render time. MSAA adds true subpixel coverage on
+// geometry silhouettes (the extruded signage, roof lines), which a
+// morphological pass like SMAA structurally cannot reconstruct — and it
+// feeds Bloom an already-smooth edge instead of amplifying a hard one.
+//
+// `?msaa=0` escape hatch: if a future iOS release regresses renderbuffer
+// MSAA, this swaps in the old no-multisample path with a standalone SMAA
+// ULTRA pass appended AFTER the grading pass. Standalone matters: as a
+// plain child, SMAA gets merged into the grading EffectPass and would
+// edge-detect the pre-tonemap HDR buffer, where bright emissives clip to
+// flat white and no edge gradient survives to detect.
 export function PostFX({ lite = false }: { lite?: boolean }) {
+  const camera = useThree((s) => s.camera);
+  const msaaOff = useMemo(
+    () => new URLSearchParams(window.location.search).get('msaa') === '0',
+    [],
+  );
+
+  // Fallback-path SMAA, built only when the hatch is open.
+  const smaaPass = useMemo(() => {
+    if (!msaaOff) return null;
+    return new EffectPass(
+      camera,
+      new SMAAEffect({
+        preset: SMAAPreset.ULTRA,
+        edgeDetectionMode: EdgeDetectionMode.LUMA,
+        // Depth predication tracks geometric silhouettes even where the
+        // pixels themselves have saturated to one flat color.
+        predicationMode: PredicationMode.DEPTH,
+      }),
+    );
+  }, [camera, msaaOff]);
+
+  useEffect(() => () => smaaPass?.dispose(), [smaaPass]);
+
   // Shared grading stack — these four merge into a single fullscreen pass.
   const grading = [
     // Subtle saturation lift — pulls the lawn from muted olive into a
@@ -56,15 +100,8 @@ export function PostFX({ lite = false }: { lite?: boolean }) {
   ];
 
   return (
-    // Desktop: 4x multisampling (default is 8) — the composer owns AA now
-    // that the canvas context is created without it. Mobile: MSAA off — on
-    // Apple TBDR GPUs an offscreen multisampled framebuffer must be fully
-    // stored to memory and resolved via a blit every frame (a pipeline sync
-    // point, ~4-5x the bandwidth). SMAA supplies the smooth edges instead:
-    // one cheap shader pass over the final tonemapped image, no multisample
-    // storage at all.
-    <EffectComposer multisampling={lite ? 0 : 4}>
-      {lite ? [...grading, <SMAA key="smaa" preset={SMAAPreset.HIGH} />] : grading}
+    <EffectComposer multisampling={msaaOff ? 0 : 4}>
+      {smaaPass ? [...grading, <primitive key="smaa" object={smaaPass} />] : grading}
     </EffectComposer>
   );
 }

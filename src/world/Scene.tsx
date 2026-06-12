@@ -32,7 +32,16 @@ export function Scene({ onReady }: { onReady?: () => void }) {
   // sampling + a 2x bilinear upscale = visibly jagged details and soft text.
   // If a device can't hold frame rate, the PerformanceMonitor ratchets down.
   const [adaptiveCap, setAdaptiveCap] = useState(2);
-  const dpr = useClampedDevicePixelRatio(adaptiveCap);
+  // `?dpr=1.5` pins render resolution and disables the adaptive ratchet —
+  // for deterministic quality/perf A/B on real devices and the simulator.
+  const forcedDpr = useMemo(() => {
+    const v = parseFloat(new URLSearchParams(window.location.search).get('dpr') ?? '');
+    return Number.isFinite(v) ? Math.min(Math.max(v, 0.5), 3) : null;
+  }, []);
+  const autoDpr = useClampedDevicePixelRatio(adaptiveCap);
+  const dpr = forcedDpr ?? autoDpr;
+  // The ratchet only starts judging once loading turbulence is over.
+  const [monitorArmed, setMonitorArmed] = useState(false);
 
   return (
     <Canvas
@@ -58,6 +67,10 @@ export function Scene({ onReady }: { onReady?: () => void }) {
         if (import.meta.env.DEV) {
           (window as any).__r3f = { gl, scene, camera };
         }
+        // Arm the perf monitor only after load + a settle window — the frame
+        // dips of shader compilation and chunk mounts must never count as
+        // "this device is slow".
+        const arm = () => window.setTimeout(() => setMonitorArmed(true), 4000);
         if (onReady) {
           // Hold the loading screen until every building chunk has loaded
           // AND its shaders have compiled (KHR_parallel_shader_compile —
@@ -73,27 +86,35 @@ export function Scene({ onReady }: { onReady?: () => void }) {
                 }),
             )
             .then(() => gl.compileAsync(scene, camera))
-            .then(ready, ready);
+            .then(ready, ready)
+            .finally(arm);
+        } else {
+          arm();
         }
       }}
     >
       <RendererQuality dpr={dpr} />
       <FrameloopGovernor />
-      {/* One-way ratchet: if the frame rate sags for a sustained stretch,
-          shave render resolution rather than changing the art. */}
-      {/* Default bounds only fire below 40fps — a phone stuck at 45 feels
-          laggy yet never declines. 52 catches the 60->40Hz cadence collapse
-          early; finite flipflops + a hard floor keep Low Power Mode (30fps
-          rAF cap, undetectable) from cascading quality away. */}
-      <PerformanceMonitor
-        bounds={() => [52, 58]}
-        ms={200}
-        iterations={7}
-        flipflops={3}
-        onDecline={() => setAdaptiveCap((cap) => Math.max(1.25, cap - 0.25))}
-        onIncline={() => setAdaptiveCap((cap) => Math.min(2, cap + 0.25))}
-        onFallback={() => setAdaptiveCap(1.25)}
-      />
+      {/* Adaptive ratchet: if the frame rate sags for a sustained stretch,
+          shave render resolution rather than changing the art. Mounted only
+          AFTER the world has loaded and settled — the dips during shader
+          compilation / chunk mounts used to flipflop the monitor into its
+          fallback, permanently pinning phones at the DPR floor while the
+          steady-state ran 60fps with headroom to spare. Floor is 1.5 (not
+          1.25): below that, a 3x phone screen reads visibly pixelated, and
+          the only devices that ever sink that far are rAF-capped (Low Power
+          Mode), where lower DPR can't raise the frame rate anyway. */}
+      {monitorArmed && forcedDpr === null && (
+        <PerformanceMonitor
+          bounds={() => [52, 58]}
+          ms={250}
+          iterations={7}
+          flipflops={6}
+          onDecline={() => setAdaptiveCap((cap) => Math.max(1.5, cap - 0.25))}
+          onIncline={() => setAdaptiveCap((cap) => Math.min(2, cap + 0.25))}
+          onFallback={() => setAdaptiveCap(1.5)}
+        />
+      )}
       <IsometricCamera />
       <Lighting liteWorld={liteWorld} />
       {/* Warm horizon fog — softens the island edge into the peach sky. */}

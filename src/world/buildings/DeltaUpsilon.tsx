@@ -110,8 +110,12 @@ export function DeltaUpsilon({ def }: { def: BuildingDef }) {
           size={0.9}
           height={0.18}
           bevelEnabled
-          bevelSize={0.02}
+          // Wide tessellated bevel — see the UPDT sign: subpixel bevels
+          // sparkle, multi-pixel smooth-normal bevels let specular AA work.
+          bevelSize={0.045}
           bevelThickness={0.04}
+          bevelSegments={6}
+          curveSegments={8}
           letterSpacing={0.06}
           castShadow
           position={[-1.05, -0.35, 0]}

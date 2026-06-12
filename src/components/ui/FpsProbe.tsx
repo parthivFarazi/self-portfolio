@@ -8,6 +8,7 @@ export function FpsProbe() {
   const [enabled] = useState(() => new URLSearchParams(window.location.search).get('fps') === '1');
   const [fps, setFps] = useState(0);
   const [low, setLow] = useState(0);
+  const [dpr, setDpr] = useState(0);
   const frames = useRef<number[]>([]);
 
   useEffect(() => {
@@ -25,6 +26,10 @@ export function FpsProbe() {
         const worst = Math.max(...f);
         setFps(Math.round(1000 / avg));
         setLow(Math.round(1000 / worst));
+        // Live render resolution — reads the DEV bridge so device screenshots
+        // self-report whether the adaptive DPR ratchet has kicked in.
+        const gl = (window as any).__r3f?.gl;
+        if (gl) setDpr(Math.round(gl.getPixelRatio() * 100) / 100);
       }
       raf = requestAnimationFrame(tick);
     };
@@ -49,7 +54,7 @@ export function FpsProbe() {
         pointerEvents: 'none',
       }}
     >
-      {fps} fps · 1% low {low}
+      {fps} fps · 1% low {low}{dpr > 0 ? ` · dpr ${dpr}` : ''}
     </div>
   );
 }

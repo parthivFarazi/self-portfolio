@@ -49,12 +49,18 @@ export const water = new THREE.MeshStandardMaterial({
 });
 
 // ── Emissive / accent ────────────────────────────────────────────────────
+// Signage gold. Deliberately calm for an "emissive": metalness 0.7 +
+// roughness 0.35 under the sun used to spike per-pixel HDR fireflies on the
+// extruded letter bevels — values clip past 1.0, ACES flattens them to
+// white, and no anti-aliasing can smooth an edge whose gradient is gone.
+// The broader, softer highlight keeps the warm gold; emissiveIntensity 0.5
+// stays above the bloom threshold so the halo survives.
 export const goldEmissive = new THREE.MeshStandardMaterial({
   color: '#d4b86a',
-  roughness: 0.35,
-  metalness: 0.7,
+  roughness: 0.5,
+  metalness: 0.4,
   emissive: '#f5c878',
-  emissiveIntensity: 0.85,
+  emissiveIntensity: 0.5,
 });
 export const neonCyan = new THREE.MeshStandardMaterial({
   color: '#6fd5e0',

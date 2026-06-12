@@ -198,9 +198,12 @@ export function TechTower({ def }: { def: BuildingDef }) {
           size={1.05}
           height={0.32}
           bevelEnabled
-          bevelSize={0.04}
+          // Wide tessellated bevel — see the UPDT sign: subpixel bevels
+          // sparkle, multi-pixel smooth-normal bevels let specular AA work.
+          bevelSize={0.07}
           bevelThickness={0.06}
-          bevelSegments={2}
+          bevelSegments={6}
+          curveSegments={8}
           letterSpacing={0.08}
           castShadow
           // Centering: TextGeometry origin is left/bottom; nudge so it reads centered.

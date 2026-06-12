@@ -173,6 +173,15 @@ function collideBox(
   OUT.z = cz + sign * hd;
 }
 
+// DEV-only: `?spawn=<buildingId>` drops the player just south of that
+// building so automated checks can frame a specific facade without walking.
+const DEV_SPAWN: [number, number, number] = (() => {
+  if (!import.meta.env.DEV || typeof window === 'undefined') return [0, 0, 0];
+  const id = new URLSearchParams(window.location.search).get('spawn');
+  const b = id ? BUILDINGS.find((bb) => bb.id === id) : undefined;
+  return b ? [b.position[0], 0, b.position[2] + 18] : [0, 0, 0];
+})();
+
 export function Player() {
   const keys = useKeyboardControls();
   const group = useRef<Group>(null);
@@ -350,7 +359,7 @@ export function Player() {
   });
 
   return (
-    <group ref={group} position={[0, 0, 0]}>
+    <group ref={group} position={DEV_SPAWN}>
       <group ref={bobGroup} position={[0, PLAYER_VISUAL_Y_OFFSET, 0]}>
         {/* Legs — pivot at the hip, swing about X */}
         <group ref={leftLeg} position={[-0.16, 0.7, 0]}>

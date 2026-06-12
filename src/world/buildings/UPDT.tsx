@@ -247,8 +247,14 @@ export function UPDT({ def, liteWorld = false }: { def: BuildingDef; liteWorld?:
           size={1.5}
           height={0.35}
           bevelEnabled
-          bevelSize={0.05}
+          // Wide, smooth bevel: at this viewing distance a 0.05 bevel was a
+          // 1-2px sparkling strip no AA could settle. 0.09 spans 3+px, and
+          // the extra segments give smoothly-varying normals so three.js's
+          // built-in geometric specular AA actually engages on the edge.
+          bevelSize={0.09}
           bevelThickness={0.07}
+          bevelSegments={6}
+          curveSegments={8}
           letterSpacing={0.08}
           castShadow
           position={[-3.5, 0, 0]}
