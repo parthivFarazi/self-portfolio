@@ -33,6 +33,21 @@ Mixkit stock music and sound effects are published under their respective
 Mixkit Free Licenses. Mixkit describes these assets as royalty-free for
 commercial and personal projects, with no attribution required.
 
+Stadium crowd-chant beds (added 2026-06):
+
+| Use | File | Source | License |
+|---|---|---|---|
+| Soccer stadium chant bed | `public/audio/crowd-ole.mp3` | freesound.org #588617 "Football Fans Chanting in Brighton" by Urkki69 — https://freesound.org/people/Urkki69/sounds/588617/ | CC0 1.0 (public domain) |
+| American-football stadium chant bed | `public/audio/crowd-football.m4a` | freesound.org #130994 "OHIO Chant.mp3" by spazo25 — https://freesound.org/people/spazo25/sounds/130994/ | CC0 1.0 (public domain) |
+
+Both sounds were verified CC0 (https://creativecommons.org/publicdomain/zero/1.0/)
+on their Freesound pages at download time; no attribution is required, but the
+links above are kept as a courtesy. Files are the Freesound preview encodes
+(~128 kbps); the OHIO chant was re-encoded to 96 kbps AAC (.m4a) to reduce
+file size. The recording is a real crowd chant captured at Ohio Stadium
+(2011) — chosen as a legally safe substitute for the copyrighted
+Kernkraft 400 chant.
+
 ## How to upgrade to real samples (future)
 
 Every public method on `Audio` (`footstep`, `uiPrompt`, `panelOpen`,

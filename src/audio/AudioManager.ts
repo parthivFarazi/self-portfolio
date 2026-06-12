@@ -13,9 +13,18 @@ const MUTE_KEY = 'rw.audio.muted';
 const MASTER_VOLUME = 0.7;
 const BACKGROUND_MUSIC_URL = '/audio/mixkit-smooth-meditation-324.mp3';
 const BACKGROUND_MUSIC_GAIN = 0.08;
+// Zone crossfade time (s) and how long after fade-out a zone's synth graph is
+// torn down. Must exceed the fade so we never cut audio that is still audible.
+const ZONE_FADE_S = 0.45;
+const ZONE_DISPOSE_MS = 550;
+// Ambient layers (birds + music) stay alive while enterZone heartbeats keep
+// arriving (Player calls it every frame in Exploration Mode). Once calls stop
+// — the player left Explore — the watchdog shuts everything down.
+const AMBIENT_GRACE_MS = 1600;
 
 const BUILDING_ZONES: Record<BuildingId, ZoneConfig> = {
-  updt: { kind: 'stadium-crowd', gain: 0.55 },
+  // Soccer stadium — real terrace chant (CC0 field recording, see CREDITS.md)
+  updt: { kind: 'soccer-crowd', gain: 0.6 },
   rmaict: { kind: 'data-pulse', gain: 0.42 },
   du: { kind: 'chatter', gain: 0.24 },
   tech: { kind: 'bell', gain: 0.55 },
@@ -23,7 +32,8 @@ const BUILDING_ZONES: Record<BuildingId, ZoneConfig> = {
   forge: { kind: 'hammer', gain: 0.68 },
   lighthouse: { kind: 'waves', gain: 0.5 },
   qard: { kind: 'glass-wind', gain: 0.34 },
-  athletic: { kind: 'stadium-crowd', gain: 0.42 },
+  // College football — rhythmic O-H-I-O crowd call (CC0, see CREDITS.md)
+  athletic: { kind: 'football-crowd', gain: 0.5 },
   archive: { kind: 'whisper', gain: 0.2 },
   zen: { kind: 'water', gain: 0.42 },
   heatmap: { kind: 'heatmap-tones', gain: 0.34 },
@@ -36,6 +46,8 @@ const BUILDING_ZONES: Record<BuildingId, ZoneConfig> = {
 interface ZoneConfig {
   kind:
     | 'stadium-crowd'
+    | 'soccer-crowd'
+    | 'football-crowd'
     | 'hammer'
     | 'waves'
     | 'water'
@@ -53,6 +65,8 @@ interface ZoneConfig {
 interface ZoneNodes {
   gain: GainNode;
   cleanup?: () => void;
+  /** Pending deferred-teardown timer; cancelled if the zone reactivates. */
+  disposeTimer?: number;
 }
 
 function loadMute(): boolean {
@@ -75,12 +89,26 @@ function clamp01(value: number): number {
   return Math.max(0, Math.min(1, value));
 }
 
-type VoiceSampleKind = 'crowd' | 'chatter' | 'whisper';
+/** Stop looping/scheduled sources, swallowing "already stopped" errors. */
+function stopSources(...sources: AudioScheduledSourceNode[]) {
+  for (const s of sources) {
+    try {
+      s.stop();
+    } catch {
+      // Already stopped — fine.
+    }
+  }
+}
+
+type VoiceSampleKind = 'crowd' | 'chatter' | 'whisper' | 'ole' | 'football';
 
 const VOICE_SAMPLE_URLS: Record<VoiceSampleKind, string> = {
   crowd: '/audio/mixkit-huge-crowd-cheering-victory.mp3',
   chatter: '/audio/mixkit-people-indoors-ambience.mp3',
   whisper: '/audio/mixkit-male-conspiracy-voices-whispers.mp3',
+  // Stadium chants — CC0 Freesound field recordings (src/audio/CREDITS.md)
+  ole: '/audio/crowd-ole.mp3',
+  football: '/audio/crowd-football.m4a',
 };
 
 class AudioManagerImpl {
@@ -104,10 +132,23 @@ class AudioManagerImpl {
   activeZone: BuildingId | null = null;
   lastFootstepAt = 0;
   listeners: Set<() => void> = new Set();
+  // Ambient lifecycle — see AMBIENT_GRACE_MS above.
+  private ambientRunning = false;
+  private birdTimer: number | null = null;
+  private ambientWatchdog: number | null = null;
+  private lastAmbientHeartbeat = 0;
 
   /** Lazy init from a user gesture. Safe to call multiple times. */
   ensureStart() {
-    if (this.initialized) return;
+    if (this.initialized) {
+      // Re-entering Explore: resume the context if the browser suspended it
+      // and restart the ambient layers the watchdog shut down on exit.
+      if (this.ctx) {
+        if (this.ctx.state === 'suspended') void this.ctx.resume();
+        this.ambientHeartbeat();
+      }
+      return;
+    }
     if (typeof window === 'undefined') return;
 
     const W = window as unknown as { webkitAudioContext?: typeof AudioContext };
@@ -147,9 +188,9 @@ class AudioManagerImpl {
     this.pinkBuffer = makePinkBuffer(this.ctx, 4);
     this.whiteBuffer = makeWhiteBuffer(this.ctx, 0.3);
 
-    // Start base ambient layer (sporadic birds)
-    this.startBirdLoop();
-    this.startBackgroundMusic();
+    // Start base ambient layers (sporadic birds + music) and arm the
+    // watchdog that stops them once Explore stops heartbeating.
+    this.ambientHeartbeat();
 
     // Warm the human-voice / crowd loops as soon as audio is allowed.
     void this.loadVoiceSample('crowd');
@@ -185,17 +226,74 @@ class AudioManagerImpl {
   }
 
   // ── Ambient base layers ─────────────────────────────────────────────
-  private startBirdLoop() {
+  /**
+   * Keepalive for the ambient layers. enterZone() (called every frame by the
+   * Player while in Exploration Mode) and ensureStart() invoke this; once the
+   * calls stop — the user left Explore — the watchdog tears the layers down.
+   */
+  private ambientHeartbeat() {
     if (!this.ctx) return;
+    this.lastAmbientHeartbeat = performance.now();
+    this.startAmbient();
+    if (this.ambientWatchdog === null) this.armAmbientWatchdog();
+  }
+
+  private armAmbientWatchdog() {
+    this.ambientWatchdog = window.setTimeout(() => {
+      if (performance.now() - this.lastAmbientHeartbeat >= AMBIENT_GRACE_MS) {
+        this.ambientWatchdog = null;
+        this.stopAmbient();
+      } else {
+        this.armAmbientWatchdog();
+      }
+    }, AMBIENT_GRACE_MS);
+  }
+
+  /** Start birds + music. No-op when already running or before ensureStart. */
+  private startAmbient() {
+    if (!this.ctx || this.ambientRunning) return;
+    this.ambientRunning = true;
+    this.startBirdLoop();
+    this.startBackgroundMusic();
+  }
+
+  /** Stop every long-lived ambient layer: bird loop, music, active zone. */
+  private stopAmbient() {
+    this.ambientRunning = false;
+    if (this.birdTimer !== null) {
+      window.clearTimeout(this.birdTimer);
+      this.birdTimer = null;
+    }
+    if (this.musicSource) {
+      try {
+        this.musicSource.stop();
+      } catch {
+        // Already stopped.
+      }
+      this.musicSource = null;
+    }
+    // If a building zone is still audible (e.g. the tab was hidden while the
+    // player stood next to one), fade it out and dispose it too.
+    if (this.activeZone && this.ctx) {
+      const id = this.activeZone;
+      this.activeZone = null;
+      const z = this.zones.get(id);
+      if (z) this.fadeOutAndDisposeZone(id, z);
+    }
+  }
+
+  private startBirdLoop() {
+    if (!this.ctx || this.birdTimer !== null) return;
     const schedule = () => {
-      if (!this.ctx || !this.ambientGain) return;
+      this.birdTimer = null;
+      if (!this.ctx || !this.ambientGain || !this.ambientRunning) return;
       const t = this.ctx.currentTime + 0.05;
       this.birdChirp(t);
       // 6–14 sec between chirps
       const next = 6000 + Math.random() * 8000;
-      window.setTimeout(schedule, next);
+      this.birdTimer = window.setTimeout(schedule, next);
     };
-    window.setTimeout(schedule, 2500);
+    this.birdTimer = window.setTimeout(schedule, 2500);
   }
 
   private birdChirp(when: number) {
@@ -219,7 +317,9 @@ class AudioManagerImpl {
     if (!this.ctx || !this.musicGain || this.musicSource) return;
 
     const startLoop = (buffer: AudioBuffer) => {
-      if (!this.ctx || !this.musicGain || this.musicSource) return;
+      // ambientRunning re-check: the (large) music file may finish loading
+      // after the player has already left Explore — don't start an orphan loop.
+      if (!this.ctx || !this.musicGain || this.musicSource || !this.ambientRunning) return;
       const src = this.ctx.createBufferSource();
       src.buffer = buffer;
       src.loop = true;
@@ -377,6 +477,10 @@ class AudioManagerImpl {
     if (!this.ctx || !this.zoneBus) return;
     if (this.ctx.state === 'suspended') void this.ctx.resume();
 
+    // Every call (the Player fires one per frame in Explore, even with a null
+    // id while wandering the meadow) keeps the ambient layers alive.
+    this.ambientHeartbeat();
+
     const now = this.ctx.currentTime;
     const amount = clamp01(intensity);
 
@@ -393,21 +497,18 @@ class AudioManagerImpl {
       return;
     }
 
-    // Fade out previous
+    // Fade out previous, then tear it down so its timers/loops stop firing.
     if (this.activeZone) {
-      const prev = this.zones.get(this.activeZone);
-      if (prev) {
-        prev.gain.gain.cancelScheduledValues(now);
-        prev.gain.gain.setValueAtTime(prev.gain.gain.value, now);
-        prev.gain.gain.linearRampToValueAtTime(0, now + 0.45);
-      }
+      const prevId = this.activeZone;
+      const prev = this.zones.get(prevId);
+      if (prev) this.fadeOutAndDisposeZone(prevId, prev);
     }
     this.activeZone = id;
 
     if (!id) return;
     const cfg = BUILDING_ZONES[id];
 
-    // Lazy-build zone on first use
+    // Lazy-build zone on first use (or rebuild after disposal)
     let z: ZoneNodes | undefined = this.zones.get(id);
     if (!z) {
       const built = this.buildZone(cfg);
@@ -417,9 +518,48 @@ class AudioManagerImpl {
       }
     }
     if (!z) return;
+    // Back inside the fade window (A → B → A): abort the pending teardown.
+    if (z.disposeTimer !== undefined) {
+      window.clearTimeout(z.disposeTimer);
+      z.disposeTimer = undefined;
+    }
     z.gain.gain.cancelScheduledValues(now);
     z.gain.gain.setValueAtTime(z.gain.gain.value, now);
-    z.gain.gain.linearRampToValueAtTime(cfg.gain * amount, now + 0.45);
+    z.gain.gain.linearRampToValueAtTime(cfg.gain * amount, now + ZONE_FADE_S);
+  }
+
+  /**
+   * Fade a zone to silence, then (once the fade has finished) stop its timers
+   * and looping sources and drop it from the map so the lazy-build path in
+   * enterZone() recreates it fresh on the next visit. Guards: if the zone
+   * became active again during the fade window (A → B → A), or was already
+   * disposed and rebuilt, the deferred teardown is skipped — the rebuild's own
+   * disposal timer covers it.
+   */
+  private fadeOutAndDisposeZone(id: BuildingId, z: ZoneNodes) {
+    if (this.ctx) {
+      const now = this.ctx.currentTime;
+      z.gain.gain.cancelScheduledValues(now);
+      z.gain.gain.setValueAtTime(z.gain.gain.value, now);
+      z.gain.gain.linearRampToValueAtTime(0, now + ZONE_FADE_S);
+    }
+    if (z.disposeTimer !== undefined) window.clearTimeout(z.disposeTimer);
+    z.disposeTimer = window.setTimeout(() => {
+      z.disposeTimer = undefined;
+      if (this.activeZone === id) return; // re-entered during the fade
+      if (this.zones.get(id) !== z) return; // already disposed / rebuilt
+      this.zones.delete(id);
+      try {
+        z.cleanup?.();
+      } catch {
+        // Sources may already be stopped.
+      }
+      try {
+        z.gain.disconnect();
+      } catch {
+        // Already disconnected.
+      }
+    }, ZONE_DISPOSE_MS);
   }
 
   private buildZone(cfg: ZoneConfig): ZoneNodes | null {
@@ -431,6 +571,13 @@ class AudioManagerImpl {
     switch (cfg.kind) {
       case 'stadium-crowd': {
         return this.buildSampleZone('crowd', out, 0.75);
+      }
+      case 'soccer-crowd': {
+        // Terrace chant carried over a low bed of generic crowd roar.
+        return this.buildSampleZone('ole', out, 0.85);
+      }
+      case 'football-crowd': {
+        return this.buildSampleZone('football', out, 0.85);
       }
       case 'hammer': {
         const strike = () => {
@@ -495,7 +642,7 @@ class AudioManagerImpl {
         src.connect(lp).connect(swell).connect(out);
         src.start();
         lfo.start();
-        return { gain: out };
+        return { gain: out, cleanup: () => stopSources(src, lfo) };
       }
       case 'water': {
         const timer = window.setInterval(() => {
@@ -533,7 +680,7 @@ class AudioManagerImpl {
         motion.gain.value = 0.55;
         src.connect(hp).connect(lp).connect(motion).connect(out);
         src.start();
-        return { gain: out };
+        return { gain: out, cleanup: () => stopSources(src) };
       }
       case 'bell': {
         const ring = () => {
@@ -593,7 +740,13 @@ class AudioManagerImpl {
             o.stop(t + i * 0.08 + 1.3);
           });
         }, 3400);
-        return { gain: out, cleanup: () => window.clearInterval(timer) };
+        return {
+          gain: out,
+          cleanup: () => {
+            window.clearInterval(timer);
+            stopSources(src);
+          },
+        };
       }
       case 'data-pulse': {
         const timer = window.setInterval(() => {
