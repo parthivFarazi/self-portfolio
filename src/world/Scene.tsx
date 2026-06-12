@@ -26,11 +26,12 @@ export function Scene({ onReady }: { onReady?: () => void }) {
     if (qs.get('lite') === '0') return false;
     return window.matchMedia('(pointer: coarse), (max-width: 767px)').matches;
   }, []);
-  // liteWorld caps at 1.5 — 3x-density phone screens don't need to push
-  // 9x the fragments for a stylized low-poly scene. If a weaker device
-  // still can't hold the frame rate, the PerformanceMonitor below ratchets
-  // this down further (1.5 → 1.25 → 1) instead of changing the look.
-  const [adaptiveCap, setAdaptiveCap] = useState(() => (liteWorld ? 1.5 : 2));
+  // min(devicePixelRatio, 2) — the shipped standard (r3f's own default) and
+  // the perceptual knee: at DPR 2 a 1px detail gets two integer samples on a
+  // 3x screen (true-retina density); the old 1.5 cap meant fractional
+  // sampling + a 2x bilinear upscale = visibly jagged details and soft text.
+  // If a device can't hold frame rate, the PerformanceMonitor ratchets down.
+  const [adaptiveCap, setAdaptiveCap] = useState(2);
   const dpr = useClampedDevicePixelRatio(adaptiveCap);
 
   return (
@@ -89,9 +90,9 @@ export function Scene({ onReady }: { onReady?: () => void }) {
         ms={200}
         iterations={7}
         flipflops={3}
-        onDecline={() => setAdaptiveCap((cap) => Math.max(1, cap - 0.25))}
-        onIncline={() => setAdaptiveCap((cap) => Math.min(liteWorld ? 1.5 : 2, cap + 0.25))}
-        onFallback={() => setAdaptiveCap(1)}
+        onDecline={() => setAdaptiveCap((cap) => Math.max(1.25, cap - 0.25))}
+        onIncline={() => setAdaptiveCap((cap) => Math.min(2, cap + 0.25))}
+        onFallback={() => setAdaptiveCap(1.25)}
       />
       <IsometricCamera />
       <Lighting liteWorld={liteWorld} />

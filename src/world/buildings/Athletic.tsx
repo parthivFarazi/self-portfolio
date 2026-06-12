@@ -221,7 +221,7 @@ export function Athletic({ def }: { def: BuildingDef }) {
         position={[0, 4.7, rz + 1.23]}
         fontSize={0.42}
         color="#fffaee"
-        outlineWidth={0.04}
+        sdfGlyphSize={128} outlineWidth={0.04}
         outlineColor="#7a3a26"
         anchorX="center"
         anchorY="middle"
@@ -239,7 +239,7 @@ export function Athletic({ def }: { def: BuildingDef }) {
       </mesh>
 
       <Billboard position={[0, wallH + 5, 0]}>
-        <Text fontSize={1} color="#2a2520" outlineWidth={0.06} outlineColor="#fffaee" anchorX="center" anchorY="middle">
+        <Text fontSize={1} color="#2a2520" sdfGlyphSize={128} outlineWidth={0.06} outlineColor="#fffaee" anchorX="center" anchorY="middle">
           {def.shortLabel}
         </Text>
       </Billboard>

@@ -277,7 +277,7 @@ export function ZenGarden({ def }: { def: BuildingDef }) {
       <PetalCloud origin={[R - 1.6, 0, -R + 1.6]} />
 
       <Billboard position={[0, 5, 0]}>
-        <Text fontSize={0.95} color="#2a2520" outlineWidth={0.06} outlineColor="#fffaee" anchorX="center" anchorY="middle">
+        <Text fontSize={0.95} color="#2a2520" sdfGlyphSize={128} outlineWidth={0.06} outlineColor="#fffaee" anchorX="center" anchorY="middle">
           {def.shortLabel}
         </Text>
       </Billboard>

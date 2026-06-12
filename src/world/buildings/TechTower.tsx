@@ -264,7 +264,7 @@ export function TechTower({ def }: { def: BuildingDef }) {
 
       {/* Floating label */}
       <Billboard position={[0, 0.6 + H + parapetH + 8.5, 0]}>
-        <Text fontSize={1.1} color="#2a2520" outlineWidth={0.06} outlineColor="#fffaee" anchorX="center" anchorY="middle">
+        <Text fontSize={1.1} color="#2a2520" sdfGlyphSize={128} outlineWidth={0.06} outlineColor="#fffaee" anchorX="center" anchorY="middle">
           {def.shortLabel}
         </Text>
       </Billboard>

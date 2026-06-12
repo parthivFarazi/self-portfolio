@@ -276,7 +276,7 @@ export function UPDT({ def, liteWorld = false }: { def: BuildingDef; liteWorld?:
       )}
 
       <Billboard position={[0, wallH + 5, 0]}>
-        <Text fontSize={1.2} color="#2a2520" outlineWidth={0.06} outlineColor="#fffaee" anchorX="center" anchorY="middle">
+        <Text fontSize={1.2} color="#2a2520" sdfGlyphSize={128} outlineWidth={0.06} outlineColor="#fffaee" anchorX="center" anchorY="middle">
           {def.shortLabel}
         </Text>
       </Billboard>

@@ -11,7 +11,7 @@ export function Placeholder({ def }: { def: BuildingDef }) {
         <Text
           fontSize={1.1}
           color="#2a2520"
-          outlineWidth={0.06}
+          sdfGlyphSize={128} outlineWidth={0.06}
           outlineColor="#fffaee"
           anchorX="center"
           anchorY="middle"

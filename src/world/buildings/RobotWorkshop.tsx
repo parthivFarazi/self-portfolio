@@ -175,7 +175,7 @@ export function RobotWorkshop({ def }: { def: BuildingDef }) {
       </group>
 
       <Billboard position={[0, H + 3, 0]}>
-        <Text fontSize={0.9} color="#2a2520" outlineWidth={0.06} outlineColor="#fffaee" anchorX="center" anchorY="middle">
+        <Text fontSize={0.9} color="#2a2520" sdfGlyphSize={128} outlineWidth={0.06} outlineColor="#fffaee" anchorX="center" anchorY="middle">
           {def.shortLabel}
         </Text>
       </Billboard>

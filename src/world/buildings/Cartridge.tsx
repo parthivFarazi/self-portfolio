@@ -249,7 +249,7 @@ export function Cartridge({ def, liteWorld = false }: { def: BuildingDef; liteWo
         <Text
           fontSize={0.95}
           color="#2a2520"
-          outlineWidth={0.06}
+          sdfGlyphSize={128} outlineWidth={0.06}
           outlineColor="#fffaee"
           anchorX="center"
           anchorY="middle"

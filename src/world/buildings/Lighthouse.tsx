@@ -132,7 +132,7 @@ export function Lighthouse({ def, liteWorld = false }: { def: BuildingDef; liteW
       </mesh>
 
       <Billboard position={[0, H + 6, 0]}>
-        <Text fontSize={1} color="#2a2520" outlineWidth={0.06} outlineColor="#fffaee" anchorX="center" anchorY="middle">
+        <Text fontSize={1} color="#2a2520" sdfGlyphSize={128} outlineWidth={0.06} outlineColor="#fffaee" anchorX="center" anchorY="middle">
           {def.shortLabel}
         </Text>
       </Billboard>

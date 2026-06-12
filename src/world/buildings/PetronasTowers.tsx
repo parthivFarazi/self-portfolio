@@ -177,7 +177,7 @@ export function PetronasTowers({ def, liteWorld = false }: { def: BuildingDef; l
 
       {/* Floating label */}
       <Billboard position={[0, 36, 0]}>
-        <Text fontSize={1.4} color="#2a2520" outlineWidth={0.08} outlineColor="#fffaee" anchorX="center" anchorY="middle">
+        <Text fontSize={1.4} color="#2a2520" sdfGlyphSize={128} outlineWidth={0.08} outlineColor="#fffaee" anchorX="center" anchorY="middle">
           {def.shortLabel}
         </Text>
       </Billboard>
