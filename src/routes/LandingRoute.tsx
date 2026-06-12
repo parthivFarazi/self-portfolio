@@ -16,9 +16,9 @@ export default function LandingRoute({
     <main className="qv-landing">
       <div className="qv-grain" aria-hidden="true" />
       <div className="qv-sun" aria-hidden="true" />
-      <SoftCloud x={80} y={128} scale={1.1} />
-      <SoftCloud x={820} y={190} scale={0.85} />
-      <SoftCloud x={1160} y={292} scale={0.95} />
+      <SoftCloud left={80} y={128} scale={1.1} />
+      <SoftCloud left="55%" y={190} scale={0.85} />
+      <SoftCloud right="3%" y={292} scale={0.95} />
 
       <nav className="qv-landing-nav" aria-label="Portfolio shortcuts">
         <span className="qv-brand">
@@ -30,7 +30,6 @@ export default function LandingRoute({
           href="/resume.pdf"
           target="_blank"
           rel="noopener noreferrer"
-          download="parthiv-farazi-resume.pdf"
         >
           <span className="qv-resume-link__arrow" aria-hidden="true">↓</span>
           <span>Resume PDF</span>
@@ -144,14 +143,24 @@ function Sigil() {
   );
 }
 
-function SoftCloud({ x, y, scale = 1 }: { x: number; y: number; scale?: number }) {
+function SoftCloud({
+  left,
+  right,
+  y,
+  scale = 1,
+}: {
+  left?: number | string;
+  right?: number | string;
+  y: number;
+  scale?: number;
+}) {
   return (
     <svg
       viewBox="0 0 240 80"
       width={240 * scale}
       height={80 * scale}
       className="qv-cloud"
-      style={{ left: x, top: y }}
+      style={{ left, right, top: y }}
       aria-hidden="true"
     >
       <ellipse cx="60" cy="50" rx="50" ry="22" fill="#fffaee" />

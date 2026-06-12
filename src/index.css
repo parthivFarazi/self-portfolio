@@ -13,6 +13,79 @@
   }
 }
 
+/* Parchment HUD chrome — the desktop pills share the island's postcard
+   warmth instead of reading as plain white blobs. */
+.rw-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.55ch;
+  border: 1px solid rgba(212, 193, 120, 0.8);
+  border-radius: 999px;
+  background:
+    radial-gradient(130% 200% at 50% -60%, rgba(255, 255, 255, 0.6), transparent 55%),
+    linear-gradient(180deg, rgba(255, 250, 240, 0.94), rgba(243, 231, 195, 0.9));
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.65),
+    0 2px 0 rgba(200, 176, 78, 0.45),
+    0 8px 20px rgba(40, 20, 8, 0.12);
+  color: #5a4a36;
+  backdrop-filter: blur(5px);
+  -webkit-backdrop-filter: blur(5px);
+}
+
+.rw-pill-dot {
+  width: 8px;
+  height: 8px;
+  flex: none;
+  border-radius: 50%;
+  background: #5fa844;
+  box-shadow: 0 0 0 3px rgba(95, 168, 68, 0.18);
+}
+
+.rw-pill-dot--gold {
+  background: #d4a017;
+  box-shadow: 0 0 0 3px rgba(212, 160, 23, 0.2);
+}
+
+.rw-kbd {
+  font: 600 9.5px var(--rw-mono);
+  letter-spacing: 0.05em;
+  padding: 1.5px 5px;
+  border: 1px solid #d8c89e;
+  border-bottom-width: 2px;
+  border-radius: 5px;
+  background: #fffdf6;
+  color: #6a5536;
+}
+
+/* Welcome note: rise and settle. translateX(-50%) is baked into both
+   keyframes so centering survives the animation. */
+@keyframes rw-toast-in {
+  from { opacity: 0; transform: translate(-50%, 10px); }
+  to { opacity: 1; transform: translate(-50%, 0); }
+}
+
+/* One-time "pinch to zoom" chip: ease in, hold, fade away. */
+@keyframes rw-zoom-hint {
+  0% { opacity: 0; transform: translate(-50%, 6px); }
+  8% { opacity: 1; transform: translate(-50%, 0); }
+  80% { opacity: 1; }
+  100% { opacity: 0; }
+}
+
+/* Vestibular-safety net: collapse decorative CSS animations/transitions for
+   visitors who ask for reduced motion (framer-motion is handled separately
+   via MotionConfig). */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
 /* Parthiv's World design tokens — mirror the original prototype's <style> block.
    Panels reference these via inline styles; do not rename. */
 :root {

@@ -1,4 +1,5 @@
 export function WorldLoadingScreen() {
+  const touch = typeof window !== 'undefined' && window.matchMedia?.('(pointer: coarse)').matches;
   return (
     <div
       className="absolute inset-0 z-40 flex items-center justify-center bg-[radial-gradient(circle_at_50%_22%,rgba(255,255,255,0.14),transparent_28%),linear-gradient(180deg,#f4d7b0_0%,#e8c6a2_40%,#d8b08b_100%)] px-6 text-[#2a1a0e]"
@@ -13,9 +14,13 @@ export function WorldLoadingScreen() {
         <h2 className="text-[40px] leading-none tracking-[-0.04em]" style={{ fontFamily: '"Pixelify Sans", monospace' }}>
           Loading the island...
         </h2>
+        {/* The captive wait teaches the goal + controls instead of flavor text */}
         <p className="max-w-[320px] text-sm leading-6 text-[#5a3e20]">
-          Bringing in the 3D world, camera, and the building interactions.
+          Every building on the island holds a project or part of my story.
         </p>
+        <div className="rounded-full border border-[#d4c178]/70 bg-[#fff8e2] px-4 py-1.5 font-mono text-[11px] tracking-[0.14em] text-[#5a3e20]">
+          {touch ? 'Drag to walk · Tap GO to enter' : 'WASD to walk · E to enter · ESC to close'}
+        </div>
         <div className="flex items-center gap-2" aria-hidden="true">
           <PulseDot delay="0s" />
           <PulseDot delay="0.16s" />
