@@ -4,13 +4,15 @@ import { Group, Vector3 } from 'three';
 import { useGame } from '@/state/gameStore';
 import { useKeyboardControls } from '@/hooks/useKeyboardControls';
 import { nearestBuilding } from '@/hooks/useProximity';
-import { BUILDINGS, type BuildingDef, type BuildingId } from '@/data/buildings';
+import { BUILDINGS, type BuildingDef, type BuildingId, type Collider } from '@/data/buildings';
 import { Audio } from '@/audio/AudioManager';
 import { touchInput } from '@/hooks/useTouchInput';
 import { preloadPanel } from '@/components/panels/panelRegistry';
 import {
   PLAYER_SPEED,
   PLAYER_ACCEL,
+  PLAYER_DECEL,
+  PLAYER_TURN_RATE,
   PLAYER_RADIUS,
   ISLAND_RADIUS,
   ISLAND_EDGE_MARGIN,
@@ -19,6 +21,12 @@ import {
 
 const tmp = new Vector3();
 const tmpVel = new Vector3();
+
+if (typeof window !== 'undefined' && import.meta.env.DEV) {
+  // @ts-expect-error debug bridge for preview MCP collision checks
+  window.__collide = (nx: number, nz: number, px: number, pz: number) =>
+    collideBuildings(nx, nz, px, pz);
+}
 
 // Palette — South Asian medium-tan skin, white shirt, khaki pants, GT-gold wristband.
 const SKIN = '#b3805d';
@@ -39,9 +47,20 @@ function collideBuildings(nx: number, nz: number, px: number, pz: number): [numb
 }
 
 function collideBuilding(nx: number, nz: number, px: number, pz: number, b: BuildingDef): [number, number] {
-  const s = b.shape;
   const bx = b.position[0];
   const bz = b.position[2];
+  // Audited per-building colliders match the rendered meshes (foundation
+  // lips, porches, entrance pavilions) — the declared `shape` only matches
+  // the far-LOD placeholder.
+  if (b.colliders) {
+    let ox = nx;
+    let oz = nz;
+    for (const c of b.colliders) {
+      [ox, oz] = collideShape(ox, oz, px, pz, bx, bz, c);
+    }
+    return [ox, oz];
+  }
+  const s = b.shape;
   switch (s.kind) {
     case 'cylinder':
       return collideEllipse(nx, nz, px, pz, bx, bz, s.radius, s.radius);
@@ -56,6 +75,23 @@ function collideBuilding(nx: number, nz: number, px: number, pz: number, b: Buil
     case 'disc':
       return [nx, nz];
   }
+}
+
+function collideShape(
+  nx: number,
+  nz: number,
+  px: number,
+  pz: number,
+  bx: number,
+  bz: number,
+  c: Collider,
+): [number, number] {
+  const cx = bx + (c.offset?.[0] ?? 0);
+  const cz = bz + (c.offset?.[1] ?? 0);
+  if (c.kind === 'ellipse') {
+    return collideEllipse(nx, nz, px, pz, cx, cz, c.rx, c.rz);
+  }
+  return collideBox(nx, nz, px, pz, cx, cz, c.halfX, c.halfZ);
 }
 
 function collideEllipse(
@@ -129,6 +165,14 @@ export function Player() {
   const lastNearby = useRef<string | null>(null);
   const walkPhase = useRef<number>(0);
   const lastStepIdx = useRef<number>(-1);
+  // Smoothed 0..1 "how much are we moving" blend — drives bob/lean/idle
+  // crossfades so animation never snaps between states.
+  const moveBlend = useRef<number>(0);
+  const bankRef = useRef<number>(0);
+  // Last values actually written to the store — lets us skip the per-frame
+  // setState while standing still. Infinity forces the first frame to write.
+  const lastWrittenPos = useRef<[number, number, number]>([Infinity, Infinity, Infinity]);
+  const lastWrittenFacing = useRef<number>(Infinity);
 
   useFrame((_state, rawDelta) => {
     if (!group.current) return;
@@ -158,7 +202,9 @@ export function Player() {
 
     const targetVx = dirX * PLAYER_SPEED * speedScale;
     const targetVz = dirZ * PLAYER_SPEED * speedScale;
-    const accelStep = PLAYER_ACCEL * delta;
+    // Accelerate hard, stop a touch softer — quick response in, gentle
+    // glide out.
+    const accelStep = (len > 0 ? PLAYER_ACCEL : PLAYER_DECEL) * delta;
     const vel = velRef.current;
     vel.x += clamp(targetVx - vel.x, -accelStep, accelStep);
     vel.z += clamp(targetVz - vel.z, -accelStep, accelStep);
@@ -183,25 +229,39 @@ export function Player() {
     pos.x = nx;
     pos.z = nz;
 
+    let yawDelta = 0;
     if (len > 0) {
       const targetYaw = Math.atan2(dirX, dirZ);
-      yawRef.current = lerpAngle(yawRef.current, targetYaw, Math.min(1, delta * 12));
+      const before = yawRef.current;
+      yawRef.current = lerpAngle(yawRef.current, targetYaw, Math.min(1, delta * PLAYER_TURN_RATE));
+      yawDelta = shortestAngle(yawRef.current - before);
       group.current.rotation.y = yawRef.current;
     }
 
-    // Walking animation: bob and swing limbs proportional to speed
+    // Walking animation: bob and swing limbs proportional to speed, with a
+    // smoothed move-blend so starts/stops crossfade instead of snapping.
     const speed = Math.hypot(vel.x, vel.z);
-    const targetPhaseRate = speed * 1.6; // radians/sec
+    const speedT = Math.min(1, speed / PLAYER_SPEED);
+    moveBlend.current += (speedT - moveBlend.current) * Math.min(1, delta * 10);
+    const blend = moveBlend.current;
+    const targetPhaseRate = speed * 2.1; // feet keep up with the ground
     walkPhase.current += targetPhaseRate * delta;
     if (bobGroup.current) {
-      const moving = speed > 0.1 ? 1 : 0;
-      bobGroup.current.position.y = PLAYER_VISUAL_Y_OFFSET + Math.abs(Math.sin(walkPhase.current)) * 0.06 * moving;
+      const t = _state.clock.elapsedTime;
+      const walkBob = Math.abs(Math.sin(walkPhase.current)) * 0.07 * blend;
+      const idleBreath = Math.sin(t * 1.8) * 0.012 * (1 - blend);
+      bobGroup.current.position.y = PLAYER_VISUAL_Y_OFFSET + walkBob + idleBreath;
+      // Lean into the run, bank into turns — the body believes the motion.
+      bobGroup.current.rotation.x = blend * 0.09;
+      const targetBank = clamp(-yawDelta * 22, -0.12, 0.12) * blend;
+      bankRef.current += (targetBank - bankRef.current) * Math.min(1, delta * 8);
+      bobGroup.current.rotation.z = bankRef.current;
     }
-    const swing = Math.sin(walkPhase.current) * 0.6 * Math.min(1, speed / PLAYER_SPEED);
+    const swing = Math.sin(walkPhase.current) * 0.78 * blend;
     if (leftLeg.current) leftLeg.current.rotation.x = swing;
     if (rightLeg.current) rightLeg.current.rotation.x = -swing;
-    if (leftArm.current) leftArm.current.rotation.x = -swing * 0.7;
-    if (rightArm.current) rightArm.current.rotation.x = swing * 0.7;
+    if (leftArm.current) leftArm.current.rotation.x = -swing * 0.72;
+    if (rightArm.current) rightArm.current.rotation.x = swing * 0.72;
 
     // Footstep audio — fire on each peak of the leg-swing oscillation while
     // actually moving. Surface picked from path/plaza heuristic.
@@ -224,7 +284,17 @@ export function Player() {
       lastStepIdx.current = -1;
     }
 
-    useGame.setState({ playerPosition: [pos.x, pos.y, pos.z], playerFacing: yawRef.current });
+    // Publish to the store only on meaningful change (>0.01u moved or
+    // >0.01rad turned) — otherwise an idle player churns every subscriber
+    // (HUD, minimap) 60 times a second with identical values.
+    const lastPos = lastWrittenPos.current;
+    const movedSq =
+      (pos.x - lastPos[0]) ** 2 + (pos.y - lastPos[1]) ** 2 + (pos.z - lastPos[2]) ** 2;
+    if (movedSq > 0.0001 || Math.abs(yawRef.current - lastWrittenFacing.current) > 0.01) {
+      lastWrittenPos.current = [pos.x, pos.y, pos.z];
+      lastWrittenFacing.current = yawRef.current;
+      useGame.setState({ playerPosition: lastWrittenPos.current, playerFacing: yawRef.current });
+    }
 
     const near = nearestBuilding(pos.x, pos.z);
     const newId = near?.id ?? null;
@@ -353,6 +423,12 @@ export function Player() {
 
 function clamp(v: number, min: number, max: number) {
   return v < min ? min : v > max ? max : v;
+}
+
+function shortestAngle(a: number) {
+  while (a > Math.PI) a -= Math.PI * 2;
+  while (a < -Math.PI) a += Math.PI * 2;
+  return a;
 }
 
 function lerpAngle(a: number, b: number, t: number) {

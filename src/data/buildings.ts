@@ -24,6 +24,15 @@ export type BuildingShape =
 
 export type Ring = 'inner' | 'mid' | 'outer';
 
+/** Walkability override. The default collision is derived from `shape`,
+ *  but the near-LOD visuals are usually larger (foundation lips, porches,
+ *  entrance pavilions) — these primitives, offset from `position`, are what
+ *  the player actually collides with. Sized from a per-building audit of
+ *  the rendered meshes (June 2026). */
+export type Collider =
+  | { kind: 'ellipse'; rx: number; rz: number; offset?: [number, number] }
+  | { kind: 'box'; halfX: number; halfZ: number; offset?: [number, number] };
+
 export interface BuildingDef {
   id: BuildingId;
   name: string;
@@ -39,6 +48,11 @@ export interface BuildingDef {
   color: string;
   triggerRadius: number;
   panelSize: { w: number; h: number };
+  colliders?: Collider[];
+  /** Primary external call-to-action for this building's panel. Mirrored in
+   *  the dialog chrome (unscaled action bar) so the link stays a full-size
+   *  tap target even when the panel itself is scaled down on phones. */
+  link?: { href: string; label: string };
 }
 
 export const BUILDINGS: BuildingDef[] = [
@@ -54,6 +68,8 @@ export const BUILDINGS: BuildingDef[] = [
     color: '#b3dfd7',
     triggerRadius: 18,
     panelSize: { w: 1280, h: 1300 },
+    colliders: [{ kind: 'ellipse', rx: 15.4, rz: 11.4 }],
+    link: { href: 'https://updt.pro', label: 'Visit updt.pro' },
   },
   {
     id: 'rmaict',
@@ -66,6 +82,7 @@ export const BUILDINGS: BuildingDef[] = [
     color: '#c97e58',
     triggerRadius: 6.5,
     panelSize: { w: 760, h: 850 },
+    colliders: [{ kind: 'box', halfX: 3.0, halfZ: 3.0 }],
   },
   {
     id: 'du',
@@ -74,10 +91,12 @@ export const BUILDINGS: BuildingDef[] = [
     subtitle: 'A baseball stat-tracking app, live on the App Store, used by 70+ people.',
     ring: 'inner',
     position: [0, 0, 30],
-    shape: { kind: 'box', width: 10, depth: 7, height: 4.5 },
+    shape: { kind: 'box', width: 10, depth: 7, height: 6 },
     color: '#f6f1e4',
     triggerRadius: 8.5,
     panelSize: { w: 760, h: 880 },
+    colliders: [{ kind: 'box', halfX: 5.3, halfZ: 5.2, offset: [0, 1.35] }],
+    link: { href: 'https://apps.apple.com/us/app/mlbbl/id6759076576', label: 'View on the App Store' },
   },
 
   // ─── MID RING ────────────────────────────────────────────────────────────
@@ -92,6 +111,7 @@ export const BUILDINGS: BuildingDef[] = [
     color: '#a8553c',
     triggerRadius: 7,
     panelSize: { w: 720, h: 760 },
+    colliders: [{ kind: 'box', halfX: 2.6, halfZ: 2.6 }],
   },
   {
     id: 'petronas',
@@ -106,6 +126,7 @@ export const BUILDINGS: BuildingDef[] = [
     color: '#c5cdd2',
     triggerRadius: 12,
     panelSize: { w: 900, h: 820 },
+    colliders: [{ kind: 'box', halfX: 8.2, halfZ: 4.4 }],
   },
   {
     id: 'forge',
@@ -118,6 +139,7 @@ export const BUILDINGS: BuildingDef[] = [
     color: '#b8b3a3',
     triggerRadius: 8,
     panelSize: { w: 760, h: 780 },
+    colliders: [{ kind: 'box', halfX: 4.4, halfZ: 3.4 }],
   },
   {
     id: 'lighthouse',
@@ -130,6 +152,8 @@ export const BUILDINGS: BuildingDef[] = [
     color: '#f6f1e4',
     triggerRadius: 5.5,
     panelSize: { w: 760, h: 780 },
+    colliders: [{ kind: 'ellipse', rx: 3.55, rz: 3.55 }],
+    link: { href: 'mailto:parthivfarazi@icloud.com', label: 'Email me' },
   },
 
   // ─── OUTER RING ──────────────────────────────────────────────────────────
@@ -144,6 +168,8 @@ export const BUILDINGS: BuildingDef[] = [
     color: '#94e2c0',
     triggerRadius: 8,
     panelSize: { w: 760, h: 780 },
+    colliders: [{ kind: 'ellipse', rx: 4.25, rz: 4.25 }],
+    link: { href: 'https://qard.dev', label: 'Visit qard.dev' },
   },
   {
     id: 'athletic',
@@ -156,6 +182,7 @@ export const BUILDINGS: BuildingDef[] = [
     color: '#bcb6a0',
     triggerRadius: 14,
     panelSize: { w: 880, h: 1020 },
+    colliders: [{ kind: 'ellipse', rx: 13.0, rz: 9.0 }, { kind: 'box', halfX: 3.4, halfZ: 1.0, offset: [0, 8.6] }],
   },
   {
     id: 'archive',
@@ -168,6 +195,8 @@ export const BUILDINGS: BuildingDef[] = [
     color: '#d6c5a0',
     triggerRadius: 8,
     panelSize: { w: 900, h: 780 },
+    colliders: [{ kind: 'box', halfX: 3.9, halfZ: 3.9 }],
+    link: { href: 'https://github.com/parthivFarazi/embeddingSearchLLM', label: 'View on GitHub' },
   },
   {
     id: 'zen',
@@ -180,6 +209,8 @@ export const BUILDINGS: BuildingDef[] = [
     color: '#d4c8a0',
     triggerRadius: 7,
     panelSize: { w: 760, h: 780 },
+    colliders: [{ kind: 'ellipse', rx: 0.5, rz: 0.5, offset: [3.4, -3.4] }, { kind: 'ellipse', rx: 0.4, rz: 0.4, offset: [4.4, -4.4] }, { kind: 'ellipse', rx: 0.4, rz: 0.4, offset: [-4.4, 4.4] }],
+    link: { href: 'https://drive.google.com/file/d/1winoW97BaKeOOl89tJPT9pwWFyx36475/view?usp=drive_link', label: 'Watch the demo' },
   },
   {
     id: 'heatmap',
@@ -192,6 +223,8 @@ export const BUILDINGS: BuildingDef[] = [
     color: '#e3a572',
     triggerRadius: 7,
     panelSize: { w: 820, h: 880 },
+    colliders: [{ kind: 'ellipse', rx: 0.75, rz: 0.75 }],
+    link: { href: 'https://devpost.com/software/xgenius', label: 'View on Devpost' },
   },
   {
     id: 'workshop',
@@ -204,6 +237,7 @@ export const BUILDINGS: BuildingDef[] = [
     color: '#8b5a3c',
     triggerRadius: 5.5,
     panelSize: { w: 940, h: 780 },
+    colliders: [{ kind: 'box', halfX: 1.6, halfZ: 1.6 }],
   },
   {
     // The Cartridge — oversized GBA lying on the grass. Outer ring, south
@@ -218,6 +252,8 @@ export const BUILDINGS: BuildingDef[] = [
     color: '#7E6CBC',
     triggerRadius: 4.5,
     panelSize: { w: 820, h: 920 },
+    colliders: [{ kind: 'box', halfX: 2.2, halfZ: 1.6 }],
+    link: { href: 'https://github.com/parthivFarazi/GameBoyCGame', label: 'View on GitHub' },
   },
 ];
 

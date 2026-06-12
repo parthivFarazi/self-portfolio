@@ -4,7 +4,12 @@ export const ISLAND_EDGE_MARGIN = 1.5;
 
 export const PLAYER_HEIGHT = 1.8;
 export const PLAYER_SPEED = 9.5;
-export const PLAYER_ACCEL = 30;
+// Snappy spin-up (~0.17s to full speed) with a slightly softer glide-stop —
+// responsive without feeling twitchy.
+export const PLAYER_ACCEL = 55;
+export const PLAYER_DECEL = 38;
+// How fast the avatar turns toward the input direction (rad-lerp/s).
+export const PLAYER_TURN_RATE = 16;
 export const PLAYER_RADIUS = 0.45;
 
 export const CAMERA_ZOOM = 28;
