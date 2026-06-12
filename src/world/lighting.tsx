@@ -1,4 +1,4 @@
-export function Lighting(_props: { liteWorld?: boolean }) {
+export function Lighting({ liteWorld = false }: { liteWorld?: boolean }) {
   return (
     <>
       {/* Golden-hour key light — low sun (~28° elevation), warm amber. Long
@@ -9,8 +9,11 @@ export function Lighting(_props: { liteWorld?: boolean }) {
         position={[32, 22, 20]}
         intensity={1.75}
         color="#ffa55a"
-        shadow-mapSize-width={1024}
-        shadow-mapSize-height={1024}
+        // 2048 on desktop: the shadow camera spans the whole island, and at
+        // 1024 the long golden-hour shadows render blurry. Phones keep 1024 —
+        // soft suits the art and halves the shadow-pass bandwidth.
+        shadow-mapSize-width={liteWorld ? 1024 : 2048}
+        shadow-mapSize-height={liteWorld ? 1024 : 2048}
         shadow-camera-left={-90}
         shadow-camera-right={90}
         shadow-camera-top={90}

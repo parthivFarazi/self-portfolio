@@ -8,6 +8,7 @@ import { InteractPrompt } from '@/components/ui/InteractPrompt';
 import { BuildingDialog } from '@/components/ui/BuildingDialog';
 import { TouchControls } from '@/components/ui/TouchControls';
 import { WorldLoadingScreen } from '@/components/ui/WorldLoadingScreen';
+import { FpsProbe } from '@/components/ui/FpsProbe';
 
 const INTRO_SEEN_KEY = 'rw-intro-seen-v2';
 
@@ -88,6 +89,7 @@ export default function ExploreRoute({
             </div>
           ))}
         {!worldLoading && <IntroToast />}
+        <FpsProbe />
         {worldLoading ? <WorldLoadingScreen /> : null}
       </div>
     </MotionConfig>
