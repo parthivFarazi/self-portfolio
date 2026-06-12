@@ -41,6 +41,13 @@ export function useKeyboardControls() {
     const onDown = (e: KeyboardEvent) => {
       const action = KEYS[e.code];
       if (!action) return;
+      // Don't hijack keys aimed at real UI: Enter/Space on a focused button,
+      // arrows scrolling an open panel, typing in a future input. The world
+      // only consumes input when nothing interactive is the target and no
+      // panel is open (Escape-to-close is handled separately below).
+      const target = e.target as HTMLElement | null;
+      if (target?.closest?.('button, a, input, select, textarea, [contenteditable], [role="dialog"]')) return;
+      if (useGame.getState().activeBuildingId) return;
       Audio.ensureStart();
       e.preventDefault();
       if (keys.current[action]) return;
@@ -48,7 +55,6 @@ export function useKeyboardControls() {
 
       if (action === 'interact') {
         const state = useGame.getState();
-        if (state.activeBuildingId) return;
         if (state.nearbyBuildingId) openBuilding(state.nearbyBuildingId);
       }
     };
