@@ -1,19 +1,18 @@
-import { AnimatePresence, motion } from 'framer-motion';
+import { MotionConfig, motion } from 'framer-motion';
 import { Suspense, useEffect, useRef, useState, type ReactNode } from 'react';
 import { getBuilding, type BuildingId } from '@/data/buildings';
 import { AvatarFront } from './Avatar';
 import { Thumb, type ThumbKind } from './Thumb';
 import { Audio } from '@/audio/AudioManager';
-import { ResponsivePanel } from '../ui/ResponsivePanel';
+import { useGame } from '@/state/gameStore';
+import { useDialogFocus } from '@/hooks/useDialogFocus';
+import { useOverlayScrollHint } from '@/hooks/useOverlayScrollHint';
+import { ResponsivePanel, usePanelScale } from '../ui/ResponsivePanel';
+import { PanelZoom } from '../ui/PanelZoom';
 import { getLazyPanel, preloadPanel } from '../panels/panelRegistry';
 import './quick-view.css';
 
 type DashboardGroup = 'work' | 'projects' | 'about';
-
-interface LandingPageProps {
-  onOpenQuick: () => void;
-  onOpenWorld: () => void;
-}
 
 interface QuickViewDashboardProps {
   onOpenWorld: () => void;
@@ -194,92 +193,12 @@ const STATS = [
   ['updt.pro', 'Live product', 'AI soccer analytics platform'],
 ] as const;
 
-export function LandingPage({ onOpenQuick, onOpenWorld }: LandingPageProps) {
-  return (
-    <main className="qv-landing">
-      <div className="qv-grain" aria-hidden="true" />
-      <div className="qv-sun" aria-hidden="true" />
-      <SoftCloud x={80} y={128} scale={1.1} />
-      <SoftCloud x={820} y={190} scale={0.85} />
-      <SoftCloud x={1160} y={292} scale={0.95} />
-
-      <nav className="qv-landing-nav" aria-label="Portfolio shortcuts">
-        <span className="qv-brand">
-          <Sigil />
-          <span>PF | Portfolio</span>
-        </span>
-        <a
-          className="qv-resume-link"
-          href="/resume.pdf"
-          target="_blank"
-          rel="noopener noreferrer"
-          download="parthiv-farazi-resume.pdf"
-        >
-          <span className="qv-resume-link__arrow" aria-hidden="true">↓</span>
-          <span>Resume PDF</span>
-        </a>
-      </nav>
-
-      <section className="qv-hero">
-        <div className="qv-eyebrow">A portfolio | in two speeds</div>
-        <h1>Hi, I&apos;m Parthiv.</h1>
-        <p>
-          CS at Georgia Tech. Co-founder & CTO of <strong>UPDT.</strong>, an AI soccer analytics platform.
-          Born in Bangladesh and raised in Malaysia, now Atlanta-based. I build at the intersection of sports, AI, and product.
-        </p>
-      </section>
-
-      <aside className="qv-polaroid" aria-label="Portrait of Parthiv Farazi">
-        <div className="qv-polaroid-art">
-          <img
-            className="qv-polaroid-photo"
-            src="/quick-view/self-portrait.jpg"
-            alt="Parthiv Farazi at Bobby Dodd Stadium"
-            loading="eager"
-            decoding="async"
-          />
-        </div>
-        <div className="qv-polaroid-caption">Parthiv, in person.</div>
-      </aside>
-
-      <section className="qv-choice-grid" aria-label="Choose portfolio mode">
-        <ChoiceCard
-          kicker="See everything at a glance | ~2 min"
-          title="Quick View"
-          desc="A single scannable page with stats, work, projects, story, and contact."
-          preview={<DashboardMini />}
-          cta="Open Quick View"
-          accent="gold"
-          onClick={onOpenQuick}
-        />
-        <ChoiceCard
-          kicker="Walk through the world | ~10 min"
-          title="Exploration Mode"
-          desc="Move through the island and open the same themed panels inside each building."
-          preview={<IslandMini />}
-          cta="Enter the World"
-          accent="sage"
-          onClick={onOpenWorld}
-        />
-      </section>
-
-      <div className="qv-bottom-note">
-        <span>Either way, same panels, same content, same person.</span>
-        <a
-          className="qv-built-link"
-          href="https://github.com/parthivFarazi/self-portfolio"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          How I built this →
-        </a>
-      </div>
-    </main>
-  );
-}
-
 export function QuickViewDashboard({ onOpenWorld, onBackHome }: QuickViewDashboardProps) {
-  const [openPanel, setOpenPanel] = useState<BuildingId | null>(null);
+  // Panel state lives in the shared game store so App can mirror it into
+  // the URL (/quick/updt) — shareable links, refresh-safe, Back closes it.
+  const openPanel = useGame((s) => s.activeBuildingId);
+  const setOpenPanel = useGame((s) => s.openBuilding);
+  const closePanel = useGame((s) => s.closeBuilding);
   const mainRef = useRef<HTMLElement>(null);
   // Mobile "scroll for more" hint — visible while the user is near the top
   // of a scrollable dashboard, hidden once they begin scrolling.
@@ -289,12 +208,24 @@ export function QuickViewDashboard({ onOpenWorld, onBackHome }: QuickViewDashboa
     if (!openPanel) return undefined;
     Audio.panelOpen();
     const onKeyDown = (event: KeyboardEvent) => {
-      if (event.key === 'Escape') setOpenPanel(null);
+      if (event.key === 'Escape') closePanel();
     };
     window.addEventListener('keydown', onKeyDown);
     return () => {
       window.removeEventListener('keydown', onKeyDown);
       Audio.panelClose();
+    };
+  }, [openPanel, closePanel]);
+
+  // Lock the dashboard scroll while a panel is open — touch swipes over the
+  // modal otherwise chain into the page behind it and lose the reader's spot.
+  useEffect(() => {
+    const el = mainRef.current;
+    if (!el || !openPanel) return undefined;
+    const prevOverflow = el.style.overflow;
+    el.style.overflow = 'hidden';
+    return () => {
+      el.style.overflow = prevOverflow;
     };
   }, [openPanel]);
 
@@ -315,6 +246,7 @@ export function QuickViewDashboard({ onOpenWorld, onBackHome }: QuickViewDashboa
   }, []);
 
   return (
+    <MotionConfig reducedMotion="user">
     <main className="qv-dashboard" ref={mainRef}>
       <div className="qv-dashboard-glow" aria-hidden="true" />
       <div className="qv-dashboard-shell">
@@ -324,6 +256,15 @@ export function QuickViewDashboard({ onOpenWorld, onBackHome }: QuickViewDashboa
             <span>PF | Portfolio | Quick View</span>
           </button>
           <div className="qv-nav-actions">
+            <a
+              className="qv-resume-link qv-resume-link--nav"
+              href="/resume.pdf"
+              target="_blank"
+              rel="noopener noreferrer"
+            >
+              <span className="qv-resume-link__arrow" aria-hidden="true">↓</span>
+              <span>Resume PDF</span>
+            </a>
             <button className="qv-home-button" type="button" onClick={onBackHome}>
               Home Screen
             </button>
@@ -375,17 +316,20 @@ export function QuickViewDashboard({ onOpenWorld, onBackHome }: QuickViewDashboa
         <span className="qv-scroll-hint__chev">↓</span>
       </div>
 
-      <AnimatePresence>
-        {openPanel ? (
-          <DashboardPanelOverlay
-            key={openPanel}
-            id={openPanel}
-            onClose={() => setOpenPanel(null)}
-            onHome={onBackHome}
-          />
-        ) : null}
-      </AnimatePresence>
+      {/* Deliberately NOT wrapped in AnimatePresence: exit animations left
+          the unmount at framer's mercy, and a re-render during the exit
+          could strand the overlay at opacity 0 as an invisible wall over
+          the page. Closing is instant; opening still animates. */}
+      {openPanel ? (
+        <DashboardPanelOverlay
+          key={openPanel}
+          id={openPanel}
+          onClose={closePanel}
+          onHome={onBackHome}
+        />
+      ) : null}
     </main>
+    </MotionConfig>
   );
 }
 
@@ -455,6 +399,10 @@ function DashboardTile({ tile, layout, onOpen }: { tile: DashboardTileData; layo
 function DashboardPanelOverlay({ id, onClose, onHome }: { id: BuildingId; onClose: () => void; onHome: () => void }) {
   const def = getBuilding(id);
   const Panel = getLazyPanel(id);
+  const dialogRef = useDialogFocus<HTMLDivElement>(true);
+  const fit = usePanelScale(def.panelSize.w, def.panelSize.h);
+  // Desktop-only: phones fit the whole panel, nothing scrolls.
+  const showScrollHint = useOverlayScrollHint(dialogRef, !fit.isMobile);
   const goHome = () => {
     onClose();
     onHome();
@@ -462,33 +410,76 @@ function DashboardPanelOverlay({ id, onClose, onHome }: { id: BuildingId; onClos
 
   return (
     <motion.div
+      ref={dialogRef}
       className="qv-panel-overlay"
+      role="dialog"
+      aria-modal="true"
+      aria-label={def.name}
+      tabIndex={-1}
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       exit={{ opacity: 0 }}
       transition={{ duration: 0.22 }}
+      style={{ overscrollBehavior: 'contain' }}
       onClick={onClose}
     >
-      <motion.div
-        className="qv-panel-stage"
-        initial={{ opacity: 0, scale: 0.94, y: 12 }}
-        animate={{ opacity: 1, scale: 1, y: 0 }}
-        exit={{ opacity: 0, scale: 0.96, y: 8 }}
-        transition={{ duration: 0.28, ease: [0.22, 1, 0.36, 1] }}
-        onClick={(event) => event.stopPropagation()}
-      >
-        <Suspense fallback={<QuickPanelLoading width={def.panelSize.w} height={def.panelSize.h} />}>
-          <ResponsivePanel width={def.panelSize.w} height={def.panelSize.h}>
-            <Panel width={def.panelSize.w} height={def.panelSize.h} />
-          </ResponsivePanel>
-        </Suspense>
-      </motion.div>
-      <button type="button" className="qv-panel-close" aria-label="Close panel" onClick={onClose}>
+      <div className="qv-panel-backdrop" aria-hidden="true" />
+      {fit.isMobile ? (
+        /* Phones: the postcard view — whole panel visible, pinch /
+           double-tap / magnifier to read. */
+        <div
+          className="qv-panel-zoom-area"
+          onClick={(event) => event.stopPropagation()}
+        >
+          <motion.div
+            initial={{ opacity: 0, scale: 0.96 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ duration: 0.28, ease: [0.22, 1, 0.36, 1] }}
+            style={{ width: '100%', height: '100%' }}
+          >
+            <PanelZoom fitScale={fit.scale}>
+              <Suspense fallback={<QuickPanelLoading width={def.panelSize.w} height={def.panelSize.h} />}>
+                <div className="qv-panel-stage">
+                  <ResponsivePanel width={def.panelSize.w} height={def.panelSize.h}>
+                    <Panel width={def.panelSize.w} height={def.panelSize.h} />
+                  </ResponsivePanel>
+                </div>
+              </Suspense>
+            </PanelZoom>
+          </motion.div>
+        </div>
+      ) : (
+        <div className="qv-panel-track">
+          <motion.div
+            className="qv-panel-stage"
+            initial={{ opacity: 0, scale: 0.94, y: 12 }}
+            animate={{ opacity: 1, scale: 1, y: 0 }}
+            transition={{ duration: 0.28, ease: [0.22, 1, 0.36, 1] }}
+            onClick={(event) => event.stopPropagation()}
+          >
+            <Suspense fallback={<QuickPanelLoading width={def.panelSize.w} height={def.panelSize.h} />}>
+              <ResponsivePanel width={def.panelSize.w} height={def.panelSize.h}>
+                <Panel width={def.panelSize.w} height={def.panelSize.h} />
+              </ResponsivePanel>
+            </Suspense>
+          </motion.div>
+        </div>
+      )}
+      <button type="button" className="qv-panel-close" aria-label="Close panel" data-autofocus onClick={onClose}>
         x
       </button>
-      <button type="button" className="qv-panel-home" onClick={goHome}>
-        Home Screen
-      </button>
+      {!fit.isMobile && (
+        <button type="button" className="qv-panel-home" onClick={goHome}>
+          Home Screen
+        </button>
+      )}
+      {/* Cue that the panel continues below the fold — only when it actually
+          overflows, gone after the first scroll. */}
+      {showScrollHint && (
+        <div className="qv-panel-scroll-hint" aria-hidden="true">
+          Scroll for more ↓
+        </div>
+      )}
     </motion.div>
   );
 }
@@ -549,36 +540,6 @@ function IdentityStrip() {
   );
 }
 
-function ChoiceCard({
-  kicker,
-  title,
-  desc,
-  preview,
-  cta,
-  accent,
-  onClick,
-}: {
-  kicker: string;
-  title: string;
-  desc: string;
-  preview: ReactNode;
-  cta: string;
-  accent: 'gold' | 'sage';
-  onClick: () => void;
-}) {
-  return (
-    <button className={`qv-choice qv-choice-${accent}`} type="button" onClick={onClick}>
-      <div className="qv-choice-copy">
-        <span>{kicker}</span>
-        <h2>{title}</h2>
-        <p>{desc}</p>
-        <strong>{cta} -&gt;</strong>
-      </div>
-      <div className="qv-choice-preview">{preview}</div>
-    </button>
-  );
-}
-
 function StatCard({ n, k, c, big = false }: { n: string; k: string; c: string; big?: boolean }) {
   return (
     <div className={big ? 'qv-stat qv-stat-big' : 'qv-stat'}>
@@ -619,86 +580,6 @@ function Pin({ c }: { c: string }) {
     <svg viewBox="0 0 12 14" width="10" height="12" aria-hidden="true">
       <path d="M6 0 Q1 0 1 5 Q1 10 6 14 Q11 10 11 5 Q11 0 6 0 Z" fill={c} stroke="rgba(0,0,0,.4)" strokeWidth=".5" />
       <circle cx="6" cy="5" r="1.8" fill="#fffaee" />
-    </svg>
-  );
-}
-
-function SoftCloud({ x, y, scale = 1 }: { x: number; y: number; scale?: number }) {
-  return (
-    <svg
-      viewBox="0 0 240 80"
-      width={240 * scale}
-      height={80 * scale}
-      className="qv-cloud"
-      style={{ left: x, top: y }}
-      aria-hidden="true"
-    >
-      <ellipse cx="60" cy="50" rx="50" ry="22" fill="#fffaee" />
-      <ellipse cx="120" cy="40" rx="62" ry="28" fill="#fffaee" />
-      <ellipse cx="180" cy="48" rx="48" ry="22" fill="#fffaee" />
-      <ellipse cx="90" cy="30" rx="30" ry="14" fill="#fffaee" opacity=".85" />
-    </svg>
-  );
-}
-
-function DashboardMini() {
-  return (
-    <svg viewBox="0 0 200 150" width="100%" height="100%" preserveAspectRatio="xMidYMid meet" aria-hidden="true">
-      <rect width="200" height="150" fill="#fcf2d8" />
-      <rect x="8" y="10" width="184" height="22" fill="#f9efd1" stroke="#d4c178" strokeWidth=".5" />
-      <circle cx="22" cy="21" r="6" fill="#d9a779" />
-      <rect x="34" y="16" width="60" height="3" fill="#2a1a0e" />
-      <rect x="34" y="22" width="80" height="2" fill="#7a5a30" />
-      {[0, 1, 2, 3, 4, 5].map((i) => (
-        <g key={i}>
-          <rect x={8 + i * 31} y="40" width="29" height="22" fill="#f9efd1" stroke="#d4c178" strokeWidth=".4" />
-          <rect x={11 + i * 31} y="44" width="14" height="6" fill="#b3a369" />
-          <rect x={11 + i * 31} y="52" width="20" height="2" fill="#7a5a30" />
-          <rect x={11 + i * 31} y="56" width="16" height="2" fill="#7a5a30" opacity=".6" />
-        </g>
-      ))}
-      {[0, 1, 2].map((c) => (
-        <g key={`w${c}`}>
-          <rect x={8 + c * 64} y="68" width="60" height="28" fill="#f9efd1" stroke="#d4c178" strokeWidth=".5" />
-          <rect x={10 + c * 64} y="70" width="28" height="22" fill="#e8d5a8" />
-        </g>
-      ))}
-      {[0, 1, 2, 3, 4, 5].map((c) => (
-        <g key={`p${c}`}>
-          <rect x={8 + (c % 3) * 64} y={102 + Math.floor(c / 3) * 22} width="60" height="18" fill="#f9efd1" stroke="#d4c178" strokeWidth=".4" />
-          <rect x={10 + (c % 3) * 64} y={104 + Math.floor(c / 3) * 22} width="18" height="14" fill="#e8d5a8" />
-        </g>
-      ))}
-    </svg>
-  );
-}
-
-function IslandMini() {
-  return (
-    <svg viewBox="0 0 200 150" width="100%" height="100%" preserveAspectRatio="xMidYMid meet" aria-hidden="true">
-      <defs>
-        <linearGradient id="qv-island-sky" x1="0" y1="0" x2="0" y2="1">
-          <stop offset="0%" stopColor="#ffd9a8" />
-          <stop offset="100%" stopColor="#c8dfd6" />
-        </linearGradient>
-      </defs>
-      <rect width="200" height="150" fill="url(#qv-island-sky)" />
-      <circle cx="160" cy="30" r="14" fill="#fff1c8" opacity=".75" />
-      <rect x="0" y="100" width="200" height="50" fill="#7eb86a" />
-      <rect x="0" y="100" width="200" height="3" fill="#a8d49f" />
-      <rect x="0" y="115" width="200" height="4" fill="#c8b585" />
-      <rect x="22" y="62" width="20" height="38" fill="#a8553c" />
-      <path d="M22 62 L32 50 L42 62 Z" fill="#3a4652" />
-      <rect x="58" y="50" width="14" height="50" fill="#cfd8dc" />
-      <line x1="65" y1="50" x2="65" y2="42" stroke="#1a1410" strokeWidth=".7" />
-      <ellipse cx="100" cy="98" rx="22" ry="6" fill="#3a4652" />
-      <ellipse cx="100" cy="94" rx="20" ry="5" fill="#94e2c0" />
-      <rect x="140" y="68" width="16" height="32" fill="#6fd5e0" />
-      <rect x="170" y="76" width="14" height="24" fill="#857a5a" />
-      <circle cx="98" cy="106" r="3" fill="#1a1410" />
-      <rect x="96" y="108" width="4" height="6" fill="#f6f1e4" />
-      <rect x="36" y="42" width="14" height="6" rx="2" fill="rgba(15,15,12,.85)" />
-      <path d="M40 48 L43 52 L46 48 Z" fill="rgba(15,15,12,.85)" />
     </svg>
   );
 }

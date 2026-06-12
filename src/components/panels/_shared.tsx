@@ -9,6 +9,8 @@ export interface SlotProps {
   w: number;
   h: number;
   placeholder?: string;
+  /** Alt text for the slot's internal <img>. Defaults to the placeholder text. */
+  alt?: string;
   shape?: 'rect' | 'rounded' | 'circle' | 'pill';
   radius?: number | string;
   fit?: 'cover' | 'contain' | 'fill';
@@ -17,10 +19,11 @@ export interface SlotProps {
   style?: CSSProperties;
 }
 
-export function Slot({ id, w, h, placeholder, shape = 'rect', radius, fit, position, src, style }: SlotProps) {
+export function Slot({ id, w, h, placeholder, alt, shape = 'rect', radius, fit, position, src, style }: SlotProps) {
   const props: Record<string, unknown> = {
     id,
     placeholder,
+    alt: alt ?? placeholder,
     style: { width: w, height: h, ...(style || {}) },
   };
   if (shape) props.shape = shape;

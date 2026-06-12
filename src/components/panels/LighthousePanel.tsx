@@ -44,11 +44,11 @@ export function LighthousePanel({ width = 760, height = 780 }: PanelProps) {
         </div>
 
         <div style={{ marginTop: 18, padding: '14px 16px', background: 'rgba(255,255,255,.45)', border: '1px dashed #c8b585', display: 'flex', flexDirection: 'column', gap: 8 }}>
-          <ContactLine icon="✉" label="Write to" value="parthivfarazi@icloud.com"/>
-          <ContactLine icon="☎" label="Call" value="(+1) 404 · 203 · 5379"/>
-          <ContactLine icon="◐" label="Find on the web" value="updt.pro"/>
-          <ContactLine icon="✦" label="GitHub" value="github.com/parthivFarazi"/>
-          <ContactLine icon="❖" label="LinkedIn" value="Parthiv Farazi"/>
+          <ContactLine icon="✉" label="Write to" value="parthivfarazi@icloud.com" href="mailto:parthivfarazi@icloud.com"/>
+          <ContactLine icon="☎" label="Call" value="(+1) 404 · 203 · 5379" href="tel:+14042035379"/>
+          <ContactLine icon="◐" label="Find on the web" value="updt.pro" href="https://updt.pro" external/>
+          <ContactLine icon="✦" label="GitHub" value="github.com/parthivFarazi" href="https://github.com/parthivFarazi" external/>
+          <ContactLine icon="❖" label="LinkedIn" value="Parthiv Farazi" href="https://www.linkedin.com/in/parthiv-farazi-1aba8b223/" external/>
         </div>
 
         <div style={{ position: 'absolute', inset: 0, pointerEvents: 'none', background: 'radial-gradient(ellipse at 100% 0%, rgba(120,70,20,.1), transparent 30%), radial-gradient(ellipse at 0% 100%, rgba(120,70,20,.1), transparent 30%)' }}/>
@@ -118,12 +118,28 @@ export function LighthousePanel({ width = 760, height = 780 }: PanelProps) {
   );
 }
 
-function ContactLine({ icon, label, value }: { icon: string; label: string; value: string }) {
+function ContactLine({ icon, label, value, href, external }: {
+  icon: string; label: string; value: string; href: string; external?: boolean;
+}) {
   return (
     <div style={{ display: 'grid', gridTemplateColumns: '20px 110px 1fr', alignItems: 'baseline', gap: 6 }}>
       <span style={{ font: '14px var(--rw-serif)', color: '#c44a3a' }}>{icon}</span>
       <span style={{ font: '10px "JetBrains Mono", monospace', letterSpacing: '.16em', textTransform: 'uppercase', color: '#7a5a30' }}>{label}</span>
-      <span style={{ font: '18px "Caveat", cursive', color: '#2a1a0e' }}>{value}</span>
+      <a
+        href={href}
+        {...(external ? { target: '_blank', rel: 'noopener noreferrer' } : {})}
+        style={{
+          font: '18px "Caveat", cursive', color: '#2a1a0e',
+          textDecoration: 'underline',
+          textUnderlineOffset: 3,
+          textDecorationColor: 'rgba(122,90,48,.5)',
+          // Hit area hugs the text instead of stretching across the grid cell.
+          justifySelf: 'start',
+          // Inline styles can't express :focus-visible — keep the default
+          // focus ring but tint it to the panel's seal red.
+          outlineColor: '#c44a3a',
+        }}
+      >{value}</a>
     </div>
   );
 }

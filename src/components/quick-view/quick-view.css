@@ -10,6 +10,9 @@
   min-height: 960px;
   min-height: max(100svh, 960px);
   overflow: auto;
+  /* Decorative clouds are viewport-anchored, but never let them gift the
+     page a horizontal scrollbar. */
+  overflow-x: hidden;
   background:
     linear-gradient(180deg, #ffe8c1 0%, #f7d1b6 30%, #e8c4d4 65%, #c8dfd6 100%);
 }
@@ -120,6 +123,14 @@
 .qv-resume-link:focus-visible {
   outline: 2px solid #b39440;
   outline-offset: 3px;
+}
+
+/* Compact variant for the Quick View nav row — same pill, nav-sized. */
+.qv-resume-link--nav {
+  min-height: 0;
+  padding: 0.5rem 0.9rem;
+  font-size: 0.7rem;
+  letter-spacing: 0.14em;
 }
 
 .qv-hero {
@@ -365,6 +376,7 @@
   height: 100%;
   overflow-x: hidden;
   overflow-y: auto;
+  overscroll-behavior: contain;
   background:
     radial-gradient(circle at 20% 8%, rgba(255, 250, 238, .65), transparent 60%),
     radial-gradient(circle at 80% 2%, rgba(255, 210, 170, .45), transparent 50%),
@@ -815,28 +827,61 @@
   position: fixed;
   inset: 0;
   z-index: 1000;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  /* Block scroller, NOT flex: iOS WebKit strands the leading overflow of a
+     flex scroll container's centered child in unreachable negative scroll
+     space — the panel opened clipped at its middle and wouldn't scroll. */
   overflow: auto;
-  padding: 3rem;
-  background: rgba(20, 15, 8, .62);
-  backdrop-filter: blur(6px);
+  padding: 1.5rem;
+  /* NO background/backdrop-filter here: iOS WebKit freezes touch scrolling
+     on elements that have a backdrop-filter — the dim+blur lives on the
+     non-scrolling .qv-panel-backdrop child instead. */
 }
 
+.qv-panel-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  background: rgba(20, 15, 8, .62);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+  pointer-events: none;
+}
+
+/* Phone zoom area — fills the space between close button and action bar;
+   PanelZoom (pinch / double-tap / magnifier) lives inside. */
+.qv-panel-zoom-area {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: calc(env(safe-area-inset-top, 0px) + 10px);
+  bottom: calc(env(safe-area-inset-bottom, 0px) + 10px);
+}
+
+/* Full-size flex track inside the block scroller — same structure as the
+   Explore dialog. Sizes to its content so wide panels can pan. */
+.qv-panel-track {
+  display: flex;
+  min-height: 100%;
+  width: 100%;
+  min-width: fit-content;
+}
+
+/* margin:auto centers like align/justify-center but keeps both edges
+   reachable when the panel overflows the viewport (scale-floored phones). */
 .qv-panel-stage {
   position: relative;
   flex: none;
+  margin: auto;
   box-shadow: 0 30px 80px rgba(0, 0, 0, .55);
 }
 
 .qv-panel-close {
   position: fixed;
-  right: 1.5rem;
-  top: 1.5rem;
+  right: calc(env(safe-area-inset-right, 0px) + 1rem);
+  top: calc(env(safe-area-inset-top, 0px) + 1rem);
   display: grid;
-  width: 2.5rem;
-  height: 2.5rem;
+  width: 2.75rem; /* 44px tap target */
+  height: 2.75rem;
   place-items: center;
   cursor: pointer;
   border: 1px solid rgba(255, 255, 255, .22);
@@ -845,6 +890,11 @@
   color: rgba(255, 255, 255, .92);
   font: 700 1rem var(--rw-mono);
   backdrop-filter: blur(8px);
+}
+
+.qv-panel-close:focus-visible {
+  outline: 2px solid #f5d97a;
+  outline-offset: 2px;
 }
 
 .qv-panel-home {
@@ -861,9 +911,13 @@
   box-shadow: 0 2px 0 #d4c178, 0 10px 24px rgba(0, 0, 0, .24);
 }
 
-.qv-panel-home:hover,
+.qv-panel-home:hover {
+  transform: translateY(-1px);
+}
+
 .qv-panel-home:focus-visible {
-  outline: 0;
+  outline: 2px solid #f5d97a;
+  outline-offset: 2px;
   transform: translateY(-1px);
 }
 
@@ -1210,8 +1264,24 @@
     font-size: .95rem;
   }
 
+  /* Reflow the portrait into the document flow on phones: a small centered
+     polaroid between the hero and the choice grid, keeping the rotated
+     frame look from desktop. */
   .qv-polaroid {
-    display: none;
+    position: static;
+    width: 9rem;
+    height: auto;
+    margin: 1.5rem auto 0;
+    padding: .6rem;
+  }
+
+  .qv-polaroid-art {
+    height: 9.75rem;
+  }
+
+  .qv-polaroid-caption {
+    margin-top: .45rem;
+    font-size: .9rem;
   }
 
   .qv-choice-grid {
@@ -1239,7 +1309,7 @@
   }
 
   .qv-choice-copy span {
-    font-size: .6rem;
+    font-size: .6875rem;
     letter-spacing: .14em;
   }
 
@@ -1254,7 +1324,7 @@
   .qv-choice-copy strong {
     margin-top: .5rem;
     padding: .4rem .7rem;
-    font-size: .65rem;
+    font-size: .6875rem;
   }
 
   .qv-bottom-note {
@@ -1308,7 +1378,7 @@
 
   .qv-home-button {
     padding: .55rem .75rem;
-    font-size: .64rem;
+    font-size: .6875rem;
     white-space: nowrap;
   }
 
@@ -1347,7 +1417,7 @@
   .qv-locations {
     justify-content: center;
     gap: .45rem;
-    font-size: .62rem;
+    font-size: .6875rem;
     letter-spacing: .1em;
   }
 
@@ -1389,6 +1459,7 @@
   }
 
   .qv-stat-context {
+    font-size: .6875rem;
     overflow-wrap: anywhere;
     word-break: break-word;
   }
@@ -1408,7 +1479,7 @@
 
   .qv-section-header span,
   .qv-section-header strong {
-    font-size: .62rem;
+    font-size: .6875rem;
     letter-spacing: .14em;
   }
 
@@ -1462,7 +1533,7 @@
   }
 
   .qv-tile-tag {
-    font-size: .55rem;
+    font-size: .6875rem;
     letter-spacing: .1em;
   }
 
@@ -1479,15 +1550,15 @@
   }
 
   .qv-tile-role {
-    font-size: .68rem;
+    font-size: .6875rem;
   }
 
   .qv-tile-sub {
-    font-size: .62rem;
+    font-size: .6875rem;
   }
 
   .qv-tile-affordance {
-    font-size: .58rem;
+    font-size: .6875rem;
     letter-spacing: .1em;
   }
 
@@ -1497,7 +1568,7 @@
 
   .qv-footer {
     flex-direction: column;
-    font-size: .62rem;
+    font-size: .6875rem;
     letter-spacing: .12em;
   }
 
@@ -1583,7 +1654,7 @@
   }
 
   .qv-stat-context {
-    font-size: .6rem;
+    font-size: .6875rem;
     letter-spacing: .1em;
   }
 
@@ -1624,6 +1695,26 @@
   }
 }
 
+/* ── Touch tap targets ────────────────────────────────────────────────
+   On phones / coarse pointers the identity quick links and the resume
+   pill must clear the 44px minimum hit size. Grow the hit area with min
+   sizes and padding only — type stays the same. */
+@media (max-width: 900px), (pointer: coarse) {
+  .qv-link-button {
+    width: auto;
+    height: auto;
+    min-width: 44px;
+    min-height: 44px;
+    padding: .4rem;
+  }
+
+  .qv-resume-link {
+    min-height: 44px;
+    min-width: 44px;
+    padding: .65rem 1.15rem;
+  }
+}
+
 /* ── Mobile scroll hint ───────────────────────────────────────────────
    On phones the dashboard is a long scroll with no cue that more content
    sits below the fold. This floating pill bounces gently at the bottom of
@@ -1649,7 +1740,7 @@
     border: 1px solid rgba(245, 217, 122, .35);
     background: rgba(42, 26, 14, .82);
     color: #fbf3da;
-    font: 700 .64rem var(--rw-term);
+    font: 700 .6875rem var(--rw-term);
     letter-spacing: .2em;
     text-transform: uppercase;
     box-shadow: 0 6px 22px rgba(0, 0, 0, .32);
@@ -1742,5 +1833,30 @@
   .qv-landing::-webkit-scrollbar-thumb,
   .qv-panel-overlay::-webkit-scrollbar-thumb {
     border-width: 2px;
+  }
+}
+
+/* "Scroll for more" cue inside the panel overlay — shown only while the
+   panel overflows the viewport and the user hasn't scrolled yet. */
+.qv-panel-scroll-hint {
+  position: fixed;
+  left: 50%;
+  bottom: 18px;
+  z-index: 4;
+  transform: translateX(-50%);
+  padding: .4rem 1rem;
+  border-radius: 999px;
+  background: rgba(255, 248, 226, .92);
+  color: #2a1a0e;
+  font: 600 .7rem var(--rw-mono);
+  letter-spacing: .16em;
+  text-transform: uppercase;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, .35);
+  pointer-events: none;
+}
+
+@media (max-width: 768px), (pointer: coarse) {
+  .qv-panel-scroll-hint {
+    bottom: calc(env(safe-area-inset-bottom, 0px) + 84px);
   }
 }
