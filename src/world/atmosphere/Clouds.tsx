@@ -13,8 +13,13 @@ import {
 // All clouds share one InstancedMesh; per-frame we update X position so they
 // drift slowly westward and loop.
 
+// Honor OS-level reduced-motion — read once; it parks the drift entirely.
+const REDUCED_MOTION =
+  typeof window !== 'undefined' &&
+  window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
 const CLOUD_COUNT = 6;
-const DRIFT_SPEED = 0.05;     // units per second
+const DRIFT_SPEED = REDUCED_MOTION ? 0 : 0.05;     // units per second
 const SKY_X_MIN = -180;
 const SKY_X_MAX = 180;
 const SKY_HEIGHT = 95;        // y altitude

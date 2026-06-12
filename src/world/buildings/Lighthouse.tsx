@@ -12,7 +12,7 @@ import {
   woodDark,
 } from '../materials';
 
-export function Lighthouse({ def }: { def: BuildingDef }) {
+export function Lighthouse({ def, liteWorld = false }: { def: BuildingDef; liteWorld?: boolean }) {
   const [px, , pz] = def.position;
   const H = 14;
   const R = 2;
@@ -61,8 +61,11 @@ export function Lighthouse({ def }: { def: BuildingDef }) {
       </mesh>
       {/* Reduced from intensity=4/distance=28 — that single light dominated
           the per-fragment shader cost across half the island. Emissive lamp
-          + bloom still reads as the focal beacon. */}
-      <pointLight position={[0, 0.6 + H + 1.2, 0]} intensity={1.4} distance={14} decay={2} color="#f5d97a" />
+          + bloom still reads as the focal beacon. Skipped entirely on
+          liteWorld (lights mounting on LOD swaps force shader recompiles). */}
+      {liteWorld ? null : (
+        <pointLight position={[0, 0.6 + H + 1.2, 0]} intensity={1.4} distance={14} decay={2} color="#f5d97a" />
+      )}
 
       {/* Sweeping beam — flat cone from the lantern */}
       <group ref={beam} position={[0, 0.6 + H + 1.2, 0]}>

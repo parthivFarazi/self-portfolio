@@ -1,11 +1,11 @@
-export function Lighting({ liteWorld = false }: { liteWorld?: boolean }) {
+export function Lighting(_props: { liteWorld?: boolean }) {
   return (
     <>
       {/* Golden-hour key light — low sun (~28° elevation), warm amber. Long
           warm-tinted shadows fall toward camera. Higher intensity than before
           because we lowered ambient/hemi to restore contrast. */}
       <directionalLight
-        castShadow={!liteWorld}
+        castShadow
         position={[32, 22, 20]}
         intensity={1.75}
         color="#ffa55a"

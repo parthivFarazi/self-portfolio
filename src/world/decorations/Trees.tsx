@@ -10,11 +10,16 @@ import {
 } from 'three';
 import type { TreePlacement } from './placements';
 
+// Honor OS-level reduced-motion — read once; it zeroes the sway amplitude.
+const REDUCED_MOTION =
+  typeof window !== 'undefined' &&
+  window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
 // Per-instance wind sway: gentle rotation of canopies. Each tree carries a
 // stable phase from its seed, so the forest doesn't pulse in unison.
 const SWAY_FREQ = 0.3;            // Hz
 const SWAY_AMPLITUDE_DEG = 2;     // ±2 degrees
-const SWAY_RAD = (SWAY_AMPLITUDE_DEG * Math.PI) / 180;
+const SWAY_RAD = REDUCED_MOTION ? 0 : (SWAY_AMPLITUDE_DEG * Math.PI) / 180;
 
 export function Trees({ trees }: { trees: TreePlacement[] }) {
   // Split by kind so pines and oaks use different geometries.

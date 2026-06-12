@@ -45,7 +45,7 @@ function FloatingCard({
   );
 }
 
-export function Qard({ def }: { def: BuildingDef }) {
+export function Qard({ def, liteWorld = false }: { def: BuildingDef; liteWorld?: boolean }) {
   const [px, , pz] = def.position;
   const R = 4;
   const baseH = 1.2;
@@ -89,8 +89,11 @@ export function Qard({ def }: { def: BuildingDef }) {
       <FloatingCard offset={2.4} color="#d4c178" hue={Math.PI} />
       <FloatingCard offset={3.6} color="#94e2c0" hue={Math.PI * 1.5} />
 
-      {/* Soft interior glow */}
-      <pointLight position={[0, 2.5, 0]} intensity={1.6} distance={9} decay={2} color="#cdf3e2" />
+      {/* Soft interior glow — skipped on liteWorld (lights mounting on LOD
+          swaps force shader recompiles; the emissive dome carries the look) */}
+      {liteWorld ? null : (
+        <pointLight position={[0, 2.5, 0]} intensity={1.6} distance={9} decay={2} color="#cdf3e2" />
+      )}
 
       {/* "qard.dev" plaque at the entrance */}
       <group position={[0, 0.8, R + 0.3]}>

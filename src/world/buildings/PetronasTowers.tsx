@@ -85,7 +85,7 @@ function Tower({ x }: { x: number }) {
   );
 }
 
-export function PetronasTowers({ def }: { def: BuildingDef }) {
+export function PetronasTowers({ def, liteWorld = false }: { def: BuildingDef; liteWorld?: boolean }) {
   const [px, , pz] = def.position;
   const spacing = 8; // distance between tower centers
 
@@ -165,10 +165,15 @@ export function PetronasTowers({ def }: { def: BuildingDef }) {
         </mesh>
       </group>
 
-      {/* Warm amber base lighting */}
-      <pointLight position={[0, 1.5, 0]} intensity={2.2} distance={14} decay={2} color="#f5d97a" />
-      <pointLight position={[-4, 1.2, 4]} intensity={1.0} distance={9} decay={2} color="#f5d97a" />
-      <pointLight position={[4, 1.2, 4]} intensity={1.0} distance={9} decay={2} color="#f5d97a" />
+      {/* Warm amber base lighting — skipped on liteWorld (lights mounting on
+          LOD swaps force shader recompiles; emissive trim carries the glow) */}
+      {liteWorld ? null : (
+        <>
+          <pointLight position={[0, 1.5, 0]} intensity={2.2} distance={14} decay={2} color="#f5d97a" />
+          <pointLight position={[-4, 1.2, 4]} intensity={1.0} distance={9} decay={2} color="#f5d97a" />
+          <pointLight position={[4, 1.2, 4]} intensity={1.0} distance={9} decay={2} color="#f5d97a" />
+        </>
+      )}
 
       {/* Floating label */}
       <Billboard position={[0, 36, 0]}>

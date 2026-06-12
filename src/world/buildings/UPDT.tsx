@@ -111,7 +111,7 @@ function makePitchTexture() {
   return tex;
 }
 
-function Floodlight({ pos }: { pos: [number, number, number] }) {
+function Floodlight({ pos, liteWorld = false }: { pos: [number, number, number]; liteWorld?: boolean }) {
   return (
     <group position={pos}>
       <mesh castShadow position={[0, 5, 0]} material={metalSilverDark}>
@@ -120,12 +120,14 @@ function Floodlight({ pos }: { pos: [number, number, number] }) {
       <mesh position={[0, 10.4, 0]} material={lampAmber}>
         <boxGeometry args={[1.2, 0.4, 0.6]} />
       </mesh>
-      <pointLight position={[0, 10.4, 0]} intensity={0.9} distance={26} decay={2} color="#fff5d9" />
+      {liteWorld ? null : (
+        <pointLight position={[0, 10.4, 0]} intensity={0.9} distance={26} decay={2} color="#fff5d9" />
+      )}
     </group>
   );
 }
 
-export function UPDT({ def }: { def: BuildingDef }) {
+export function UPDT({ def, liteWorld = false }: { def: BuildingDef; liteWorld?: boolean }) {
   const [px, , pz] = def.position;
   const pitchTex = useMemo(makePitchTexture, []);
 
@@ -211,14 +213,18 @@ export function UPDT({ def }: { def: BuildingDef }) {
         />
       </mesh>
 
-      {/* Stadium lights (internal warm glow visible through translucent walls) */}
-      <pointLight position={[0, 4, 0]} intensity={2.6} distance={30} decay={2} color="#fff1d6" />
+      {/* Stadium lights (internal warm glow visible through translucent walls).
+          Skipped on liteWorld — point lights mounting on LOD swaps force
+          shader recompiles mid-walk, and the emissive walls carry the glow. */}
+      {liteWorld ? null : (
+        <pointLight position={[0, 4, 0]} intensity={2.6} distance={30} decay={2} color="#fff1d6" />
+      )}
 
       {/* Four floodlights at corner points of the oval */}
-      <Floodlight pos={[-rx * 0.85, 0, -rz * 0.7]} />
-      <Floodlight pos={[rx * 0.85, 0, -rz * 0.7]} />
-      <Floodlight pos={[-rx * 0.85, 0, rz * 0.7]} />
-      <Floodlight pos={[rx * 0.85, 0, rz * 0.7]} />
+      <Floodlight pos={[-rx * 0.85, 0, -rz * 0.7]} liteWorld={liteWorld} />
+      <Floodlight pos={[rx * 0.85, 0, -rz * 0.7]} liteWorld={liteWorld} />
+      <Floodlight pos={[-rx * 0.85, 0, rz * 0.7]} liteWorld={liteWorld} />
+      <Floodlight pos={[rx * 0.85, 0, rz * 0.7]} liteWorld={liteWorld} />
 
       {/* Entrance arch on the south side (toward spawn) */}
       <mesh castShadow position={[0, 2.5, rz + 0.4]} material={stoneFoundation}>
@@ -262,8 +268,12 @@ export function UPDT({ def }: { def: BuildingDef }) {
       ))}
 
       {/* Hologram glow over pitch — magenta/cyan ground spotlights */}
-      <pointLight position={[-4, 1.5, 0]} intensity={1.8} distance={10} decay={2} color="#6fd5e0" />
-      <pointLight position={[4, 1.5, 0]} intensity={1.6} distance={10} decay={2} color="#e07ec3" />
+      {liteWorld ? null : (
+        <>
+          <pointLight position={[-4, 1.5, 0]} intensity={1.8} distance={10} decay={2} color="#6fd5e0" />
+          <pointLight position={[4, 1.5, 0]} intensity={1.6} distance={10} decay={2} color="#e07ec3" />
+        </>
+      )}
 
       <Billboard position={[0, wallH + 5, 0]}>
         <Text fontSize={1.2} color="#2a2520" outlineWidth={0.06} outlineColor="#fffaee" anchorX="center" anchorY="middle">

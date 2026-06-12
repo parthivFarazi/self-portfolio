@@ -86,7 +86,7 @@ function pixelHeart(ctx: CanvasRenderingContext2D, x: number, y: number) {
   ctx.fillRect(x + 3, y + 4, 2, 1);
 }
 
-export function Cartridge({ def }: { def: BuildingDef }) {
+export function Cartridge({ def, liteWorld = false }: { def: BuildingDef; liteWorld?: boolean }) {
   const [px, , pz] = def.position;
   // Slight tilt so it reads as "placed"
   const tilt = (10 * Math.PI) / 180;
@@ -153,8 +153,12 @@ export function Cartridge({ def }: { def: BuildingDef }) {
           toneMapped={false}
         />
       </mesh>
-      {/* Soft glow halo above the screen — so it reads "powered on" at distance */}
-      <pointLight position={[0, H + 0.5, 0]} intensity={0.6} distance={3.6} decay={2} color="#94e2c0" />
+      {/* Soft glow halo above the screen — so it reads "powered on" at
+          distance. Skipped on liteWorld (lights mounting on LOD swaps force
+          shader recompiles; the emissive screen still reads powered-on). */}
+      {liteWorld ? null : (
+        <pointLight position={[0, H + 0.5, 0]} intensity={0.6} distance={3.6} decay={2} color="#94e2c0" />
+      )}
 
       {/* D-PAD — small dark cross on the left of the body top */}
       <group position={[-W / 2 + 0.55, H + 0.03, 0]}>

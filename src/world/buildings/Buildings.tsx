@@ -7,7 +7,7 @@ import { useGame } from '@/state/gameStore';
 const LOD_NEAR = 78;
 const LOD_FAR = 86;
 
-type BuildingComponent = ComponentType<{ def: BuildingDef }>;
+type BuildingComponent = ComponentType<{ def: BuildingDef; liteWorld?: boolean }>;
 type BuildingLoader = () => Promise<BuildingComponent>;
 
 const REGISTRY: Partial<Record<BuildingDef['id'], BuildingLoader>> = {
@@ -29,12 +29,12 @@ const REGISTRY: Partial<Record<BuildingDef['id'], BuildingLoader>> = {
 
 const componentCache = new Map<BuildingDef['id'], BuildingComponent>();
 
-export function Buildings() {
+export function Buildings({ liteWorld = false }: { liteWorld?: boolean }) {
   return (
     <>
       {BUILDINGS.map((b) => {
         const loadComponent = REGISTRY[b.id];
-        return <LodBuilding key={b.id} def={b} loadComponent={loadComponent} />;
+        return <LodBuilding key={b.id} def={b} loadComponent={loadComponent} liteWorld={liteWorld} />;
       })}
     </>
   );
@@ -43,9 +43,11 @@ export function Buildings() {
 function LodBuilding({
   def,
   loadComponent,
+  liteWorld = false,
 }: {
   def: BuildingDef;
   loadComponent?: BuildingLoader;
+  liteWorld?: boolean;
 }) {
   const [useProxy, setUseProxy] = useState(true);
   const [Custom, setCustom] = useState<BuildingComponent | null>(() => componentCache.get(def.id) ?? null);
@@ -82,5 +84,5 @@ function LodBuilding({
   }, [Custom, def.id, loadComponent, useProxy]);
 
   if (useProxy || !Custom) return <Placeholder def={def} />;
-  return <Custom def={def} />;
+  return <Custom def={def} liteWorld={liteWorld} />;
 }

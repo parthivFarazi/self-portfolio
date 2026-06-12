@@ -22,11 +22,15 @@ import { BlendFunction, KernelSize, ToneMappingMode } from 'postprocessing';
 //   • ToneMapping (ACES) — owned by the composer so we don't double-tone-map
 //     with the renderer.
 //
-// Bypassed on liteWorld (mobile / low-end) — the warmed lighting carries
-// most of the look without paying the post-process GPU cost.
-export function PostFX() {
+// Phones run the same look in a `lite` trim: the bloom and saturation are
+// what make the world feel vibrant, and they're cheap at the capped mobile
+// DPR — only the multisampling and bloom kernel step down.
+export function PostFX({ lite = false }: { lite?: boolean }) {
   return (
-    <EffectComposer>
+    // Desktop: 4x multisampling (default is 8) — the composer owns AA now
+    // that the canvas context is created without it. Mobile: 2x — plenty
+    // for the chunky low-poly style at 1.5 DPR, half the bandwidth.
+    <EffectComposer multisampling={lite ? 2 : 4}>
       {/* Subtle saturation lift — pulls the lawn from muted olive into a
           lush green without pushing the warm tones into cartoon orange. */}
       <HueSaturation hue={0} saturation={0.18} />
@@ -35,15 +39,20 @@ export function PostFX() {
         luminanceThreshold={0.5}
         luminanceSmoothing={0.4}
         mipmapBlur
-        kernelSize={KernelSize.LARGE}
+        kernelSize={lite ? KernelSize.MEDIUM : KernelSize.LARGE}
       />
+      {/* Narrow portrait frames sit much closer to the vignette's corners —
+          ease it off on the lite tier so phones keep the desktop's daylight. */}
       <Vignette
         blendFunction={BlendFunction.NORMAL}
         eskil={false}
-        offset={0.28}
-        darkness={0.58}
+        offset={lite ? 0.34 : 0.28}
+        darkness={lite ? 0.36 : 0.58}
       />
       <ToneMapping mode={ToneMappingMode.ACES_FILMIC} />
     </EffectComposer>
   );
 }
+
+// Default export so Scene can React.lazy() this module.
+export default PostFX;

@@ -12,10 +12,21 @@ import {
 import { useGame } from '@/state/gameStore';
 import { BUILDINGS, getVisualTopY, footprintHalfExtents, type BuildingDef } from '@/data/buildings';
 
+// Honor OS-level reduced-motion — read once; it zeroes the breathing below.
+const REDUCED_MOTION =
+  typeof window !== 'undefined' &&
+  window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
 // Phase 4 polish — gentle "handheld" breathing on the camera target Y, and a
 // soft zoom-in when the player approaches any building edge.
 const BREATH_FREQ = 0.1;            // Hz
-const BREATH_AMPLITUDE = 0.05;      // ±0.05 units
+const BREATH_AMPLITUDE = REDUCED_MOTION ? 0 : 0.05;  // ±0.05 units
+// Look-ahead: the frame drifts a touch toward where you're walking, so the
+// player sees more of where they're going than where they've been. Zeroed
+// under reduced-motion.
+const LOOKAHEAD_PER_SPEED = 0.16;   // u of lead per u/s of velocity
+const LOOKAHEAD_MAX = 1.6;          // cap (u)
+const LOOKAHEAD_LERP = 2.6;         // smoothing rate (per second)
 const APPROACH_DISTANCE = 5;        // u from building edge
 const APPROACH_ZOOM_MULT = 1.10;    // ~10% closer
 const MOBILE_APPROACH_ZOOM_MULT = 1.04;
@@ -49,7 +60,10 @@ const BIAS_LERP = 3.5;       // how quickly the bias eases (per second)
 function responsiveZoomMultiplier(width: number, height: number): number {
   if (width >= 768) return 1;
   const aspect = width / Math.max(height, 1);
-  return MathUtils.clamp(0.58 + aspect * 0.35, 0.72, 0.9);
+  // Portrait phones pull back ~20% further than before so neighbouring
+  // buildings actually enter the frame from spawn — the desktop's sense of
+  // "a place with landmarks" instead of an empty lawn.
+  return MathUtils.clamp(0.42 + aspect * 0.45, 0.58, 0.9);
 }
 
 export function IsometricCamera() {
@@ -59,6 +73,8 @@ export function IsometricCamera() {
   const desired = useRef(new Vector3());
   const biasY = useRef(0);
   const zoomCurrent = useRef(CAMERA_ZOOM * responsiveZoomMultiplier(size.width, size.height));
+  const prevPos = useRef<[number, number] | null>(null);
+  const lookAhead = useRef({ x: 0, z: 0 });
 
   useFrame((state, delta) => {
     if (!camRef.current) return;
@@ -110,7 +126,22 @@ export function IsometricCamera() {
     const breath = Math.sin(state.clock.getElapsedTime() * BREATH_FREQ * 2 * Math.PI)
       * BREATH_AMPLITUDE;
 
-    target.current.set(px, py + 1 + biasY.current + breath, pz);
+    // Velocity-based look-ahead, estimated from the published position.
+    if (prevPos.current && delta > 0) {
+      const vx = (px - prevPos.current[0]) / delta;
+      const vz = (pz - prevPos.current[1]) / delta;
+      const wantX = REDUCED_MOTION ? 0 : MathUtils.clamp(vx * LOOKAHEAD_PER_SPEED, -LOOKAHEAD_MAX, LOOKAHEAD_MAX);
+      const wantZ = REDUCED_MOTION ? 0 : MathUtils.clamp(vz * LOOKAHEAD_PER_SPEED, -LOOKAHEAD_MAX, LOOKAHEAD_MAX);
+      lookAhead.current.x = MathUtils.damp(lookAhead.current.x, wantX, LOOKAHEAD_LERP, delta);
+      lookAhead.current.z = MathUtils.damp(lookAhead.current.z, wantZ, LOOKAHEAD_LERP, delta);
+    }
+    prevPos.current = [px, pz];
+
+    target.current.set(
+      px + lookAhead.current.x,
+      py + 1 + biasY.current + breath,
+      pz + lookAhead.current.z,
+    );
     desired.current.copy(target.current).add(OFFSET);
 
     const t = Math.min(1, delta * CAMERA_LERP);

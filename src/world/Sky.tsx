@@ -1,6 +1,6 @@
 import { useEffect, useMemo } from 'react';
 import { useThree } from '@react-three/fiber';
-import { CanvasTexture, BackSide, LinearFilter, SRGBColorSpace } from 'three';
+import { CanvasTexture, LinearFilter, SRGBColorSpace } from 'three';
 import { COLORS } from '@/constants/world';
 
 function makeGradient(): CanvasTexture {
@@ -39,10 +39,8 @@ export function Sky() {
     };
   }, [scene, tex]);
 
-  return (
-    <mesh frustumCulled={false} renderOrder={-1000}>
-      <sphereGeometry args={[500, 32, 32]} />
-      <meshBasicMaterial map={tex} side={BackSide} depthWrite={false} depthTest={false} fog={false} toneMapped={false} />
-    </mesh>
-  );
+  // scene.background alone carries the sky — the fixed orthographic camera
+  // never sees parallax, so the old 500u BackSide sphere was just a full
+  // screen of overdraw every frame on top of the same gradient.
+  return null;
 }

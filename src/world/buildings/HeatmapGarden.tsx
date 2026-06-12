@@ -19,7 +19,7 @@ function heatEmissive(t: number): number {
   return t > 0.55 ? 0.4 + (t - 0.55) * 1.4 : 0.1;
 }
 
-export function HeatmapGarden({ def }: { def: BuildingDef }) {
+export function HeatmapGarden({ def, liteWorld = false }: { def: BuildingDef; liteWorld?: boolean }) {
   const [px, , pz] = def.position;
   const R = 5;
 
@@ -62,7 +62,11 @@ export function HeatmapGarden({ def }: { def: BuildingDef }) {
         <circleGeometry args={[1.8, 32]} />
         <meshStandardMaterial color="#c44a3a" emissive="#e8261e" emissiveIntensity={0.5} roughness={0.7} transparent opacity={0.5} />
       </mesh>
-      <pointLight position={[2.0, 0.6, -0.5]} intensity={1.4} distance={4.5} decay={2} color="#ff7a3a" />
+      {/* Skipped on liteWorld — lights mounting on LOD swaps force shader
+          recompiles; the emissive hot-zone disc + blooms carry the warmth. */}
+      {liteWorld ? null : (
+        <pointLight position={[2.0, 0.6, -0.5]} intensity={1.4} distance={4.5} decay={2} color="#ff7a3a" />
+      )}
 
       {/* Heatmap flowers — slightly bigger blooms with stronger emissive on hot */}
       {flowers.map((f, i) => {

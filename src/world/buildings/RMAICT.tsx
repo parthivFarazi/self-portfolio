@@ -80,7 +80,7 @@ function makeFloorBandTexture() {
   return tex;
 }
 
-export function RMAICT({ def }: { def: BuildingDef }) {
+export function RMAICT({ def, liteWorld = false }: { def: BuildingDef; liteWorld?: boolean }) {
   const [px, , pz] = def.position;
   const songketTex = useMemo(makeSongketTexture, []);
   const glassTex = useMemo(makeFloorBandTexture, []);
@@ -156,7 +156,11 @@ export function RMAICT({ def }: { def: BuildingDef }) {
       <mesh position={[1.2, 0.4 + 1.6, D / 2 + 0.08]} material={lampAmber}>
         <boxGeometry args={[0.22, 0.5, 0.18]} />
       </mesh>
-      <pointLight position={[0, 1.4, D / 2 + 0.4]} intensity={0.7} distance={6} decay={2} color="#f5b15a" />
+      {/* Skipped on liteWorld — lights mounting on LOD swaps force shader
+          recompiles; the lampAmber lanterns already glow via emissive. */}
+      {liteWorld ? null : (
+        <pointLight position={[0, 1.4, D / 2 + 0.4]} intensity={0.7} distance={6} decay={2} color="#f5b15a" />
+      )}
       {/* Entrance step */}
       <mesh receiveShadow position={[0, 0.2, D / 2 + 0.6]} material={stoneWarm}>
         <boxGeometry args={[2.2, 0.3, 0.8]} />

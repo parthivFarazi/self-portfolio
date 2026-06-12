@@ -186,11 +186,13 @@ function buildDetailedGrassMaterial(grass: CanvasTexture): MeshStandardMaterial 
 
 function buildLiteGrassMaterial(grass: CanvasTexture): MeshStandardMaterial {
   // iPhone Safari was intermittently dropping the custom grass shader. The
-  // lite-world path keeps the same texture and lighting without shader patching.
+  // lite-world path keeps the same texture and lighting without shader
+  // patching. NO color tint here: material.color MULTIPLIES with the map,
+  // and tinting the green texture green-squared was why phones rendered a
+  // dark, oversaturated lawn while desktop got daylight.
   const mat = new MeshStandardMaterial({
     map: grass,
-    color: '#5fbf42',
-    roughness: 0.98,
+    roughness: 0.95,
   });
   mat.needsUpdate = true;
   return mat;

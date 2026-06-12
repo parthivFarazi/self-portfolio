@@ -1,5 +1,6 @@
-import { Canvas, useThree } from '@react-three/fiber';
-import { useEffect, useMemo, useState } from 'react';
+import { Canvas, useFrame, useThree } from '@react-three/fiber';
+import { PerformanceMonitor } from '@react-three/drei';
+import { lazy, Suspense, useEffect, useMemo, useRef, useState } from 'react';
 import * as THREE from 'three';
 import { Sky } from './Sky';
 import { Island } from './Island';
@@ -10,10 +11,13 @@ import { Atmosphere } from './atmosphere/Atmosphere';
 import { Player } from './Player';
 import { IsometricCamera } from './IsometricCamera';
 import { Lighting } from './lighting';
-import { PostFX } from './PostFX';
+import { useGame } from '@/state/gameStore';
+
+// Lazy — keeps the postprocessing stack out of the main explore chunk so
+// the world renders its first frame before the composer code arrives.
+const PostFX = lazy(() => import('./PostFX'));
 
 export function Scene({ onReady }: { onReady?: () => void }) {
-  const dpr = useClampedDevicePixelRatio();
   const liteWorld = useMemo(() => {
     // ?lite=1 / ?lite=0 lets you force lite-world on/off for testing
     // the post-processing path at small viewports. Otherwise auto-detect.
@@ -22,24 +26,29 @@ export function Scene({ onReady }: { onReady?: () => void }) {
     if (qs.get('lite') === '0') return false;
     return window.matchMedia('(pointer: coarse), (max-width: 767px)').matches;
   }, []);
+  // liteWorld caps at 1.5 — 3x-density phone screens don't need to push
+  // 9x the fragments for a stylized low-poly scene. If a weaker device
+  // still can't hold the frame rate, the PerformanceMonitor below ratchets
+  // this down further (1.5 → 1.25 → 1) instead of changing the look.
+  const [adaptiveCap, setAdaptiveCap] = useState(() => (liteWorld ? 1.5 : 2));
+  const dpr = useClampedDevicePixelRatio(adaptiveCap);
 
   return (
     <Canvas
-      shadows={!liteWorld}
+      shadows
       dpr={dpr}
       gl={{
-        antialias: !liteWorld,
+        // All rendering goes through the EffectComposer's offscreen target
+        // (desktop AND mobile), so the canvas's own MSAA buffer is never
+        // seen — the composer's multisampling does the AA.
+        antialias: false,
         powerPreference: 'high-performance',
-        // On desktop, the EffectComposer's <ToneMapping> owns ACES so we keep
-        // the renderer linear (no double tone-map). On liteWorld we skip the
-        // composer entirely, so the renderer must tone-map itself.
-        // On desktop, the EffectComposer's <ToneMapping> owns ACES so we keep
-        // the renderer linear (no double tone-map). On liteWorld we skip the
-        // composer entirely, so the renderer must tone-map itself.
-        toneMapping: liteWorld ? THREE.ACESFilmicToneMapping : THREE.NoToneMapping,
-        // Bumped to 1.2 — even with NoToneMapping the composer's ToneMapping
-        // effect reads the renderer's exposure value via the standard
-        // three.js shader chunk, so this still warms/lifts the desktop pass.
+        // The composer's <ToneMapping> owns ACES on every tier — keep the
+        // renderer linear so we don't double-tone-map.
+        toneMapping: THREE.NoToneMapping,
+        // Bumped to 1.2 — the composer's ToneMapping effect reads the
+        // renderer's exposure value via the standard three.js shader chunk,
+        // so this still warms/lifts the pass.
         toneMappingExposure: 1.2,
       }}
       onCreated={({ gl, scene, camera }) => {
@@ -56,37 +65,50 @@ export function Scene({ onReady }: { onReady?: () => void }) {
       }}
     >
       <RendererQuality dpr={dpr} />
+      <FrameloopGovernor />
+      {/* One-way ratchet: if the frame rate sags for a sustained stretch,
+          shave render resolution rather than changing the art. */}
+      <PerformanceMonitor
+        bounds={() => [30, 60]}
+        flipflops={2}
+        onDecline={() => setAdaptiveCap((cap) => Math.max(1, cap - 0.25))}
+      />
       <IsometricCamera />
       <Lighting liteWorld={liteWorld} />
       {/* Warm horizon fog — softens the island edge into the peach sky. */}
       <fog attach="fog" args={['#f4b87a', 110, 280]} />
 
       <Sky />
-      {liteWorld ? null : <Atmosphere />}
+      {/* Clouds, petals, fireflies, birds, distant islands — ~50 instanced
+          meshes. Cheap everywhere, and most of the world's life; phones get
+          it too. */}
+      <Atmosphere />
       <Island liteWorld={liteWorld} />
       <Plaza />
-      <Buildings />
+      <Buildings liteWorld={liteWorld} />
       <Decorations />
       <Player />
-      {/* Hero-match post-processing — bloom + vignette + ACES. Skipped on
-          liteWorld (mobile/low-end) where the warmed lighting alone carries
-          most of the look. */}
-      {liteWorld ? null : <PostFX />}
+      {/* Hero-match post-processing — bloom + saturation + vignette + ACES.
+          This is most of the "vibrant" look, so phones run it too, in a
+          trimmed pass (smaller bloom kernel, 2x MSAA) at capped DPR. */}
+      <Suspense fallback={null}>
+        <PostFX lite={liteWorld} />
+      </Suspense>
     </Canvas>
   );
 }
 
-function getClampedDevicePixelRatio() {
+function getClampedDevicePixelRatio(max: number) {
   if (typeof window === 'undefined') return 1;
-  return Math.min(Math.max(window.devicePixelRatio || 1, 1), 2);
+  return Math.min(Math.max(window.devicePixelRatio || 1, 1), max);
 }
 
-function useClampedDevicePixelRatio() {
-  const [dpr, setDpr] = useState(getClampedDevicePixelRatio);
+function useClampedDevicePixelRatio(max: number) {
+  const [dpr, setDpr] = useState(() => getClampedDevicePixelRatio(max));
 
   useEffect(() => {
     if (typeof window === 'undefined') return;
-    const update = () => setDpr(getClampedDevicePixelRatio());
+    const update = () => setDpr(getClampedDevicePixelRatio(max));
     const viewport = window.visualViewport;
 
     update();
@@ -99,9 +121,56 @@ function useClampedDevicePixelRatio() {
       window.removeEventListener('orientationchange', update);
       viewport?.removeEventListener('resize', update);
     };
-  }, []);
+  }, [max]);
 
   return dpr;
+}
+
+// Frames still to render once a panel opens — lets the world settle behind
+// the overlay (and guarantees a deep-linked panel still gets its first
+// rendered frame on initial load) before the loop parks.
+const PANEL_SETTLE_FRAMES = 2;
+
+/**
+ * Halts the render loop while a full-screen building panel covers the world
+ * and resumes it on close — no point burning GPU frames nobody can see.
+ */
+function FrameloopGovernor() {
+  const setFrameloop = useThree((s) => s.setFrameloop);
+  const invalidate = useThree((s) => s.invalidate);
+  const clock = useThree((s) => s.clock);
+  const settleFrames = useRef(PANEL_SETTLE_FRAMES);
+
+  useEffect(
+    () =>
+      useGame.subscribe((state, prev) => {
+        if ((state.activeBuildingId === null) === (prev.activeBuildingId === null)) return;
+        if (state.activeBuildingId === null) {
+          // Panel closed — resume. setFrameloop resets the shared clock, so
+          // carry elapsedTime across to keep ambient animation phases steady.
+          const elapsed = clock.elapsedTime;
+          setFrameloop('always');
+          clock.elapsedTime = elapsed;
+          invalidate();
+        } else {
+          // Panel opened — arm the countdown; the useFrame below parks us.
+          settleFrames.current = PANEL_SETTLE_FRAMES;
+        }
+      }),
+    [clock, invalidate, setFrameloop],
+  );
+
+  useFrame(() => {
+    if (useGame.getState().activeBuildingId === null) return;
+    settleFrames.current -= 1;
+    if (settleFrames.current > 0) return;
+    // This frame still completes its render before the loop stops.
+    const elapsed = clock.elapsedTime;
+    setFrameloop('never');
+    clock.elapsedTime = elapsed;
+  });
+
+  return null;
 }
 
 function RendererQuality({ dpr }: { dpr: number }) {
