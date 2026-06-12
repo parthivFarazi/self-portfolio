@@ -108,12 +108,10 @@ export function FlowerPatches({ patches }: { patches: FlowerPatchPlacement[] }) 
       <instancedMesh
         ref={stemRef}
         args={[stemGeo, stemMat, flowers.length]}
-        castShadow
       />
       <instancedMesh
         ref={headRef}
         args={[headGeo, headMat, flowers.length]}
-        castShadow
       />
     </group>
   );

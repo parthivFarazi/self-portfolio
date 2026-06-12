@@ -5,7 +5,7 @@ import * as THREE from 'three';
 import { Sky } from './Sky';
 import { Island } from './Island';
 import { Plaza } from './Plaza';
-import { Buildings } from './buildings/Buildings';
+import { Buildings, preloadAllBuildings } from './buildings/Buildings';
 import { Decorations } from './decorations/Decorations';
 import { Atmosphere } from './atmosphere/Atmosphere';
 import { Player } from './Player';
@@ -58,9 +58,21 @@ export function Scene({ onReady }: { onReady?: () => void }) {
           (window as any).__r3f = { gl, scene, camera };
         }
         if (onReady) {
-          requestAnimationFrame(() => {
-            requestAnimationFrame(() => onReady());
-          });
+          // Hold the loading screen until every building chunk has loaded
+          // AND its shaders have compiled (KHR_parallel_shader_compile —
+          // ~99% iOS support). Otherwise the chunks land during the first
+          // seconds of play and each first-draw compile drops frames.
+          const ready = () => requestAnimationFrame(() => requestAnimationFrame(() => onReady()));
+          preloadAllBuildings()
+            .then(
+              () =>
+                new Promise<void>((resolve) => {
+                  // Two frames so the loaded components actually mount.
+                  requestAnimationFrame(() => requestAnimationFrame(() => resolve()));
+                }),
+            )
+            .then(() => gl.compileAsync(scene, camera))
+            .then(ready, ready);
         }
       }}
     >
@@ -68,10 +80,18 @@ export function Scene({ onReady }: { onReady?: () => void }) {
       <FrameloopGovernor />
       {/* One-way ratchet: if the frame rate sags for a sustained stretch,
           shave render resolution rather than changing the art. */}
+      {/* Default bounds only fire below 40fps — a phone stuck at 45 feels
+          laggy yet never declines. 52 catches the 60->40Hz cadence collapse
+          early; finite flipflops + a hard floor keep Low Power Mode (30fps
+          rAF cap, undetectable) from cascading quality away. */}
       <PerformanceMonitor
-        bounds={() => [30, 60]}
-        flipflops={2}
+        bounds={() => [52, 58]}
+        ms={200}
+        iterations={7}
+        flipflops={3}
         onDecline={() => setAdaptiveCap((cap) => Math.max(1, cap - 0.25))}
+        onIncline={() => setAdaptiveCap((cap) => Math.min(liteWorld ? 1.5 : 2, cap + 0.25))}
+        onFallback={() => setAdaptiveCap(1)}
       />
       <IsometricCamera />
       <Lighting liteWorld={liteWorld} />

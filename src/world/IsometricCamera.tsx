@@ -32,8 +32,13 @@ const APPROACH_ZOOM_MULT = 1.10;    // ~10% closer
 const MOBILE_APPROACH_ZOOM_MULT = 1.04;
 const ZOOM_LERP = 2.2;              // smoothing rate (per second)
 
+// footprintHalfExtents allocates a fresh object — precompute once; this
+// runs for every building every frame.
+const HALF_EXTENTS = new Map(BUILDINGS.map((b) => [b.id, footprintHalfExtents(b)]));
+const VISUAL_TOP = new Map(BUILDINGS.map((b) => [b.id, getVisualTopY(b)]));
+
 function distanceToBuildingEdge(px: number, pz: number, b: BuildingDef): number {
-  const fp = footprintHalfExtents(b);
+  const fp = HALF_EXTENTS.get(b.id);
   if (!fp) return Math.hypot(px - b.position[0], pz - b.position[2]);
   const dx = Math.max(0, Math.abs(px - b.position[0]) - fp.halfX);
   const dz = Math.max(0, Math.abs(pz - b.position[2]) - fp.halfZ);
@@ -73,7 +78,7 @@ export function IsometricCamera() {
   const desired = useRef(new Vector3());
   const biasY = useRef(0);
   const zoomCurrent = useRef(CAMERA_ZOOM * responsiveZoomMultiplier(size.width, size.height));
-  const prevPos = useRef<[number, number] | null>(null);
+  const prevPos = useRef({ x: 0, z: 0, init: false });
   const lookAhead = useRef({ x: 0, z: 0 });
 
   useFrame((state, delta) => {
@@ -85,7 +90,7 @@ export function IsometricCamera() {
     let wantBias = 0;
     let nearestEdge = Infinity;
     for (const b of BUILDINGS) {
-      const top = getVisualTopY(b);
+      const top = VISUAL_TOP.get(b.id)!;
       const dx = px - b.position[0];
       const dz = pz - b.position[2];
       const d = Math.hypot(dx, dz);
@@ -127,15 +132,17 @@ export function IsometricCamera() {
       * BREATH_AMPLITUDE;
 
     // Velocity-based look-ahead, estimated from the published position.
-    if (prevPos.current && delta > 0) {
-      const vx = (px - prevPos.current[0]) / delta;
-      const vz = (pz - prevPos.current[1]) / delta;
+    if (prevPos.current.init && delta > 0) {
+      const vx = (px - prevPos.current.x) / delta;
+      const vz = (pz - prevPos.current.z) / delta;
       const wantX = REDUCED_MOTION ? 0 : MathUtils.clamp(vx * LOOKAHEAD_PER_SPEED, -LOOKAHEAD_MAX, LOOKAHEAD_MAX);
       const wantZ = REDUCED_MOTION ? 0 : MathUtils.clamp(vz * LOOKAHEAD_PER_SPEED, -LOOKAHEAD_MAX, LOOKAHEAD_MAX);
       lookAhead.current.x = MathUtils.damp(lookAhead.current.x, wantX, LOOKAHEAD_LERP, delta);
       lookAhead.current.z = MathUtils.damp(lookAhead.current.z, wantZ, LOOKAHEAD_LERP, delta);
     }
-    prevPos.current = [px, pz];
+    prevPos.current.x = px;
+    prevPos.current.z = pz;
+    prevPos.current.init = true;
 
     target.current.set(
       px + lookAhead.current.x,

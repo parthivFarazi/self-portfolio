@@ -1,14 +1,14 @@
 import { Billboard, Text } from '@react-three/drei';
 import { useMemo, useRef } from 'react';
 import { useFrame } from '@react-three/fiber';
-import { DoubleSide, type Group, type Mesh } from 'three';
+import { DoubleSide, Object3D, type Group, type InstancedMesh, type Mesh } from 'three';
 import { CanvasTexture } from 'three';
 import type { BuildingDef } from '@/data/buildings';
 import { sand, water, stoneCool, woodDark, lampAmber } from '../materials';
 
 // ── Falling petal cloud ────────────────────────────────────────────────
-// 16 plain <mesh> petals around the cherry tree. Each owns its own ref
-// + state; we update positions in a single useFrame on the parent.
+// 16 petals around the cherry tree, drawn as one InstancedMesh; per-petal
+// state lives in a plain array and matrices update in a single useFrame.
 const PETAL_COUNT = 16;
 
 interface PetalState {
@@ -37,18 +37,18 @@ function makePetalState(seed: number): PetalState {
 }
 
 function PetalCloud({ origin }: { origin: [number, number, number] }) {
-  const meshRefs = useRef<Array<Mesh | null>>([]);
+  const ref = useRef<InstancedMesh>(null);
+  const dummy = useMemo(() => new Object3D(), []);
   const petals = useMemo<PetalState[]>(
     () => Array.from({ length: PETAL_COUNT }, (_, i) => makePetalState(i)),
     [],
   );
 
   useFrame((_state, dt) => {
+    if (!ref.current) return;
     const delta = Math.min(dt, 0.05);
     for (let i = 0; i < petals.length; i++) {
       const p = petals[i];
-      const m = meshRefs.current[i];
-      if (!m) continue;
       p.y -= p.fallSpeed * delta;
       p.x += p.driftX * delta;
       p.z += p.driftZ * delta;
@@ -58,24 +58,19 @@ function PetalCloud({ origin }: { origin: [number, number, number] }) {
         Object.assign(p, fresh);
         p.y = 4 + Math.random() * 1.5;
       }
-      m.position.set(origin[0] + p.x, origin[1] + p.y, origin[2] + p.z);
-      m.rotation.z = p.rotZ;
+      dummy.position.set(origin[0] + p.x, origin[1] + p.y, origin[2] + p.z);
+      dummy.rotation.set(0, 0, p.rotZ);
+      dummy.updateMatrix();
+      ref.current.setMatrixAt(i, dummy.matrix);
     }
+    ref.current.instanceMatrix.needsUpdate = true;
   });
 
   return (
-    <>
-      {petals.map((_, i) => (
-        <mesh
-          key={i}
-          ref={(el) => { meshRefs.current[i] = el; }}
-          position={[origin[0], origin[1] + 3, origin[2]]}
-        >
-          <planeGeometry args={[0.18, 0.12]} />
-          <meshBasicMaterial color="#f5b6da" transparent opacity={0.85} side={DoubleSide} fog={false} />
-        </mesh>
-      ))}
-    </>
+    <instancedMesh ref={ref} args={[undefined, undefined, PETAL_COUNT]} frustumCulled={false}>
+      <planeGeometry args={[0.18, 0.12]} />
+      <meshBasicMaterial color="#f5b6da" transparent opacity={0.85} side={DoubleSide} fog={false} />
+    </instancedMesh>
   );
 }
 

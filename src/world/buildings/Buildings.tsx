@@ -5,7 +5,11 @@ import { Placeholder } from './Placeholder';
 import { useGame } from '@/state/gameStore';
 
 const LOD_NEAR = 78;
-const LOD_FAR = 86;
+// Effectively "mount once": every building is within ~65u of spawn, so the
+// old FAR=86 only ever fired on far-rim walks — unmounting and remounting
+// entire building subtrees (texture re-bakes, shader recompiles) for zero
+// steady-state savings. 999 keeps a loaded building loaded.
+const LOD_FAR = 999;
 
 type BuildingComponent = ComponentType<{ def: BuildingDef; liteWorld?: boolean }>;
 type BuildingLoader = () => Promise<BuildingComponent>;
@@ -28,6 +32,19 @@ const REGISTRY: Partial<Record<BuildingDef['id'], BuildingLoader>> = {
 };
 
 const componentCache = new Map<BuildingDef['id'], BuildingComponent>();
+
+/** Import every building component up front — called behind the loading
+ *  screen so chunk fetch + parse + first-render shader compiles never land
+ *  mid-walk. */
+export function preloadAllBuildings(): Promise<void> {
+  return Promise.all(
+    (Object.keys(REGISTRY) as BuildingDef['id'][]).map((id) =>
+      REGISTRY[id]!().then((component) => {
+        componentCache.set(id, component);
+      }),
+    ),
+  ).then(() => undefined);
+}
 
 export function Buildings({ liteWorld = false }: { liteWorld?: boolean }) {
   return (

@@ -1,26 +1,37 @@
 import { Billboard, Text } from '@react-three/drei';
-import { useRef } from 'react';
+import { useMemo, useRef } from 'react';
 import { useFrame } from '@react-three/fiber';
-import type { Group } from 'three';
+import { Object3D, type InstancedMesh } from 'three';
 import type { BuildingDef } from '@/data/buildings';
 import { stoneWarm, stoneCool, goldEmissive, neonCyan, woodDark } from '../materials';
 
-function Firefly({ seed }: { seed: number }) {
-  const g = useRef<Group>(null);
+// All 8 fireflies share one InstancedMesh + one useFrame — same motion math
+// as the old per-component version, just composed into instance matrices.
+const FIREFLY_SEEDS = [0.0, 0.7, 1.4, 2.1, 2.8, 3.5, 4.2, 4.9];
+
+function Fireflies() {
+  const ref = useRef<InstancedMesh>(null);
+  const dummy = useMemo(() => new Object3D(), []);
   useFrame(({ clock }) => {
-    if (!g.current) return;
-    const t = clock.getElapsedTime() + seed;
-    g.current.position.x = Math.cos(t * 0.5 + seed) * 4 + Math.sin(t * 0.2) * 0.8;
-    g.current.position.y = 3.5 + Math.sin(t * 0.4 + seed) * 1.2;
-    g.current.position.z = Math.sin(t * 0.5 + seed) * 4 + Math.cos(t * 0.2) * 0.8;
+    if (!ref.current) return;
+    for (let i = 0; i < FIREFLY_SEEDS.length; i++) {
+      const seed = FIREFLY_SEEDS[i];
+      const t = clock.getElapsedTime() + seed;
+      dummy.position.set(
+        Math.cos(t * 0.5 + seed) * 4 + Math.sin(t * 0.2) * 0.8,
+        3.5 + Math.sin(t * 0.4 + seed) * 1.2,
+        Math.sin(t * 0.5 + seed) * 4 + Math.cos(t * 0.2) * 0.8,
+      );
+      dummy.updateMatrix();
+      ref.current.setMatrixAt(i, dummy.matrix);
+    }
+    ref.current.instanceMatrix.needsUpdate = true;
   });
   return (
-    <group ref={g}>
-      <mesh>
-        <sphereGeometry args={[0.07, 8, 6]} />
-        <meshStandardMaterial color="#f5d97a" emissive="#f5d97a" emissiveIntensity={1.5} />
-      </mesh>
-    </group>
+    <instancedMesh ref={ref} args={[undefined, undefined, FIREFLY_SEEDS.length]} frustumCulled={false}>
+      <sphereGeometry args={[0.07, 8, 6]} />
+      <meshStandardMaterial color="#f5d97a" emissive="#f5d97a" emissiveIntensity={1.5} />
+    </instancedMesh>
   );
 }
 
@@ -125,9 +136,7 @@ export function Archive({ def }: { def: BuildingDef }) {
       </group>
 
       {/* Floating glowing quote-fireflies around the building */}
-      {[0.0, 0.7, 1.4, 2.1, 2.8, 3.5, 4.2, 4.9].map((s) => (
-        <Firefly key={s} seed={s} />
-      ))}
+      <Fireflies />
       {/* (no central pointLight — fireflies are bloom-lit already) */}
 
       <Billboard position={[0, baseH + R + 3, 0]}>

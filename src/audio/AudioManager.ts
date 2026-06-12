@@ -67,6 +67,8 @@ interface ZoneNodes {
   cleanup?: () => void;
   /** Pending deferred-teardown timer; cancelled if the zone reactivates. */
   disposeTimer?: number;
+  /** Last commanded gain target — dedupes the per-frame intensity ramps. */
+  lastTarget?: number;
 }
 
 function loadMute(): boolean {
@@ -127,6 +129,7 @@ class AudioManagerImpl {
   muted = loadMute();
   initialized = false;
   zones: Map<BuildingId, ZoneNodes> = new Map();
+  private resumePending = false;
   voiceSampleBuffers: Map<VoiceSampleKind, AudioBuffer> = new Map();
   voiceSampleLoads: Map<VoiceSampleKind, Promise<AudioBuffer | null>> = new Map();
   activeZone: BuildingId | null = null;
@@ -475,7 +478,14 @@ class AudioManagerImpl {
   enterZone(id: BuildingId | null, intensity = 1) {
     if (id && !this.initialized) this.ensureStart();
     if (!this.ctx || !this.zoneBus) return;
-    if (this.ctx.state === 'suspended') void this.ctx.resume();
+    // resume() allocates a Promise — at 60 calls/s on a suspended context
+    // that's pure GC churn. Fire one and wait for it to settle.
+    if (this.ctx.state === 'suspended' && !this.resumePending) {
+      this.resumePending = true;
+      this.ctx.resume().finally(() => {
+        this.resumePending = false;
+      });
+    }
 
     // Every call (the Player fires one per frame in Explore, even with a null
     // id while wandering the meadow) keeps the ambient layers alive.
@@ -490,10 +500,13 @@ class AudioManagerImpl {
       const z = this.zones.get(id);
       if (!z) return;
       const nextGain = cfg.gain * amount;
-      if (Math.abs(z.gain.gain.value - nextGain) < 0.015) return;
-      z.gain.gain.cancelScheduledValues(now);
-      z.gain.gain.setValueAtTime(z.gain.gain.value, now);
-      z.gain.gain.linearRampToValueAtTime(nextGain, now + 0.18);
+      // Compare against the last COMMANDED target, not the mid-ramp value —
+      // otherwise the epsilon never holds while walking and this issued
+      // cancel+set+ramp on the AudioParam at 60Hz. setTargetAtTime glides
+      // smoothly without rescheduling churn.
+      if (z.lastTarget !== undefined && Math.abs(z.lastTarget - nextGain) < 0.02) return;
+      z.lastTarget = nextGain;
+      z.gain.gain.setTargetAtTime(nextGain, now, 0.09);
       return;
     }
 
@@ -523,6 +536,7 @@ class AudioManagerImpl {
       window.clearTimeout(z.disposeTimer);
       z.disposeTimer = undefined;
     }
+    z.lastTarget = cfg.gain * amount;
     z.gain.gain.cancelScheduledValues(now);
     z.gain.gain.setValueAtTime(z.gain.gain.value, now);
     z.gain.gain.linearRampToValueAtTime(cfg.gain * amount, now + ZONE_FADE_S);

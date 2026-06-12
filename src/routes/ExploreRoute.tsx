@@ -9,6 +9,8 @@ import { BuildingDialog } from '@/components/ui/BuildingDialog';
 import { TouchControls } from '@/components/ui/TouchControls';
 import { WorldLoadingScreen } from '@/components/ui/WorldLoadingScreen';
 import { FpsProbe } from '@/components/ui/FpsProbe';
+import { BUILDINGS } from '@/data/buildings';
+import { preloadPanel } from '@/components/panels/panelRegistry';
 
 const INTRO_SEEN_KEY = 'rw-intro-seen-v2';
 
@@ -28,6 +30,28 @@ export default function ExploreRoute({
   const calmHud = isTouch || narrow;
   const loadStartedAt = useRef(performance.now());
   const readyTimer = useRef<number | null>(null);
+
+  // Warm every panel chunk one-by-one once the world has settled, so the
+  // walk-up preload is always a module-cache hit instead of a mid-stroll
+  // fetch + parse. (requestIdleCallback is still disabled in iOS Safari, so
+  // a paced setTimeout chain it is.)
+  useEffect(() => {
+    if (worldLoading) return;
+    let cancelled = false;
+    let i = 0;
+    const ids = BUILDINGS.map((b) => b.id);
+    let timer = 0;
+    const next = () => {
+      if (cancelled || i >= ids.length) return;
+      preloadPanel(ids[i++]);
+      timer = window.setTimeout(next, 400);
+    };
+    timer = window.setTimeout(next, 2000);
+    return () => {
+      cancelled = true;
+      window.clearTimeout(timer);
+    };
+  }, [worldLoading]);
 
   useEffect(() => {
     loadStartedAt.current = performance.now();

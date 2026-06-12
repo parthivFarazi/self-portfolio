@@ -19,13 +19,22 @@ import {
   PLAZA_RADIUS,
 } from '@/constants/world';
 
-const tmp = new Vector3();
-const tmpVel = new Vector3();
+// Per-building values are static — precompute once instead of running
+// BUILDINGS.find + template strings inside the frame loop.
+const NEAR_LABEL = new Map(BUILDINGS.map((b) => [b.id, `Near ${b.shortLabel}`]));
+const AUDIO_FADE = new Map(
+  BUILDINGS.map((b) => [
+    b.id,
+    { trigger: b.triggerRadius, fade: Math.max(1, b.triggerRadius - audioBodyRadius(b)) },
+  ]),
+);
 
 if (typeof window !== 'undefined' && import.meta.env.DEV) {
   // @ts-expect-error debug bridge for preview MCP collision checks
-  window.__collide = (nx: number, nz: number, px: number, pz: number) =>
+  window.__collide = (nx: number, nz: number, px: number, pz: number) => {
     collideBuildings(nx, nz, px, pz);
+    return [OUT.x, OUT.z];
+  };
 }
 
 // Palette — South Asian medium-tan skin, white shirt, khaki pants, GT-gold wristband.
@@ -37,28 +46,32 @@ const SHOES = '#3a2818';
 const GT_GOLD = '#d4b86a';
 const PLAYER_VISUAL_Y_OFFSET = 0.12;
 
-function collideBuildings(nx: number, nz: number, px: number, pz: number): [number, number] {
-  let outX = nx;
-  let outZ = nz;
+// Scratch result for the collision chain — these helpers run for all 14
+// buildings every frame, and returning fresh [x,z] tuples meant 15-35 short-
+// lived arrays per frame of pure GC churn. Callers read OUT immediately.
+const OUT = { x: 0, z: 0 };
+
+function collideBuildings(nx: number, nz: number, px: number, pz: number): void {
+  OUT.x = nx;
+  OUT.z = nz;
   for (const b of BUILDINGS) {
-    [outX, outZ] = collideBuilding(outX, outZ, px, pz, b);
+    collideBuilding(OUT.x, OUT.z, px, pz, b);
   }
-  return [outX, outZ];
 }
 
-function collideBuilding(nx: number, nz: number, px: number, pz: number, b: BuildingDef): [number, number] {
+function collideBuilding(nx: number, nz: number, px: number, pz: number, b: BuildingDef): void {
   const bx = b.position[0];
   const bz = b.position[2];
+  OUT.x = nx;
+  OUT.z = nz;
   // Audited per-building colliders match the rendered meshes (foundation
   // lips, porches, entrance pavilions) — the declared `shape` only matches
   // the far-LOD placeholder.
   if (b.colliders) {
-    let ox = nx;
-    let oz = nz;
     for (const c of b.colliders) {
-      [ox, oz] = collideShape(ox, oz, px, pz, bx, bz, c);
+      collideShape(OUT.x, OUT.z, px, pz, bx, bz, c);
     }
-    return [ox, oz];
+    return;
   }
   const s = b.shape;
   switch (s.kind) {
@@ -73,7 +86,7 @@ function collideBuilding(nx: number, nz: number, px: number, pz: number, b: Buil
     case 'twin':
       return collideBox(nx, nz, px, pz, bx, bz, (s.spacing + s.width) / 2, s.depth / 2);
     case 'disc':
-      return [nx, nz];
+      return;
   }
 }
 
@@ -85,7 +98,7 @@ function collideShape(
   bx: number,
   bz: number,
   c: Collider,
-): [number, number] {
+): void {
   const cx = bx + (c.offset?.[0] ?? 0);
   const cz = bz + (c.offset?.[1] ?? 0);
   if (c.kind === 'ellipse') {
@@ -103,13 +116,17 @@ function collideEllipse(
   cz: number,
   radiusX: number,
   radiusZ: number,
-): [number, number] {
+): void {
   const rx = radiusX + PLAYER_RADIUS;
   const rz = radiusZ + PLAYER_RADIUS;
   let dx = nx - cx;
   let dz = nz - cz;
   let norm = Math.hypot(dx / rx, dz / rz);
-  if (norm >= 1) return [nx, nz];
+  if (norm >= 1) {
+    OUT.x = nx;
+    OUT.z = nz;
+    return;
+  }
 
   if (norm < 0.0001) {
     dx = px - cx;
@@ -118,7 +135,8 @@ function collideEllipse(
   }
 
   const scale = 1 / norm;
-  return [cx + dx * scale, cz + dz * scale];
+  OUT.x = cx + dx * scale;
+  OUT.z = cz + dz * scale;
 }
 
 function collideBox(
@@ -130,11 +148,13 @@ function collideBox(
   cz: number,
   halfX: number,
   halfZ: number,
-): [number, number] {
+): void {
   const hw = halfX + PLAYER_RADIUS;
   const hd = halfZ + PLAYER_RADIUS;
+  OUT.x = nx;
+  OUT.z = nz;
   if (nx <= cx - hw || nx >= cx + hw || nz <= cz - hd || nz >= cz + hd) {
-    return [nx, nz];
+    return;
   }
 
   const wasInsideX = px > cx - hw && px < cx + hw;
@@ -145,11 +165,12 @@ function collideBox(
 
   if (pushX) {
     const sign = Math.sign(nx - cx || px - cx) || 1;
-    return [cx + sign * hw, nz];
+    OUT.x = cx + sign * hw;
+    return;
   }
 
   const sign = Math.sign(nz - cz || pz - cz) || 1;
-  return [nx, cz + sign * hd];
+  OUT.z = cz + sign * hd;
 }
 
 export function Player() {
@@ -216,7 +237,9 @@ export function Player() {
     let nx = pos.x + vel.x * delta;
     let nz = pos.z + vel.z * delta;
 
-    [nx, nz] = collideBuildings(nx, nz, pos.x, pos.z);
+    collideBuildings(nx, nz, pos.x, pos.z);
+    nx = OUT.x;
+    nz = OUT.z;
 
     const r = Math.hypot(nx, nz);
     const maxR = ISLAND_RADIUS - ISLAND_EDGE_MARGIN;
@@ -303,14 +326,20 @@ export function Player() {
     if (newId !== lastNearby.current) {
       // Soft chime when a fresh interaction prompt becomes available.
       if (newId && !lastNearby.current) Audio.uiPrompt();
-      if (newId) preloadPanel(newId);
+      // Defer the panel-chunk warmup out of the frame callback — the fetch
+      // + parse/eval of a panel module mid-walk was a guaranteed hitch.
+      // (ExploreRoute also pre-warms all panels shortly after load.)
+      if (newId) {
+        const idToLoad = newId;
+        window.setTimeout(() => preloadPanel(idToLoad), 0);
+      }
       lastNearby.current = newId;
       useGame.getState().setNearbyBuilding(newId);
     }
 
     const onPlaza = Math.hypot(pos.x, pos.z) < PLAZA_RADIUS + 0.5;
     const zone = newId
-      ? `Near ${labelFor(newId)}`
+      ? NEAR_LABEL.get(newId)!
       : onPlaza
         ? 'Spawn Plaza'
         : 'The Meadow';
@@ -318,8 +347,6 @@ export function Player() {
       useGame.getState().setZoneLabel(zone);
     }
 
-    tmp.set(0, 0, 0);
-    tmpVel.set(0, 0, 0);
   });
 
   return (
@@ -438,17 +465,10 @@ function lerpAngle(a: number, b: number, t: number) {
   return a + diff * t;
 }
 
-function labelFor(id: string) {
-  const b = BUILDINGS.find((x) => x.id === id);
-  return b ? b.shortLabel : id;
-}
-
 function proximityAudioIntensity(id: BuildingId, distFromCenter: number): number {
-  const b = BUILDINGS.find((x) => x.id === id);
-  if (!b) return 0;
-  const bodyRadius = audioBodyRadius(b);
-  const fadeDistance = Math.max(1, b.triggerRadius - bodyRadius);
-  return clamp((b.triggerRadius - distFromCenter) / fadeDistance, 0, 1);
+  const f = AUDIO_FADE.get(id);
+  if (!f) return 0;
+  return clamp((f.trigger - distFromCenter) / f.fade, 0, 1);
 }
 
 function audioBodyRadius(def: BuildingDef): number {

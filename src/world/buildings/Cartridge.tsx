@@ -1,6 +1,7 @@
 import { Billboard, Text } from '@react-three/drei';
 import { useMemo, useRef } from 'react';
 import { useFrame } from '@react-three/fiber';
+import { useGame } from '@/state/gameStore';
 import { CanvasTexture, type Mesh } from 'three';
 import type { BuildingDef } from '@/data/buildings';
 
@@ -96,17 +97,28 @@ export function Cartridge({ def, liteWorld = false }: { def: BuildingDef; liteWo
   const H = 0.6;
 
   const screen = useMemo(makeScreenTexture, []);
+  const screenCtx = useMemo(() => screen.canvas.getContext('2d'), [screen]);
   const screenMeshRef = useRef<Mesh>(null);
+  const lastDraw = useRef(0);
 
   useFrame(({ clock }) => {
-    const ctx = screen.canvas.getContext('2d');
-    if (!ctx) return;
-    drawScreen(ctx, clock.elapsedTime * 1000);
-    screen.tex.needsUpdate = true;
+    if (!screenCtx) return;
+    // The 1.8u screen reads identically at ~12fps, and repainting +
+    // re-uploading a texture EVERY frame was a session-long bandwidth tax.
+    // Skip entirely when the player is too far to resolve the pixels.
+    const [px2, , pz2] = useGame.getState().playerPosition;
+    const dist = Math.hypot(def.position[0] - px2, def.position[2] - pz2);
+    if (dist > 40) return;
+    const t = clock.elapsedTime;
+    if (t - lastDraw.current >= 0.08) {
+      lastDraw.current = t;
+      drawScreen(screenCtx, t * 1000);
+      screen.tex.needsUpdate = true;
+    }
     // Subtle screen flicker
     if (screenMeshRef.current) {
       const mat = screenMeshRef.current.material as { emissiveIntensity?: number };
-      mat.emissiveIntensity = 0.85 + Math.sin(clock.elapsedTime * 6) * 0.05;
+      mat.emissiveIntensity = 0.85 + Math.sin(t * 6) * 0.05;
     }
   });
 
