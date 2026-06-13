@@ -12,7 +12,10 @@ import { FpsProbe } from '@/components/ui/FpsProbe';
 import { BUILDINGS } from '@/data/buildings';
 import { preloadPanel } from '@/components/panels/panelRegistry';
 
-const INTRO_SEEN_KEY = 'rw-intro-seen-v2';
+// sessionStorage key — scopes the welcome note to one note per browser
+// session (see IntroToast). New value so any old permanent localStorage
+// flag from the previous behaviour is ignored.
+const INTRO_SEEN_KEY = 'rw-intro-seen-session';
 
 export default function ExploreRoute({
   onBackHome,
@@ -141,10 +144,13 @@ const TOAST_EXIT_MS = 500;
 function IntroToast() {
   const [visible, setVisible] = useState(() => {
     // ?intro=1 forces the welcome note on every load — for QA of the
-    // entry/exit animation without clearing localStorage each time.
+    // entry/exit animation without starting a new session each time.
     if (new URLSearchParams(window.location.search).get('intro') === '1') return true;
     try {
-      return !window.localStorage.getItem(INTRO_SEEN_KEY);
+      // sessionStorage, not localStorage: the note shows once per visit and
+      // returns when the visitor comes back in a new session or tab — a
+      // permanent flag made it a one-time-ever thing nobody could revisit.
+      return !window.sessionStorage.getItem(INTRO_SEEN_KEY);
     } catch {
       return true;
     }
@@ -163,9 +169,9 @@ function IntroToast() {
     dismissing.current = true;
     // Persist immediately — navigating away mid-fade should still record it.
     try {
-      window.localStorage.setItem(INTRO_SEEN_KEY, '1');
+      window.sessionStorage.setItem(INTRO_SEEN_KEY, '1');
     } catch {
-      /* fine — they'll see it once more next visit */
+      /* fine — they'll see it again next session */
     }
     setExiting(true);
     // A setTimeout (not animationend) owns the unmount so it fires even when
