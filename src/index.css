@@ -65,6 +65,13 @@
   to { opacity: 1; transform: translate(-50%, 0); }
 }
 
+/* ...and settle back out: drift up a touch and fade, the reverse of the
+   entry but quicker, so leaving feels lighter than arriving. */
+@keyframes rw-toast-out {
+  from { opacity: 1; transform: translate(-50%, 0) scale(1); }
+  to { opacity: 0; transform: translate(-50%, -8px) scale(0.98); }
+}
+
 /* One-time "pinch to zoom" chip: ease in, hold, fade away. */
 @keyframes rw-zoom-hint {
   0% { opacity: 0; transform: translate(-50%, 6px); }

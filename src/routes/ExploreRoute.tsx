@@ -135,20 +135,48 @@ function WorldNavButton({ onClick, label }: { onClick: () => void; label: string
 // One-time welcome card on first spawn — a quiet, postcard-like note that
 // states the idea and the controls, then leaves the moment the visitor
 // starts walking (or taps it, or opens a building).
+// Exit fade duration — keep in sync with the `rw-toast-out` keyframe.
+const TOAST_EXIT_MS = 500;
+
 function IntroToast() {
   const [visible, setVisible] = useState(() => {
+    // ?intro=1 forces the welcome note on every load — for QA of the
+    // entry/exit animation without clearing localStorage each time.
+    if (new URLSearchParams(window.location.search).get('intro') === '1') return true;
     try {
       return !window.localStorage.getItem(INTRO_SEEN_KEY);
     } catch {
       return true;
     }
   });
+  // Two-phase dismiss: `exiting` swaps the entry animation for the fade-out,
+  // then a timer unmounts. Without it the note vanished in a single frame.
+  const [exiting, setExiting] = useState(false);
+  const dismissing = useRef(false);
+  const exitTimer = useRef<number | null>(null);
   const opened = useGame((s) => s.activeBuildingId);
 
+  const dismiss = () => {
+    // Guard so the walk subscription, the open-building effect, and a tap
+    // can't each kick off a second fade.
+    if (dismissing.current) return;
+    dismissing.current = true;
+    // Persist immediately — navigating away mid-fade should still record it.
+    try {
+      window.localStorage.setItem(INTRO_SEEN_KEY, '1');
+    } catch {
+      /* fine — they'll see it once more next visit */
+    }
+    setExiting(true);
+    // A setTimeout (not animationend) owns the unmount so it fires even when
+    // the tab throttles animation frames; the CSS just rides along visually.
+    exitTimer.current = window.setTimeout(() => setVisible(false), TOAST_EXIT_MS);
+  };
+
   useEffect(() => {
-    if (visible && opened) dismiss();
+    if (opened) dismiss();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [visible, opened]);
+  }, [opened]);
 
   // The lesson is learned the moment they walk — fade out after the player
   // has moved a few steps from spawn.
@@ -161,14 +189,12 @@ function IntroToast() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [visible]);
 
-  const dismiss = () => {
-    setVisible(false);
-    try {
-      window.localStorage.setItem(INTRO_SEEN_KEY, '1');
-    } catch {
-      /* fine — they'll see it once more next visit */
-    }
-  };
+  useEffect(
+    () => () => {
+      if (exitTimer.current !== null) window.clearTimeout(exitTimer.current);
+    },
+    [],
+  );
 
   if (!visible) return null;
   const touch = window.matchMedia?.('(pointer: coarse)').matches;
@@ -176,7 +202,11 @@ function IntroToast() {
     <button
       type="button"
       onClick={dismiss}
-      style={{ animation: 'rw-toast-in 0.9s ease-out both' }}
+      style={{
+        animation: exiting
+          ? `rw-toast-out ${TOAST_EXIT_MS}ms ease-in both`
+          : 'rw-toast-in 0.9s ease-out both',
+      }}
       className="pointer-events-auto absolute left-1/2 top-[22%] z-20 w-[min(78vw,300px)] -translate-x-1/2 cursor-pointer rounded-[20px] border border-[#e8d8a8] bg-[#fffaf0]/95 px-6 py-5 text-center shadow-[0_18px_50px_rgba(40,20,8,0.18)] backdrop-blur-md"
       aria-label="Welcome note — tap to dismiss"
     >
