@@ -5,7 +5,7 @@
 // a big CIRCULAR head, a simple face (dot eyes + a warm smile), and NO
 // realism: no elongated face, no jawline, no beard, no faceted shading.
 // Identity comes from the cues, not the features: clean dark buzzcut, warm
-// tan skin, Real Madrid home kit (white jersey, navy shorts, #10), football
+// tan skin, Real Madrid home kit (white jersey, navy shorts, #7), football
 // socks, casual sneakers, and a brown leather laptop satchel cross-body.
 //
 // AvatarFront is the only pose used in the app today (Quick View identity
@@ -262,7 +262,7 @@ export function AvatarBack({ size = 240, className }: PoseProps) {
         FARAZI
       </text>
       <text x="60" y="143" textAnchor="middle" fontFamily="'Pixelify Sans', monospace" fontSize="17" fontWeight="700" fill={CH.navy}>
-        10
+        7
       </text>
 
       {/* sleeves + arms */}
@@ -418,7 +418,7 @@ export function CharacterSheetCard() {
           <Labeled label="Side · Walk">
             <AvatarSide size={260} />
           </Labeled>
-          <Labeled label="Back · #10">
+          <Labeled label="Back · #7">
             <AvatarBack size={260} />
           </Labeled>
         </div>
@@ -438,7 +438,7 @@ export function CharacterSheetCard() {
         <SpecRow label="Face" v="Simple mascot · dot eyes · warm smile · no realism" highlight />
         <SpecRow label="Hair" v={<><Sw c={CH.hair} /> Clean dark buzzcut</>} />
         <SpecRow label="Skin" v={<><Sw c={CH.skin} /> Warm tan · flat fill</>} />
-        <SpecRow label="Kit" v={<><Sw c={CH.jersey} /> White jersey · <Sw c={CH.navy} /> navy shorts · #10</>} />
+        <SpecRow label="Kit" v={<><Sw c={CH.jersey} /> White jersey · <Sw c={CH.navy} /> navy shorts · #7</>} />
         <SpecRow label="Socks" v={<><Sw c={CH.sock} /> Football socks · <Sw c={CH.navy} /> band</>} />
         <SpecRow label="Shoes" v={<><Sw c={CH.shoe} /> Casual sneakers</>} />
         <SpecRow label="Satchel" v={<><Sw c={CH.satchel} /> Brown leather · cross-body · laptop inside</>} />

@@ -477,14 +477,15 @@
    a head-and-shoulders portrait, not the whole body squeezed in. Blow the
    figure up and anchor on the face so it sits centered in the frame.
    Percentages are relative to the (square) container, so the same framing
-   holds at every avatar size. Tuned for the v0.2 low-poly figure (120×240,
-   ~45% head): less zoom than the old 220-tall art so the chin and jersey
-   collar stay in frame instead of cropping to a tight face. */
+   holds at every avatar size. The round-head mascot has a big, wide head,
+   so pull the zoom back to a real head-and-shoulders portrait — head
+   smaller in frame with the jersey collar/shoulders showing — rather than
+   the head filling the whole circle. */
 .qv-identity-avatar .qv-avatar-svg {
   position: absolute;
   left: 50%;
-  top: -4%;
-  width: 116%;
+  top: 1%;
+  width: 90%;
   height: auto;
   transform: translateX(-50%);
 }
