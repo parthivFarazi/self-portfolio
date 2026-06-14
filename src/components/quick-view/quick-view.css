@@ -484,8 +484,8 @@
 .qv-identity-avatar .qv-avatar-svg {
   position: absolute;
   left: 50%;
-  top: 1%;
-  width: 90%;
+  top: 0%;
+  width: 100%;
   height: auto;
   transform: translateX(-50%);
 }
