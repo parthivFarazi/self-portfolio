@@ -8,12 +8,15 @@ import { RouteLoadingScreen } from './components/ui/RouteLoadingScreen';
 const loadLandingRoute = () => import('./routes/LandingRoute');
 const loadQuickRoute = () => import('./routes/QuickRoute');
 const loadExploreRoute = () => import('./routes/ExploreRoute');
+const loadCharacterRoute = () => import('./routes/CharacterRoute');
 
 const LandingRoute = lazy(loadLandingRoute);
 const QuickRoute = lazy(loadQuickRoute);
 const ExploreRoute = lazy(loadExploreRoute);
+// Design-reference page at /character — not linked from the app UI.
+const CharacterRoute = lazy(loadCharacterRoute);
 
-type AppRoute = 'landing' | 'quick' | 'explore';
+type AppRoute = 'landing' | 'quick' | 'explore' | 'character';
 
 const PANEL_IDS = new Set<string>(BUILDINGS.map((b) => b.id));
 
@@ -26,6 +29,7 @@ function parseLocation(pathname: string, hash: string): { route: AppRoute; panel
   let route: AppRoute = 'landing';
   if (segs[0] === 'quick' || hash === '#quick-view') route = 'quick';
   else if (segs[0] === 'explore' || hash === '#explore') route = 'explore';
+  else if (segs[0] === 'character') route = 'character';
   const panel = route !== 'landing' && segs[1] && PANEL_IDS.has(segs[1]) ? (segs[1] as BuildingId) : null;
   return { route, panel };
 }
@@ -42,6 +46,8 @@ function applyDocumentTitle(route: AppRoute, panel: BuildingId | null) {
     document.title = 'Quick View — Parthiv Farazi';
   } else if (route === 'explore') {
     document.title = "Exploration Mode — Parthiv's World";
+  } else if (route === 'character') {
+    document.title = 'Character Sheet — Parthiv Farazi';
   } else {
     document.title = "Parthiv Farazi — Parthiv's World";
   }
@@ -158,6 +164,14 @@ export default function App() {
     return (
       <Suspense fallback={<WorldLoadingScreen />}>
         <ExploreRoute onBackHome={() => navigate('landing')} onOpenQuick={() => navigate('quick')} />
+      </Suspense>
+    );
+  }
+
+  if (route === 'character') {
+    return (
+      <Suspense fallback={<RouteLoadingScreen title="Loading character sheet..." subtitle="Pulling up the mascot turntable." />}>
+        <CharacterRoute onBackHome={() => navigate('landing')} />
       </Suspense>
     );
   }
