@@ -1,12 +1,13 @@
-// Avatar.tsx — Parthiv, the round-head portfolio mascot.
+// Avatar.tsx — Parthiv, the portfolio mascot.
 //
-// Mascot-first, likeness-second, modelled on a reference photo: a friendly
-// cartoon character with a big warm open smile, short textured dark hair
-// (natural hairline, no beard), warm tan skin, in a white Real Madrid home
-// jersey (adidas shoulder stripes, gold piping, club crest on the chest,
-// #7 on the back), blue jeans, white sneakers, and a brown leather laptop
-// satchel cross-body. The satchel strap is routed so the chest crest stays
-// visible. No wristband. Cartoon-realistic head-to-body ratio on a neck.
+// Mascot-first, likeness-second, modelled on a reference photo but drawn
+// as a sharp, grown-up cartoon (not a baby-faced chibi): a defined
+// jawline, full short dark hair (no thin spot), broad shoulders + traps on
+// a V-taper torso, stronger brows and almond eyes, a confident smile, no
+// beard, no blush. Warm tan skin. White Real Madrid home jersey (adidas
+// shoulder stripes, gold piping, club crest on the chest, #7 on the back),
+// blue jeans, white sneakers, brown leather laptop satchel cross-body with
+// the strap routed so the chest crest stays visible. No wristband.
 //
 // AvatarFront is the only pose used in the app today (Quick View identity
 // strip). It renders a bare <svg className="qv-avatar-svg"> so the
@@ -20,7 +21,7 @@ const CH = {
   skin: '#d49c6a',
   skinShade: '#b88052',
   hair: '#241c17',
-  hairLit: '#3a2e25', // texture strokes
+  hairLit: '#3a2e25',
   jersey: '#f4f1ea', // Real Madrid home white
   jerseyLit: '#ffffff',
   jerseyShade: '#d9d3c6',
@@ -35,12 +36,11 @@ const CH = {
   satchelLit: '#b3824f',
   satchelDk: '#553718',
   strap: '#7d5630',
-  gold: '#c8a94a', // satchel buckle accent
+  gold: '#c8a94a', // satchel buckle
   crestGold: '#d4af37', // club crest
   crestBlue: '#16407a',
   ink: '#1a1410', // eyes
-  mouth: '#5c3a28', // smile
-  blush: '#e0967a',
+  mouth: '#5c3a28',
   laptop: '#3a4250',
   laptopScr: '#7fc6c0',
 } as const;
@@ -74,8 +74,7 @@ function PoseSvg({
   );
 }
 
-// Simplified Real Madrid crest — gold ring, white field, blue sash, a tiny
-// crown. Reads as the club badge at avatar scale without the fine detail.
+// Simplified Real Madrid crest — gold ring, white field, blue sash, crown.
 function Crest({ x, y, s = 1 }: { x: number; y: number; s?: number }) {
   return (
     <g transform={`translate(${x},${y}) scale(${s})`}>
@@ -87,11 +86,11 @@ function Crest({ x, y, s = 1 }: { x: number; y: number; s?: number }) {
   );
 }
 
-// adidas three-stripe shoulder mark.
+// adidas three-stripe shoulder mark (positioned for the broad shoulders).
 function ShoulderStripes({ mirror = false }: { mirror?: boolean }) {
   const d = mirror
-    ? ['M87 88 L81 85', 'M85 91 L79 88', 'M83 94 L77 91']
-    : ['M33 88 L39 85', 'M35 91 L41 88', 'M37 94 L43 91'];
+    ? ['M92 93 L85 89', 'M90 96 L83 92', 'M88 99 L81 95']
+    : ['M28 93 L35 89', 'M30 96 L37 92', 'M32 99 L39 95'];
   return (
     <g stroke={CH.ink} strokeWidth="1.6" strokeLinecap="round">
       {d.map((p) => (
@@ -105,56 +104,57 @@ function ShoulderStripes({ mirror = false }: { mirror?: boolean }) {
 export function AvatarFront({ size = 240, className = 'qv-avatar-svg' }: PoseProps) {
   return (
     <PoseSvg size={size} className={className}>
-      <ellipse cx="60" cy="231" rx="30" ry="5" fill="rgba(0,0,0,.15)" />
+      <ellipse cx="60" cy="231" rx="31" ry="5" fill="rgba(0,0,0,.15)" />
 
       {/* ── JEANS ── */}
-      <path d="M40 148 L80 148 L78 210 L64 210 L60 166 L56 210 L42 210 Z" fill={CH.denim} />
-      <path d="M40 148 L60 148 L56 210 L42 210 Z" fill={CH.denimDark} opacity=".35" />
-      <path d="M50 152 L50 206" stroke={CH.stitch} strokeWidth=".7" opacity=".5" strokeDasharray="2 2" />
-      <path d="M70 152 L70 206" stroke={CH.stitch} strokeWidth=".7" opacity=".5" strokeDasharray="2 2" />
-      <rect x="42" y="204" width="14" height="5" fill={CH.denimDark} opacity=".4" />
-      <rect x="64" y="204" width="14" height="5" fill={CH.denimDark} opacity=".4" />
-
+      <path d="M40 150 L80 150 L78 210 L64 210 L60 168 L56 210 L42 210 Z" fill={CH.denim} />
+      <path d="M40 150 L60 150 L56 210 L42 210 Z" fill={CH.denimDark} opacity=".35" />
+      <path d="M50 154 L50 206" stroke={CH.stitch} strokeWidth=".7" opacity=".5" strokeDasharray="2 2" />
+      <path d="M70 154 L70 206" stroke={CH.stitch} strokeWidth=".7" opacity=".5" strokeDasharray="2 2" />
+      <rect x="42" y="205" width="14" height="5" fill={CH.denimDark} opacity=".4" />
+      <rect x="64" y="205" width="14" height="5" fill={CH.denimDark} opacity=".4" />
       {/* sneakers */}
-      <path d="M41 210 Q41 206 47 206 L58 206 L61 212 L61 215 Q61 218 56 218 L44 218 Q41 218 41 215 Z" fill={CH.shoe} />
-      <path d="M41 216 L61 216 L61 218 Q61 219 59 219 L43 219 Q41 219 41 217 Z" fill={CH.shoeSole} />
-      <path d="M79 210 Q79 206 73 206 L62 206 L59 212 L59 215 Q59 218 64 218 L76 218 Q79 218 79 215 Z" fill={CH.shoe} />
-      <path d="M79 216 L59 216 L59 218 Q59 219 61 219 L77 219 Q79 219 79 217 Z" fill={CH.shoeSole} />
+      <path d="M40 210 Q40 206 46 206 L58 206 L61 212 L61 215 Q61 218 56 218 L43 218 Q40 218 40 215 Z" fill={CH.shoe} />
+      <path d="M40 216 L61 216 L61 218 Q61 219 59 219 L42 219 Q40 219 40 217 Z" fill={CH.shoeSole} />
+      <path d="M80 210 Q80 206 74 206 L62 206 L59 212 L59 215 Q59 218 64 218 L77 218 Q80 218 80 215 Z" fill={CH.shoe} />
+      <path d="M80 216 L59 216 L59 218 Q59 219 61 219 L78 219 Q80 219 80 217 Z" fill={CH.shoeSole} />
 
-      {/* ── NECK ── */}
-      <path d="M53 62 L67 62 L69 86 L51 86 Z" fill={CH.skin} />
-      <path d="M53 62 L60 62 L60 86 L51 86 Z" fill={CH.skinShade} opacity=".2" />
+      {/* ── NECK (thick, into the traps) ── */}
+      <path d="M50 66 L70 66 L72 88 L48 88 Z" fill={CH.skin} />
+      <path d="M50 66 L60 66 L60 88 L48 88 Z" fill={CH.skinShade} opacity=".18" />
 
-      {/* ── JERSEY (Real Madrid home white) ── */}
-      <path d="M30 100 Q30 84 48 83 L72 83 Q90 84 90 100 L92 152 L28 152 Z" fill={CH.jersey} />
-      <path d="M60 83 L72 83 Q90 84 90 100 L92 152 L60 152 Z" fill={CH.jerseyLit} opacity=".4" />
+      {/* ── JERSEY — broad shoulders + traps, V-taper torso ── */}
+      <path d="M23 108 Q22 91 35 86 Q45 82 53 84 Q60 82 67 84 Q75 82 85 86 Q98 91 97 108 L86 156 L34 156 Z" fill={CH.jersey} />
+      <path d="M60 84 Q67 84 75 86 Q85 86 97 108 L86 156 L60 156 Z" fill={CH.jerseyLit} opacity=".35" />
+      {/* trap contours */}
+      <path d="M53 87 Q44 90 36 96" stroke={CH.jerseyShade} strokeWidth="1.4" fill="none" opacity=".55" />
+      <path d="M67 87 Q76 90 84 96" stroke={CH.jerseyShade} strokeWidth="1.4" fill="none" opacity=".55" />
       {/* gold side piping */}
-      <path d="M34 92 Q31 120 33 150" stroke={CH.piping} strokeWidth="1.1" fill="none" opacity=".8" />
-      <path d="M86 92 Q89 120 87 150" stroke={CH.piping} strokeWidth="1.1" fill="none" opacity=".8" />
+      <path d="M34 92 Q31 122 35 154" stroke={CH.piping} strokeWidth="1.1" fill="none" opacity=".8" />
+      <path d="M86 92 Q89 122 85 154" stroke={CH.piping} strokeWidth="1.1" fill="none" opacity=".8" />
       {/* navy V collar */}
-      <path d="M52 83 L60 92 L68 83 Z" fill={CH.navy} />
-      <path d="M54 83 L60 89 L66 83 Z" fill={CH.skin} />
-      {/* adidas shoulder stripes */}
+      <path d="M52 84 L60 93 L68 84 Z" fill={CH.navy} />
+      <path d="M54 84 L60 90 L66 84 Z" fill={CH.skin} />
       <ShoulderStripes />
       <ShoulderStripes mirror />
-      {/* short sleeves */}
-      <path d="M30 87 Q20 91 19 107 L27 110 Q30 95 35 90 Z" fill={CH.jersey} />
-      <path d="M90 87 Q100 91 101 107 L93 110 Q90 95 85 90 Z" fill={CH.jerseyLit} opacity=".9" />
+      {/* broad short sleeves */}
+      <path d="M23 90 Q13 95 12 113 L21 116 Q24 98 30 92 Z" fill={CH.jersey} />
+      <path d="M97 90 Q107 95 108 113 L99 116 Q96 98 90 92 Z" fill={CH.jerseyLit} opacity=".9" />
 
       {/* ── CLUB CREST (viewer-left chest, kept clear of the strap) ── */}
-      <Crest x={44} y={103} />
+      <Crest x={44} y={106} />
 
       {/* ── SATCHEL strap (right shoulder → left hip, crosses below the crest) ── */}
-      <path d="M86 90 L36 150 L40 154 L90 94 Z" fill={CH.strap} />
+      <path d="M88 92 L36 152 L40 156 L92 96 Z" fill={CH.strap} />
 
       {/* ── FOREARMS + MITT HANDS (no wristband) ── */}
-      <path d="M21 107 L19 136 Q19 140 23 140 L28 139 L30 109 Z" fill={CH.skin} />
-      <path d="M99 107 L101 136 Q101 140 97 140 L92 139 L90 109 Z" fill={CH.skin} />
-      <circle cx="23" cy="142" r="6" fill={CH.skin} />
-      <circle cx="97" cy="142" r="6" fill={CH.skin} />
+      <path d="M16 113 L14 143 Q14 147 18 147 L24 146 L26 115 Z" fill={CH.skin} />
+      <path d="M104 113 L106 143 Q106 147 102 147 L96 146 L94 115 Z" fill={CH.skin} />
+      <circle cx="20" cy="149" r="6.2" fill={CH.skin} />
+      <circle cx="100" cy="149" r="6.2" fill={CH.skin} />
 
       {/* ── SATCHEL bag (left hip) ── */}
-      <g transform="translate(36,156)">
+      <g transform="translate(34,160)">
         <path d="M-12 0 L12 0 L13 19 L-13 19 Z" fill={CH.satchel} />
         <path d="M-13 -2 L13 -2 L12 9 L-12 9 Z" fill={CH.satchelLit} />
         <rect x="-3" y="5" width="6" height="6" rx="1" fill={CH.gold} />
@@ -164,31 +164,29 @@ export function AvatarFront({ size = 240, className = 'qv-avatar-svg' }: PosePro
         <path d="M-12 3 L12 3" stroke={CH.satchelDk} strokeWidth=".6" strokeDasharray="1.5 1.5" opacity=".6" />
       </g>
 
-      {/* ── HEAD ── */}
-      <ellipse cx="60" cy="40" rx="27" ry="28" fill={CH.skin} />
-      <ellipse cx="60" cy="58" rx="18" ry="8" fill={CH.skinShade} opacity=".14" />
-      <ellipse cx="33" cy="44" rx="4.5" ry="6" fill={CH.skin} />
-      <ellipse cx="87" cy="44" rx="4.5" ry="6" fill={CH.skin} />
+      {/* ── HEAD (defined jaw) ── */}
+      <path d="M32 42 Q31 12 60 10 Q89 12 88 42 L86 54 Q82 65 71 70 Q60 74 49 70 Q38 65 34 54 L32 42 Z" fill={CH.skin} />
+      <path d="M36 58 Q60 75 84 58 Q81 67 71 71 Q60 75 49 71 Q39 67 36 58 Z" fill={CH.skinShade} opacity=".13" />
+      <ellipse cx="32" cy="45" rx="4.2" ry="6" fill={CH.skin} />
+      <ellipse cx="88" cy="45" rx="4.2" ry="6" fill={CH.skin} />
 
-      {/* ── HAIR (short, textured, natural hairline — no beard, no fade) ── */}
-      <path d="M32 37 Q30 18 60 13 Q90 18 88 37 Q84 27 77 26 Q70 30 64 28 Q60 26 56 28 Q50 30 43 26 Q36 27 32 37 Z" fill={CH.hair} />
-      <path d="M46 24 L47 18" stroke={CH.hairLit} strokeWidth="1.1" opacity=".45" strokeLinecap="round" />
-      <path d="M54 22 L54 16" stroke={CH.hairLit} strokeWidth="1.1" opacity=".45" strokeLinecap="round" />
-      <path d="M61 22 L61 16" stroke={CH.hairLit} strokeWidth="1.1" opacity=".45" strokeLinecap="round" />
-      <path d="M68 23 L68 17" stroke={CH.hairLit} strokeWidth="1.1" opacity=".45" strokeLinecap="round" />
+      {/* ── HAIR (full short cap, no thin spot) ── */}
+      <path d="M30 38 Q28 11 60 8 Q92 11 90 38 Q87 29 80 28 Q60 23 40 28 Q33 29 30 38 Z" fill={CH.hair} />
+      <path d="M40 18 Q60 13 80 18 Q60 16 40 18 Z" fill={CH.hairLit} opacity=".25" />
 
-      {/* ── FACE (big warm open smile) ── */}
-      <ellipse cx="51" cy="46" rx="3" ry="3.8" fill={CH.ink} />
-      <ellipse cx="69" cy="46" rx="3" ry="3.8" fill={CH.ink} />
-      <circle cx="51.9" cy="44.3" r="1" fill="#fff" opacity=".85" />
-      <circle cx="69.9" cy="44.3" r="1" fill="#fff" opacity=".85" />
-      <path d="M46 40 Q51 38 55 40" stroke={CH.hair} strokeWidth="2" fill="none" strokeLinecap="round" />
-      <path d="M65 40 Q69 38 74 40" stroke={CH.hair} strokeWidth="2" fill="none" strokeLinecap="round" />
-      <ellipse cx="60" cy="53" rx="2" ry="1.6" fill={CH.skinShade} opacity=".5" />
-      <path d="M49 55 Q60 60 71 55 Q66 67 60 67 Q54 67 49 55 Z" fill={CH.mouth} />
-      <path d="M50.5 55.5 Q60 58.5 69.5 55.5 Q60 60 50.5 55.5 Z" fill="#fff" />
-      <ellipse cx="44" cy="54" rx="5" ry="3" fill={CH.blush} opacity=".3" />
-      <ellipse cx="76" cy="54" rx="5" ry="3" fill={CH.blush} opacity=".3" />
+      {/* ── FACE (sharp brows, almond eyes, confident smile — no blush) ── */}
+      <path d="M44 41 Q50 38.5 55 41" stroke={CH.hair} strokeWidth="2.6" fill="none" strokeLinecap="round" />
+      <path d="M65 41 Q70 38.5 76 41" stroke={CH.hair} strokeWidth="2.6" fill="none" strokeLinecap="round" />
+      <ellipse cx="50" cy="47" rx="3.3" ry="2.7" fill={CH.ink} />
+      <ellipse cx="70" cy="47" rx="3.3" ry="2.7" fill={CH.ink} />
+      <path d="M46.5 44.6 Q50 43.4 53.5 44.6" stroke={CH.ink} strokeWidth="1" fill="none" opacity=".7" strokeLinecap="round" />
+      <path d="M66.5 44.6 Q70 43.4 73.5 44.6" stroke={CH.ink} strokeWidth="1" fill="none" opacity=".7" strokeLinecap="round" />
+      <circle cx="51.1" cy="46.2" r="1" fill="#fff" opacity=".85" />
+      <circle cx="71.1" cy="46.2" r="1" fill="#fff" opacity=".85" />
+      <path d="M58 51 Q57 56 60 57 Q63 56 62 51" stroke={CH.skinShade} strokeWidth="1" fill="none" opacity=".5" strokeLinecap="round" />
+      <ellipse cx="60" cy="58" rx="2.2" ry="1.6" fill={CH.skinShade} opacity=".45" />
+      <path d="M51 61 Q60 66 69 61 Q65 70 60 70 Q55 70 51 61 Z" fill={CH.mouth} />
+      <path d="M52.5 61.5 Q60 64.5 67.5 61.5 Q60 66 52.5 61.5 Z" fill="#fff" />
     </PoseSvg>
   );
 }
@@ -203,69 +201,64 @@ export function AvatarSide({ size = 240, className }: PoseProps) {
       <path d="M50 150 L48 210 L60 210 L61 150 Z" fill={CH.denimDark} />
       <path d="M61 150 L62 210 L75 210 L74 150 Z" fill={CH.denim} />
       <path d="M68 154 L68 206" stroke={CH.stitch} strokeWidth=".7" opacity=".5" strokeDasharray="2 2" />
-      {/* back sneaker */}
       <path d="M44 210 Q44 206 50 206 L60 206 L62 212 L62 215 Q62 218 57 218 L47 218 Q44 218 44 215 Z" fill={CH.shoe} opacity=".92" />
       <path d="M44 216 L62 216 L62 218 Q62 219 60 219 L46 219 Q44 219 44 217 Z" fill={CH.shoeSole} />
-      {/* front sneaker */}
       <path d="M61 210 Q61 206 67 206 L79 206 L82 212 L82 215 Q82 218 77 218 L64 218 Q61 218 61 215 Z" fill={CH.shoe} />
       <path d="M61 216 L82 216 L82 218 Q82 219 80 219 L63 219 Q61 219 61 217 Z" fill={CH.shoeSole} />
 
       {/* neck */}
-      <path d="M54 62 L66 62 L66 86 L52 86 Z" fill={CH.skin} />
-      <path d="M54 62 L59 62 L59 86 L52 86 Z" fill={CH.skinShade} opacity=".2" />
+      <path d="M52 66 L68 66 L68 88 L50 88 Z" fill={CH.skin} />
+      <path d="M52 66 L58 66 L58 88 L50 88 Z" fill={CH.skinShade} opacity=".18" />
 
-      {/* jersey torso (profile) */}
-      <path d="M44 100 Q44 84 60 83 L74 84 Q80 85 80 100 L80 152 L46 152 Z" fill={CH.jersey} />
-      <path d="M62 84 Q72 84 78 88 L80 152 L62 152 Z" fill={CH.jerseyLit} opacity=".4" />
-      <path d="M76 92 Q79 120 77 150" stroke={CH.piping} strokeWidth="1.1" fill="none" opacity=".7" />
-      {/* shoulder stripes (near shoulder) */}
+      {/* jersey torso (profile) — broad shoulder + trap */}
+      <path d="M42 108 Q42 88 52 84 Q60 82 66 84 Q76 84 82 92 Q86 100 84 108 L82 156 L46 156 Z" fill={CH.jersey} />
+      <path d="M64 84 Q76 84 82 92 Q86 100 84 108 L82 156 L64 156 Z" fill={CH.jerseyLit} opacity=".4" />
+      <path d="M66 86 Q76 89 82 96" stroke={CH.jerseyShade} strokeWidth="1.4" fill="none" opacity=".5" />
+      <path d="M80 94 Q83 122 80 154" stroke={CH.piping} strokeWidth="1.1" fill="none" opacity=".7" />
       <g stroke={CH.ink} strokeWidth="1.6" strokeLinecap="round">
-        <path d="M52 88 L60 86" />
-        <path d="M53 91 L61 89" />
-        <path d="M54 94 L62 92" />
+        <path d="M54 90 L62 88" />
+        <path d="M55 93 L63 91" />
+        <path d="M56 96 L64 94" />
       </g>
-      {/* crest on the chest (faces right) */}
-      <Crest x={70} y={104} s={0.92} />
+      <Crest x={72} y={106} s={0.9} />
 
       {/* back arm swung back */}
-      <path d="M50 89 L41 103 L39 132 L46 134 L54 100 Z" fill={CH.jerseyShade} />
-      <path d="M39 131 L37 138 Q37 141 41 140 L45 138 L46 134 Z" fill={CH.skinShade} />
-      <circle cx="41" cy="140" r="5.4" fill={CH.skinShade} />
+      <path d="M50 90 L40 104 L38 134 L45 136 L54 102 Z" fill={CH.jerseyShade} />
+      <path d="M38 133 L36 140 Q36 143 40 142 L44 140 L45 136 Z" fill={CH.skinShade} />
+      <circle cx="40" cy="142" r="5.6" fill={CH.skinShade} />
       {/* front arm forward (no wristband) */}
-      <path d="M72 89 L82 100 L84 129 L77 132 L70 100 Z" fill={CH.jersey} />
-      <path d="M84 128 L86 135 Q86 138 82 137 L78 135 L77 131 Z" fill={CH.skin} />
-      <circle cx="84" cy="138" r="5.4" fill={CH.skin} />
+      <path d="M74 90 L84 102 L86 132 L79 134 L72 102 Z" fill={CH.jersey} />
+      <path d="M86 131 L88 138 Q88 141 84 140 L80 138 L79 134 Z" fill={CH.skin} />
+      <circle cx="86" cy="141" r="5.6" fill={CH.skin} />
 
       {/* satchel strap + bag on the back hip */}
-      <path d="M72 88 L46 150 L50 153 L76 92 Z" fill={CH.strap} />
-      <g transform="translate(46,156)">
+      <path d="M74 90 L46 152 L50 155 L78 94 Z" fill={CH.strap} />
+      <g transform="translate(46,160)">
         <path d="M-11 0 L11 0 L12 18 L-12 18 Z" fill={CH.satchel} />
         <path d="M-12 -2 L12 -2 L11 8 L-11 8 Z" fill={CH.satchelLit} />
         <rect x="-3" y="4" width="6" height="6" rx="1" fill={CH.gold} />
         <rect x="-8" y="-5" width="16" height="4" rx="1" fill={CH.laptop} />
       </g>
 
-      {/* ── HEAD (round profile, facing right) ── */}
-      <ellipse cx="56" cy="40" rx="26" ry="28" fill={CH.skin} />
-      <ellipse cx="58" cy="58" rx="15" ry="7" fill={CH.skinShade} opacity=".13" />
-      <ellipse cx="42" cy="46" rx="4.5" ry="6" fill={CH.skin} />
-      <ellipse cx="42" cy="46" rx="2.2" ry="3.4" fill={CH.skinShade} opacity=".4" />
-      <path d="M81 44 Q86 50 81 55 Q82 50 81 44 Z" fill={CH.skin} />
+      {/* ── HEAD (profile, defined jaw, facing right) ── */}
+      <path d="M30 42 Q27 12 56 9 Q83 12 83 41 Q82 53 78 59 Q73 67 64 70 L57 70 Q49 68 44 61 Q34 53 30 42 Z" fill={CH.skin} />
+      <path d="M40 60 Q54 71 70 65 Q66 70 60 70 Q52 70 44 61 Q41 60 40 60 Z" fill={CH.skinShade} opacity=".12" />
+      <ellipse cx="42" cy="47" rx="4.2" ry="6" fill={CH.skin} />
+      <ellipse cx="42" cy="47" rx="2.1" ry="3.4" fill={CH.skinShade} opacity=".4" />
+      <path d="M82 46 Q87 52 82 57 Q83 52 82 46 Z" fill={CH.skin} />
 
-      {/* hair — short, textured (profile) */}
-      <path d="M30 38 Q28 18 56 13 Q84 17 82 36 Q79 27 73 27 Q60 22 48 26 Q36 29 31 38 Z" fill={CH.hair} />
-      <path d="M44 24 L45 18" stroke={CH.hairLit} strokeWidth="1.1" opacity=".45" strokeLinecap="round" />
-      <path d="M52 22 L52 16" stroke={CH.hairLit} strokeWidth="1.1" opacity=".45" strokeLinecap="round" />
-      <path d="M60 22 L60 16" stroke={CH.hairLit} strokeWidth="1.1" opacity=".45" strokeLinecap="round" />
-      <path d="M68 24 L67 18" stroke={CH.hairLit} strokeWidth="1.1" opacity=".45" strokeLinecap="round" />
+      {/* hair — full short cap (profile) */}
+      <path d="M28 40 Q26 11 56 8 Q86 11 84 38 Q81 29 74 28 Q58 23 46 28 Q34 30 30 40 Q28 41 28 40 Z" fill={CH.hair} />
+      <path d="M40 17 Q58 12 76 18 Q58 16 40 17 Z" fill={CH.hairLit} opacity=".22" />
 
-      {/* face (facing right, open smile) */}
-      <ellipse cx="70" cy="46" rx="3" ry="3.8" fill={CH.ink} />
-      <circle cx="70.9" cy="44.3" r="1" fill="#fff" opacity=".85" />
-      <path d="M64 40 Q69 38 74 41" stroke={CH.hair} strokeWidth="2" fill="none" strokeLinecap="round" />
-      <path d="M71 55 Q78 59 84 54 Q80 64 75 64 Q70 63 71 55 Z" fill={CH.mouth} />
-      <path d="M72 55.5 Q78 57.5 83 54.5 Q78 59 72 55.5 Z" fill="#fff" />
-      <ellipse cx="70" cy="53" rx="4.5" ry="2.8" fill={CH.blush} opacity=".28" />
+      {/* face (facing right) */}
+      <path d="M64 41 Q70 38.5 76 41" stroke={CH.hair} strokeWidth="2.5" fill="none" strokeLinecap="round" />
+      <ellipse cx="71" cy="47" rx="3.2" ry="2.7" fill={CH.ink} />
+      <path d="M67.5 44.6 Q71 43.4 74.5 44.6" stroke={CH.ink} strokeWidth="1" fill="none" opacity=".7" strokeLinecap="round" />
+      <circle cx="72" cy="46.2" r="1" fill="#fff" opacity=".85" />
+      <ellipse cx="80" cy="56" rx="1.8" ry="1.5" fill={CH.skinShade} opacity=".4" />
+      <path d="M71 61 Q78 65 84 60 Q80 68 75 68 Q70 67 71 61 Z" fill={CH.mouth} />
+      <path d="M72 61.5 Q78 63.5 83 60.5 Q78 65 72 61.5 Z" fill="#fff" />
     </PoseSvg>
   );
 }
@@ -274,66 +267,65 @@ export function AvatarSide({ size = 240, className }: PoseProps) {
 export function AvatarBack({ size = 240, className }: PoseProps) {
   return (
     <PoseSvg size={size} className={className}>
-      <ellipse cx="60" cy="231" rx="30" ry="5" fill="rgba(0,0,0,.15)" />
+      <ellipse cx="60" cy="231" rx="31" ry="5" fill="rgba(0,0,0,.15)" />
 
       {/* jeans */}
-      <path d="M40 148 L80 148 L78 210 L64 210 L60 166 L56 210 L42 210 Z" fill={CH.denim} />
-      <path d="M40 148 L60 148 L56 210 L42 210 Z" fill={CH.denimDark} opacity=".35" />
-      <path d="M50 152 L50 206" stroke={CH.stitch} strokeWidth=".7" opacity=".5" strokeDasharray="2 2" />
-      <path d="M70 152 L70 206" stroke={CH.stitch} strokeWidth=".7" opacity=".5" strokeDasharray="2 2" />
-      <rect x="42" y="204" width="14" height="5" fill={CH.denimDark} opacity=".4" />
-      <rect x="64" y="204" width="14" height="5" fill={CH.denimDark} opacity=".4" />
-      <path d="M41 210 Q41 206 47 206 L58 206 L61 212 L61 215 Q61 218 56 218 L44 218 Q41 218 41 215 Z" fill={CH.shoe} />
-      <path d="M41 216 L61 216 L61 218 Q61 219 59 219 L43 219 Q41 219 41 217 Z" fill={CH.shoeSole} />
-      <path d="M79 210 Q79 206 73 206 L62 206 L59 212 L59 215 Q59 218 64 218 L76 218 Q79 218 79 215 Z" fill={CH.shoe} />
-      <path d="M79 216 L59 216 L59 218 Q59 219 61 219 L77 219 Q79 219 79 217 Z" fill={CH.shoeSole} />
+      <path d="M40 150 L80 150 L78 210 L64 210 L60 168 L56 210 L42 210 Z" fill={CH.denim} />
+      <path d="M40 150 L60 150 L56 210 L42 210 Z" fill={CH.denimDark} opacity=".35" />
+      <path d="M50 154 L50 206" stroke={CH.stitch} strokeWidth=".7" opacity=".5" strokeDasharray="2 2" />
+      <path d="M70 154 L70 206" stroke={CH.stitch} strokeWidth=".7" opacity=".5" strokeDasharray="2 2" />
+      <rect x="42" y="205" width="14" height="5" fill={CH.denimDark} opacity=".4" />
+      <rect x="64" y="205" width="14" height="5" fill={CH.denimDark} opacity=".4" />
+      <path d="M40 210 Q40 206 46 206 L58 206 L61 212 L61 215 Q61 218 56 218 L43 218 Q40 218 40 215 Z" fill={CH.shoe} />
+      <path d="M40 216 L61 216 L61 218 Q61 219 59 219 L42 219 Q40 219 40 217 Z" fill={CH.shoeSole} />
+      <path d="M80 210 Q80 206 74 206 L62 206 L59 212 L59 215 Q59 218 64 218 L77 218 Q80 218 80 215 Z" fill={CH.shoe} />
+      <path d="M80 216 L59 216 L59 218 Q59 219 61 219 L78 219 Q80 219 80 217 Z" fill={CH.shoeSole} />
 
       {/* neck */}
-      <path d="M53 62 L67 62 L69 86 L51 86 Z" fill={CH.skin} />
+      <path d="M50 66 L70 66 L72 88 L48 88 Z" fill={CH.skin} />
 
-      {/* jersey back */}
-      <path d="M30 100 Q30 84 48 83 L72 83 Q90 84 90 100 L92 152 L28 152 Z" fill={CH.jersey} />
-      <path d="M60 83 L72 83 Q90 84 90 100 L92 152 L60 152 Z" fill={CH.jerseyLit} opacity=".4" />
-      <path d="M34 92 Q31 120 33 150" stroke={CH.piping} strokeWidth="1.1" fill="none" opacity=".8" />
-      <path d="M86 92 Q89 120 87 150" stroke={CH.piping} strokeWidth="1.1" fill="none" opacity=".8" />
-      <path d="M52 83 L60 88 L68 83 Z" fill={CH.navy} />
+      {/* jersey back — broad shoulders + traps */}
+      <path d="M23 108 Q22 91 35 86 Q45 82 53 84 Q60 82 67 84 Q75 82 85 86 Q98 91 97 108 L86 156 L34 156 Z" fill={CH.jersey} />
+      <path d="M60 84 Q67 84 75 86 Q85 86 97 108 L86 156 L60 156 Z" fill={CH.jerseyLit} opacity=".35" />
+      {/* trap + back muscle contours */}
+      <path d="M53 87 Q44 91 36 98" stroke={CH.jerseyShade} strokeWidth="1.4" fill="none" opacity=".55" />
+      <path d="M67 87 Q76 91 84 98" stroke={CH.jerseyShade} strokeWidth="1.4" fill="none" opacity=".55" />
+      <path d="M34 92 Q31 122 35 154" stroke={CH.piping} strokeWidth="1.1" fill="none" opacity=".8" />
+      <path d="M86 92 Q89 122 85 154" stroke={CH.piping} strokeWidth="1.1" fill="none" opacity=".8" />
+      <path d="M52 84 L60 89 L68 84 Z" fill={CH.navy} />
       <ShoulderStripes />
       <ShoulderStripes mirror />
       {/* name + number */}
-      <rect x="48" y="104" width="24" height="6" rx="1" fill={CH.navy} opacity=".85" />
-      <text x="60" y="109" textAnchor="middle" fontFamily="'Pixelify Sans', monospace" fontSize="5" fontWeight="700" fill={CH.jerseyLit}>
+      <rect x="48" y="106" width="24" height="6" rx="1" fill={CH.navy} opacity=".85" />
+      <text x="60" y="111" textAnchor="middle" fontFamily="'Pixelify Sans', monospace" fontSize="5" fontWeight="700" fill={CH.jerseyLit}>
         FARAZI
       </text>
-      <text x="60" y="134" textAnchor="middle" fontFamily="'Pixelify Sans', monospace" fontSize="18" fontWeight="700" fill={CH.navy}>
+      <text x="60" y="136" textAnchor="middle" fontFamily="'Pixelify Sans', monospace" fontSize="18" fontWeight="700" fill={CH.navy}>
         7
       </text>
 
-      {/* sleeves + arms (no wristband) */}
-      <path d="M30 87 Q20 91 19 107 L27 110 Q30 95 35 90 Z" fill={CH.jerseyShade} />
-      <path d="M90 87 Q100 91 101 107 L93 110 Q90 95 85 90 Z" fill={CH.jersey} />
-      <path d="M21 107 L19 136 Q19 140 23 140 L28 139 L30 109 Z" fill={CH.skin} />
-      <path d="M99 107 L101 136 Q101 140 97 140 L92 139 L90 109 Z" fill={CH.skin} />
-      <circle cx="23" cy="142" r="6" fill={CH.skin} />
-      <circle cx="97" cy="142" r="6" fill={CH.skin} />
+      {/* broad sleeves + arms (no wristband) */}
+      <path d="M23 90 Q13 95 12 113 L21 116 Q24 98 30 92 Z" fill={CH.jerseyShade} />
+      <path d="M97 90 Q107 95 108 113 L99 116 Q96 98 90 92 Z" fill={CH.jersey} />
+      <path d="M16 113 L14 143 Q14 147 18 147 L24 146 L26 115 Z" fill={CH.skin} />
+      <path d="M104 113 L106 143 Q106 147 102 147 L96 146 L94 115 Z" fill={CH.skin} />
+      <circle cx="20" cy="149" r="6.2" fill={CH.skin} />
+      <circle cx="100" cy="149" r="6.2" fill={CH.skin} />
 
       {/* satchel strap diagonal + bag */}
-      <path d="M34 90 L78 152 L82 148 L38 86 Z" fill={CH.strap} />
-      <g transform="translate(82,158)">
+      <path d="M34 92 L86 152 L90 148 L38 88 Z" fill={CH.strap} />
+      <g transform="translate(86,160)">
         <path d="M-12 0 L12 0 L13 19 L-13 19 Z" fill={CH.satchel} />
         <path d="M-13 -2 L13 -2 L12 9 L-12 9 Z" fill={CH.satchelLit} />
         <rect x="-3" y="5" width="6" height="6" rx="1" fill={CH.gold} />
       </g>
 
-      {/* ── HEAD (round, from behind) ── */}
-      <ellipse cx="60" cy="40" rx="27" ry="28" fill={CH.skin} />
-      <ellipse cx="33" cy="44" rx="4.5" ry="6" fill={CH.skin} />
-      <ellipse cx="87" cy="44" rx="4.5" ry="6" fill={CH.skin} />
-      <path d="M31 44 Q30 18 60 13 Q90 18 89 44 Q89 60 75 65 Q60 69 45 65 Q31 60 31 44 Z" fill={CH.hair} />
-      <path d="M40 52 L41 60" stroke={CH.hairLit} strokeWidth="1.1" strokeLinecap="round" opacity=".4" />
-      <path d="M50 55 L50 62" stroke={CH.hairLit} strokeWidth="1.1" strokeLinecap="round" opacity=".4" />
-      <path d="M60 56 L60 63" stroke={CH.hairLit} strokeWidth="1.1" strokeLinecap="round" opacity=".4" />
-      <path d="M70 55 L70 62" stroke={CH.hairLit} strokeWidth="1.1" strokeLinecap="round" opacity=".4" />
-      <path d="M80 52 L79 60" stroke={CH.hairLit} strokeWidth="1.1" strokeLinecap="round" opacity=".4" />
+      {/* ── HEAD (round, from behind, full hair) ── */}
+      <path d="M32 42 Q31 12 60 10 Q89 12 88 42 L86 54 Q82 63 74 67 Q60 71 46 67 Q38 63 34 54 L32 42 Z" fill={CH.skin} />
+      <ellipse cx="32" cy="45" rx="4.2" ry="6" fill={CH.skin} />
+      <ellipse cx="88" cy="45" rx="4.2" ry="6" fill={CH.skin} />
+      <path d="M30 46 Q28 11 60 8 Q92 11 90 46 Q90 58 78 63 Q60 68 42 63 Q30 58 30 46 Z" fill={CH.hair} />
+      <path d="M40 18 Q60 13 80 18 Q60 16 40 18 Z" fill={CH.hairLit} opacity=".22" />
     </PoseSvg>
   );
 }
@@ -355,18 +347,18 @@ export function AvatarToken({ size = 30, facing = 'south' }: { size?: number; fa
         filter: 'drop-shadow(0 2px 3px rgba(0,0,0,.35))',
       }}
     >
-      {/* shoulders / white jersey */}
-      <ellipse cx="22" cy="28" rx="13" ry="9" fill={CH.jersey} />
-      <ellipse cx="22" cy="28" rx="13" ry="9" fill="none" stroke="rgba(0,0,0,.12)" />
+      {/* broad shoulders / white jersey */}
+      <ellipse cx="22" cy="28" rx="15" ry="9.5" fill={CH.jersey} />
+      <ellipse cx="22" cy="28" rx="15" ry="9.5" fill="none" stroke="rgba(0,0,0,.12)" />
       {/* navy collar + crest dot */}
       <path d="M17 22 L22 27 L27 22 Z" fill={CH.navy} />
-      <circle cx="29" cy="25" r="2" fill={CH.crestGold} />
+      <circle cx="30" cy="25" r="2" fill={CH.crestGold} />
       {/* satchel strap */}
-      <path d="M15 21 L30 32" stroke={CH.strap} strokeWidth="3" strokeLinecap="round" />
+      <path d="M14 21 L31 32" stroke={CH.strap} strokeWidth="3" strokeLinecap="round" />
       {/* mitt forearms */}
-      <circle cx="11" cy="26" r="3.2" fill={CH.skin} />
-      <circle cx="33" cy="26" r="3.2" fill={CH.skin} />
-      {/* round head from above — short hair + a peek of face */}
+      <circle cx="9" cy="26" r="3.3" fill={CH.skin} />
+      <circle cx="35" cy="26" r="3.3" fill={CH.skin} />
+      {/* round head from above — full short hair + a peek of face */}
       <circle cx="22" cy="16" r="8.6" fill={CH.hair} />
       <circle cx="22" cy="16" r="8.6" fill={CH.hairLit} opacity=".18" />
       <path d="M14 19 Q22 24 30 19 Q22 15 14 19 Z" fill={CH.skin} />
@@ -428,7 +420,7 @@ export function CharacterSheetCard() {
             Character · 01
           </div>
           <div style={{ flex: 1, borderBottom: '1px solid #c8bb95' }} />
-          <div style={{ font: '11px var(--rw-mono)', color: 'var(--rw-ink-soft)' }}>round-head mascot</div>
+          <div style={{ font: '11px var(--rw-mono)', color: 'var(--rw-ink-soft)' }}>sharp mascot</div>
         </div>
         <h2 style={{ font: '500 46px/.95 "Pixelify Sans", var(--rw-serif)', margin: 0, color: 'var(--rw-ink)' }}>
           Parthiv,
@@ -436,9 +428,9 @@ export function CharacterSheetCard() {
           the explorer.
         </h2>
         <p style={{ font: '13px/1.5 var(--rw-sans)', color: 'var(--rw-ink-soft)', margin: 0, maxWidth: 380 }}>
-          A friendly cartoon mascot drawn from life — big warm smile, short textured dark hair, warm tan. He wears a white Real
-          Madrid home jersey (adidas stripes, gold piping, club crest, #7 on the back), blue jeans, and a brown leather laptop
-          satchel slung cross-body, with the crest left visible.
+          A sharp, grown-up cartoon drawn from life — defined jaw, full short hair, broad shoulders and traps, confident smile.
+          He wears a white Real Madrid home jersey (adidas stripes, gold piping, club crest, #7 on the back), blue jeans, and a
+          brown leather laptop satchel slung cross-body, with the crest left visible.
         </p>
         <div
           style={{
@@ -472,10 +464,10 @@ export function CharacterSheetCard() {
           </div>
           <div style={{ flex: 1, borderBottom: '1px solid #c8bb95' }} />
         </div>
-        <SpecRow label="Style" v="Cartoon mascot · cozy indie (Animal Crossing · Tomodachi Life · Nintendo)" />
-        <SpecRow label="Proportion" v="Cartoon-realistic ratio · head ≈ 1/4 · real neck" highlight />
-        <SpecRow label="Face" v="Simple mascot · dot eyes · big warm smile · no beard" highlight />
-        <SpecRow label="Hair" v={<><Sw c={CH.hair} /> Short · textured · natural hairline</>} />
+        <SpecRow label="Style" v="Sharp cartoon mascot · cozy indie (Animal Crossing · Tomodachi Life)" />
+        <SpecRow label="Build" v="Broad shoulders · traps · V-taper" highlight />
+        <SpecRow label="Face" v="Defined jaw · strong brows · almond eyes · confident smile" highlight />
+        <SpecRow label="Hair" v={<><Sw c={CH.hair} /> Full short cut · clean hairline</>} />
         <SpecRow label="Skin" v={<><Sw c={CH.skin} /> Warm tan · flat fill</>} />
         <SpecRow label="Jersey" v={<><Sw c={CH.jersey} /> Real Madrid home · <Sw c={CH.crestGold} /> crest · #7</>} highlight />
         <SpecRow label="Jeans" v={<><Sw c={CH.denim} /> Blue denim · contrast stitch</>} />
@@ -509,7 +501,7 @@ export function CharacterSheetCard() {
             lineHeight: 1.5,
           }}
         >
-          v0.6 · drawn from life
+          v0.7 · sharp &amp; athletic
           <br />
           RM jersey · jeans
         </div>
