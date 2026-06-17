@@ -1,7 +1,7 @@
 import { MotionConfig, motion } from 'framer-motion';
 import { Suspense, useEffect, useRef, useState, type ReactNode } from 'react';
 import { getBuilding, type BuildingId } from '@/data/buildings';
-import { AvatarFront } from './Avatar';
+import { AvatarPortrait } from './Avatar';
 import { Thumb, type ThumbKind } from './Thumb';
 import { Audio } from '@/audio/AudioManager';
 import { useGame } from '@/state/gameStore';
@@ -514,7 +514,7 @@ function IdentityStrip() {
   return (
     <section className="qv-identity" aria-label="Portfolio identity">
       <div className="qv-identity-avatar">
-        <AvatarFront size={118} />
+        <AvatarPortrait size={118} />
       </div>
       <div className="qv-identity-copy">
         <h1>Parthiv Farazi</h1>

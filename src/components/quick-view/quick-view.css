@@ -473,19 +473,16 @@
   background: #fff8e2;
 }
 
-/* The avatar is a full-body figure. Inside this small square frame we want
-   a head-and-shoulders portrait, not the whole body squeezed in. Blow the
-   figure up and anchor on the face so it sits centered in the frame.
-   Percentages are relative to the (square) container, so the same framing
-   holds at every avatar size. The round-head mascot has a big, wide head,
-   so pull the zoom back to a real head-and-shoulders portrait — head
-   smaller in frame with the jersey collar/shoulders showing — rather than
-   the head filling the whole circle. */
+/* The avatar is a square flat-vector portrait, already composed as a
+   head-and-shoulders shot that fills its own 400×400 frame. So we only need
+   a light zoom to trim the thin background margin around the edges and
+   anchor it centered. Percentages are relative to the (square) container,
+   so the same framing holds at every avatar size. */
 .qv-identity-avatar .qv-avatar-svg {
   position: absolute;
   left: 50%;
-  top: 0%;
-  width: 122%;
+  top: -3%;
+  width: 106%;
   height: auto;
   transform: translateX(-50%);
 }

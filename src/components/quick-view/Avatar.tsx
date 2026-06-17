@@ -101,6 +101,129 @@ function ShoulderStripes({ mirror = false }: { mirror?: boolean }) {
   );
 }
 
+// ── QUICK-VIEW PORTRAIT ───────────────────────────────────────────────
+// Flat-vector head-and-shoulders portrait (the polished "2D picture"),
+// distinct from the mascot poses above. This is what the Quick View
+// identity strip renders. Cel/flat shading, warm-tan skin ramp, hair as
+// tonal masses, white Real Madrid home jersey. Composed to fill its own
+// 400×400 frame, so the crop CSS only needs a light zoom — see
+// `.qv-identity-avatar .qv-avatar-svg`.
+const PR = {
+  bg: '#fff8e2', // matches the identity frame so the portrait sits seamlessly
+  vignette: '#fff8e2', // flat — no halo behind the head
+  skin: '#C99670',
+  skinShade: '#A87850',
+  faceShade: '#8a5630', // deeper than skinShade — face planes need to hold at 72px
+  hair: '#2E2823',
+  hairFade: '#564C42', // lighter two-tone fade band at the sideburn
+  hairLite: '#494037', // crown top-light
+  eyeWhite: '#E8E4DC',
+  iris: '#2A2622',
+  lid: '#5e4334',
+  jersey: '#F4F1EA', // Real Madrid home white
+  jerseyShade: '#E7E6E0',
+  navy: '#15213F',
+  piping: '#E6A23C',
+  crestGold: '#D4AF37',
+  crestBlue: '#16407A',
+  lipDark: '#8B5246',
+  lip: '#A86E5C',
+  teeth: '#ECE6DD',
+} as const;
+
+export function AvatarPortrait({ size = 118, className = 'qv-avatar-svg' }: PoseProps) {
+  return (
+    <svg viewBox="0 0 400 400" width={size} height={size} className={className} aria-hidden="true">
+      <defs>
+        <clipPath id="qvPortraitFaceClip">
+          <path d="M200 50 C244 50 280 83 283 127 C284 149 283 169 279 189 C275 210 267 227 254 242 C244 254 231 266 215 272 C210 274 205 275 200 275 C195 275 190 274 185 272 C169 266 156 254 146 242 C133 227 125 210 121 189 C117 169 116 149 117 127 C120 83 156 50 200 50 Z" />
+        </clipPath>
+      </defs>
+
+      {/* background: darker oval so the white jersey + skin read against it */}
+      <rect x="0" y="0" width="400" height="400" fill={PR.bg} />
+      <ellipse cx="200" cy="188" rx="178" ry="200" fill={PR.vignette} />
+
+      {/* NECK (same skin as the face; short, flares into the traps) */}
+      <path d="M172 250 C173 268 171 285 174 300 C176 314 165 322 156 332 L244 332 C235 322 224 314 226 300 C229 285 227 268 228 250 C220 260 210 264 200 264 C190 264 180 260 172 250 Z" fill={PR.skin} />
+
+      {/* BODY: white jersey, continuous shoulder slope filling the frame */}
+      <path d="M38 400 L42 354 C44 336 62 330 88 329 C118 325 148 317 170 305 C180 316 190 321 200 321 C210 321 220 316 230 305 C252 317 282 325 312 329 C338 330 356 336 358 354 L362 400 Z" fill={PR.jersey} />
+      <path d="M236 308 C262 320 290 327 314 330 C338 331 356 337 358 354 L362 400 L320 400 C320 364 290 326 236 308 Z" fill={PR.jerseyShade} />
+      {/* adidas shoulder stripes on the trapezius slope */}
+      <g stroke={PR.navy} strokeWidth="3.6" strokeLinecap="round">
+        <path d="M156 314 L114 332" />
+        <path d="M160 322 L118 340" />
+        <path d="M164 330 L122 348" />
+      </g>
+      <g stroke={PR.navy} strokeWidth="3.6" strokeLinecap="round">
+        <path d="M244 314 L286 332" />
+        <path d="M240 322 L282 340" />
+        <path d="M236 330 L278 348" />
+      </g>
+      {/* collar: clean shallow V */}
+      <path d="M168 304 C179 314 190 318 200 318 C210 318 221 314 232 304 C227 312 221 316 213 321 C208 326 204 328 200 328 C196 328 192 326 187 321 C179 316 173 312 168 304 Z" fill={PR.navy} />
+      <path d="M175 306 C184 313 192 316 200 316 C208 316 216 313 225 306 C220 312 215 315 208 319 C204 323 202 325 200 325 C198 325 196 323 192 319 C185 315 180 312 175 306 Z" fill={PR.jersey} />
+      <path d="M178 308 C186 314 193 317 200 317 C207 317 214 314 222 308" fill="none" stroke={PR.piping} strokeWidth="1.4" strokeLinecap="round" opacity=".7" />
+      {/* club crest on the chest (viewer-left) */}
+      <g transform="translate(170,358) scale(1.35)">
+        <circle r="5.4" fill={PR.crestGold} />
+        <circle cy="0.4" r="4.2" fill={PR.jersey} />
+        <path d="M-3.6 2.2 L3.6 -2.4" stroke={PR.crestBlue} strokeWidth="1.7" />
+        <path d="M-3.2 -3.3 L-2 -5 L-1 -3.5 L0 -5.4 L1 -3.5 L2 -5 L3.2 -3.3 Z" fill={PR.crestGold} />
+      </g>
+
+      {/* ears */}
+      <ellipse cx="121" cy="186" rx="12" ry="24" fill={PR.skin} />
+      <ellipse cx="279" cy="186" rx="12" ry="24" fill={PR.skin} />
+      <path d="M117 180 C114 188 115 196 119 202 C117 194 117 186 120 180 Z" fill={PR.skinShade} opacity=".3" />
+      <path d="M283 180 C286 188 285 196 281 202 C283 194 283 186 280 180 Z" fill={PR.skinShade} opacity=".3" />
+
+      {/* face base */}
+      <path d="M200 50 C244 50 280 83 283 127 C284 149 283 169 279 189 C275 210 267 227 254 242 C244 254 231 266 215 272 C210 274 205 275 200 275 C195 275 190 274 185 272 C169 266 156 254 146 242 C133 227 125 210 121 189 C117 169 116 149 117 127 C120 83 156 50 200 50 Z" fill={PR.skin} />
+
+      {/* face shading — high contrast so the planes hold at 72px (no cheek shadow) */}
+      <g clipPath="url(#qvPortraitFaceClip)">
+        {/* form shadow down the right side of the face */}
+        <path d="M258 124 C273 146 278 175 274 204 C270 227 261 242 250 251 C258 228 262 199 260 172 C258 150 258 136 258 124 Z" fill={PR.faceShade} opacity=".42" />
+        {/* nose: right flank + tip */}
+        <path d="M203 165 C210 178 212 197 210 213 C206 213 201 213 200 213 C200 197 201 180 203 165 Z" fill={PR.faceShade} opacity=".56" />
+        <path d="M188 213 C195 218 205 218 212 213 C210 220 206 224 200 224 C194 224 190 220 188 213 Z" fill={PR.faceShade} opacity=".68" />
+        {/* under the lower lip */}
+        <path d="M186 249 C193 253 207 253 214 249 C211 255 206 257 200 257 C194 257 189 255 186 249 Z" fill={PR.faceShade} opacity=".44" />
+      </g>
+
+      {/* tight cast shadow JUST under the jaw (separates face from neck) */}
+      <path d="M176 270 C185 278 192 282 200 282 C208 282 215 278 224 270 C222 278 216 285 208 288 C204 290 196 290 192 288 C184 285 178 278 176 270 Z" fill={PR.faceShade} opacity=".58" />
+
+      {/* brows */}
+      <path d="M147 151 C159 145 176 146 187 151 C176 149 159 149 148 154 Z" fill={PR.hair} />
+      <path d="M213 151 C224 146 241 145 253 151 C242 149 224 149 213 154 Z" fill={PR.hair} />
+      {/* eyes */}
+      <path d="M150 161 C156 154 174 154 181 161 C174 167 156 167 150 161 Z" fill={PR.eyeWhite} />
+      <path d="M219 161 C226 154 244 154 250 161 C244 167 226 167 219 161 Z" fill={PR.eyeWhite} />
+      <circle cx="166" cy="161" r="5" fill={PR.iris} />
+      <circle cx="234" cy="161" r="5" fill={PR.iris} />
+      <circle cx="167.3" cy="159.6" r="1.3" fill="#fff" opacity=".75" />
+      <circle cx="235.3" cy="159.6" r="1.3" fill="#fff" opacity=".75" />
+      <path d="M151 159 C158 154 174 154 180 159" fill="none" stroke={PR.lid} strokeWidth="1.5" strokeLinecap="round" opacity=".45" />
+      <path d="M220 159 C226 154 242 154 249 159" fill="none" stroke={PR.lid} strokeWidth="1.5" strokeLinecap="round" opacity=".45" />
+
+      {/* mouth: warm smile */}
+      <path d="M170 234 Q200 246 230 234 Q216 252 200 252 Q184 252 170 234 Z" fill={PR.lipDark} />
+      <path d="M176 235 Q200 243 224 235 Q200 246 176 235 Z" fill={PR.teeth} />
+      <path d="M170 234 Q200 239 230 234 Q200 237 170 234 Z" fill={PR.lip} />
+      <path d="M182 250 Q200 255 218 250 Q200 258 182 250 Z" fill={PR.lip} opacity=".85" />
+
+      {/* HAIR — rounder circular cap (crown y44) + lighter two-tone fade bands */}
+      <path d="M120 158 C114 104 126 46 200 44 C274 46 286 104 280 158 C278 142 272 128 262 123 C251 117 241 119 233 125 C222 117 213 116 200 116 C187 116 177 117 167 125 C159 119 149 117 138 123 C128 128 122 142 120 158 Z" fill={PR.hair} />
+      <path d="M120 158 C122 144 127 131 135 124 C134 135 132 147 131 157 C127 159 123 159 120 158 Z" fill={PR.hairFade} />
+      <path d="M280 158 C278 144 273 131 265 124 C266 135 268 147 269 157 C273 159 277 159 280 158 Z" fill={PR.hairFade} />
+      <path d="M150 78 C170 62 200 58 228 66 C246 72 256 86 258 100 C244 86 222 78 200 78 C178 78 162 84 152 96 C150 90 150 84 150 78 Z" fill={PR.hairLite} opacity=".5" />
+    </svg>
+  );
+}
+
 // ── FRONT VIEW ────────────────────────────────────────────────────────
 export function AvatarFront({ size = 240, className = 'qv-avatar-svg' }: PoseProps) {
   return (
