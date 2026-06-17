@@ -13,11 +13,12 @@
 //    and the dialog wraps it in PanelZoom (pinch / double-tap / zoom
 //    button) for reading. usePanelScale exposes the fit scale so the zoom
 //    layer can compute its "readable" target.
-//  • DESKTOP computes scale = min(maxW/w, maxH/h) with a readability floor
-//    (tall panels on small laptops scroll vertically instead of shrinking
-//    below legibility) and an upscale CAP: on large monitors panels grow
-//    past their authored size — DOM text scales crisply, and the embedded
-//    screenshots ship at ~3000px so they stay sharp well past 1x.
+//  • DESKTOP fits the WHOLE panel on screen (contain): scale =
+//    min(maxW/w, maxH/h) so every panel is fully visible at first glance —
+//    no vertical scroll, readers zoom for fine print. An upscale CAP keeps
+//    panels from ballooning past poster size on large monitors — DOM text
+//    scales crisply, and the embedded screenshots ship at ~3000px so they
+//    stay sharp well past 1x.
 
 import { useEffect, useState, type ReactNode } from 'react';
 
@@ -33,10 +34,6 @@ const SHORT_VIEWPORT = 520;
 // margin remain.
 const MOBILE_CHROME_Y = 90;
 const MOBILE_MARGIN_W = 0.97;
-// Desktop readability floor: never render below 70% of authored size —
-// 16px body text at ~11px. Capped at width-fit so desktop never pans
-// sideways; tall panels scroll vertically instead.
-const MIN_SCALE_DESKTOP = 0.75;
 // Upscale ceiling for large monitors — past ~1.6 the panel compositions
 // start to feel like posters rather than cards.
 const MAX_SCALE_DESKTOP = 1.6;
@@ -67,9 +64,11 @@ export function usePanelScale(width: number, height: number) {
   } else {
     const maxW = viewport.w * MARGIN_PCT_DESKTOP;
     const maxH = viewport.h * MARGIN_PCT_DESKTOP - OVERLAY_PADDING_Y;
+    // Fit the WHOLE panel on screen (contain) so it's fully visible at first
+    // glance — as large as the viewport allows, capped so big monitors don't
+    // balloon it past poster size. No vertical scroll: readers zoom (browser
+    // zoom / pinch) for fine print rather than scrolling a tall panel.
     scale = Math.min(maxW / width, maxH / height, MAX_SCALE_DESKTOP);
-    const floor = Math.min(MIN_SCALE_DESKTOP, maxW / width);
-    scale = Math.max(scale, Math.min(floor, 1));
   }
   return { scale, isMobile };
 }
