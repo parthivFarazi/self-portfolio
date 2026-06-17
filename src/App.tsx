@@ -120,20 +120,25 @@ export default function App() {
     return () => events.forEach((e) => window.removeEventListener(e, handler));
   }, [route]);
 
-  // Touch devices have no hover to trigger the landing's preload, so warm
-  // both route chunks during idle time — by the time a phone visitor picks
-  // a mode, the code is usually already cached.
+  // The Exploration chunk is heavy — three.js + the whole island, ~1 MB
+  // (≈290 kB gzip). On a cold cache the FIRST click into the world pays that
+  // entire download + parse, which is exactly why a refresh (served from
+  // cache) feels instant. So warm both route chunks as soon as the landing
+  // has painted — long before a visitor finishes reading and clicks in.
+  // requestIdleCallback can defer by several seconds (the very window we need
+  // to cover), so we cap it with a short timeout; touch/Safari with no rIC
+  // falls back to a brief setTimeout instead of waiting.
   useEffect(() => {
     if (route !== 'landing') return;
-    const start = () => {
+    const warm = () => {
       void loadQuickRoute();
       void loadExploreRoute();
     };
     if (typeof window.requestIdleCallback === 'function') {
-      const id = window.requestIdleCallback(start, { timeout: 4000 });
+      const id = window.requestIdleCallback(warm, { timeout: 1200 });
       return () => window.cancelIdleCallback(id);
     }
-    const id = window.setTimeout(start, 2500);
+    const id = window.setTimeout(warm, 500);
     return () => window.clearTimeout(id);
   }, [route]);
 
