@@ -2,7 +2,7 @@
 
 An interactive portfolio built as a small world instead of a conventional personal website.
 
-Live site: https://parthivfarazi.vercel.app  
+Live site: https://parthivportfolio.com
 Repository: https://github.com/parthivFarazi/self-portfolio
 
 ## What this project is
