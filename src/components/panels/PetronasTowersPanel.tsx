@@ -236,10 +236,9 @@ function PortraitMini() {
       <rect x="78" y="120" width="4" height="40" fill="#dcd3bf"/>
       <ellipse cx="80" cy="86" rx="28" ry="32" fill="#d9a779"/>
       <path d="M52 76 Q54 52 80 48 Q106 52 108 76 Q100 62 80 60 Q60 62 52 76 Z" fill="#1a1410"/>
-      <path d="M58 88 Q58 110 70 116 Q80 122 90 116 Q102 110 102 88 Q92 96 80 96 Q68 96 58 88 Z" fill="#241a14"/>
       <ellipse cx="70" cy="88" rx="2" ry="2.6" fill="#1a1410"/>
       <ellipse cx="90" cy="88" rx="2" ry="2.6" fill="#1a1410"/>
-      <path d="M70 104 Q80 108 90 104" stroke="#1a1410" strokeWidth="1.4" fill="none" strokeLinecap="round"/>
+      <path d="M66 101 Q80 118 94 101" stroke="#1a1410" strokeWidth="1.7" fill="none" strokeLinecap="round"/>
       <rect x="110" y="138" width="14" height="5" fill="#d4c178"/>
     </svg>
   );
