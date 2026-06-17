@@ -20,6 +20,7 @@ import type { ReactNode } from 'react';
 const CH = {
   skin: '#d49c6a',
   skinShade: '#b88052',
+  neck: '#c08c5a', // a touch darker than the face — reads as the neck without a hard shadow
   hair: '#241c17',
   hairLit: '#3a2e25',
   jersey: '#f4f1ea', // Real Madrid home white
@@ -119,9 +120,8 @@ export function AvatarFront({ size = 240, className = 'qv-avatar-svg' }: PosePro
       <path d="M80 210 Q80 206 74 206 L62 206 L59 212 L59 215 Q59 218 64 218 L77 218 Q80 218 80 215 Z" fill={CH.shoe} />
       <path d="M80 216 L59 216 L59 218 Q59 219 61 219 L78 219 Q80 219 80 217 Z" fill={CH.shoeSole} />
 
-      {/* ── NECK (thick, into the traps) ── */}
-      <path d="M50 66 L70 66 L72 88 L48 88 Z" fill={CH.skin} />
-      <path d="M50 66 L60 66 L60 88 L48 88 Z" fill={CH.skinShade} opacity=".18" />
+      {/* ── NECK (a shade darker than the face → reads as separate) ── */}
+      <path d="M50 66 L70 66 L72 88 L48 88 Z" fill={CH.neck} />
 
       {/* ── JERSEY — broad shoulders + traps, V-taper torso ── */}
       <path d="M23 108 Q22 91 35 86 Q45 82 53 84 Q60 82 67 84 Q75 82 85 86 Q98 91 97 108 L86 156 L34 156 Z" fill={CH.jersey} />
@@ -166,14 +166,21 @@ export function AvatarFront({ size = 240, className = 'qv-avatar-svg' }: PosePro
 
       {/* ── HEAD (defined jaw) ── */}
       <path d="M32 42 Q31 12 60 10 Q89 12 88 42 L86 54 Q82 65 71 70 Q60 74 49 70 Q38 65 34 54 L32 42 Z" fill={CH.skin} />
-      {/* jaw/cheek shadow for structure */}
-      <path d="M35 56 Q60 74 85 56 Q82 66 71 71 Q60 75 49 71 Q38 66 35 56 Z" fill={CH.skinShade} opacity=".16" />
-      {/* shadow on the neck right under the chin — separates face from neck */}
-      <path d="M48 73 Q60 80 72 73 Q69 81 60 82 Q51 81 48 73 Z" fill={CH.skinShade} opacity=".42" />
+      {/* subtle jaw shadow for structure */}
+      <path d="M37 58 Q60 73 83 58 Q80 66 71 70 Q60 74 49 70 Q40 66 37 58 Z" fill={CH.skinShade} opacity=".12" />
 
-      {/* ── HAIR (full cap that hugs down the sides to the ears — no gap) ── */}
-      <path d="M31 46 Q30 12 60 9 Q90 12 89 46 Q87 38 82 33 Q72 27 60 27 Q48 27 38 33 Q33 38 31 46 Z" fill={CH.hair} />
-      <path d="M42 17 Q60 13 78 17 Q60 16 42 17 Z" fill={CH.hairLit} opacity=".22" />
+      {/* ── HAIR — short hair (not a cap): sideburns, a sheen, soft edge ── */}
+      {/* sideburns tapering down in front of the ears */}
+      <path d="M36 41 L37 53 Q39.5 53 40 47 L39 41 Z" fill={CH.hair} />
+      <path d="M84 41 L83 53 Q80.5 53 80 47 L81 41 Z" fill={CH.hair} />
+      {/* main hair mass — natural hairline, sides taper rather than wrap */}
+      <path d="M34 45 Q31 11 60 9 Q89 11 86 45 Q84 35 78 31 Q70 27 60 28 Q50 27 42 31 Q36 35 34 45 Z" fill={CH.hair} />
+      {/* a few strands across the hairline so the edge isn't a smooth band */}
+      <path d="M47 29 Q49 26 52 29" stroke={CH.hair} strokeWidth="2.4" fill="none" strokeLinecap="round" />
+      <path d="M58 28 Q60 25 63 28" stroke={CH.hair} strokeWidth="2.4" fill="none" strokeLinecap="round" />
+      <path d="M68 29 Q71 26 73 29" stroke={CH.hair} strokeWidth="2.4" fill="none" strokeLinecap="round" />
+      {/* soft sheen for volume */}
+      <path d="M41 16 Q57 11 73 15 Q57 16 41 19 Z" fill={CH.hairLit} opacity=".35" />
 
       {/* ears (drawn over the hair so they read clearly) */}
       <ellipse cx="32" cy="47" rx="4.2" ry="6" fill={CH.skin} />
@@ -211,9 +218,8 @@ export function AvatarSide({ size = 240, className }: PoseProps) {
       <path d="M61 210 Q61 206 67 206 L79 206 L82 212 L82 215 Q82 218 77 218 L64 218 Q61 218 61 215 Z" fill={CH.shoe} />
       <path d="M61 216 L82 216 L82 218 Q82 219 80 219 L63 219 Q61 219 61 217 Z" fill={CH.shoeSole} />
 
-      {/* neck */}
-      <path d="M52 66 L68 66 L68 88 L50 88 Z" fill={CH.skin} />
-      <path d="M52 66 L58 66 L58 88 L50 88 Z" fill={CH.skinShade} opacity=".18" />
+      {/* neck — a shade darker than the face */}
+      <path d="M52 66 L68 66 L68 88 L50 88 Z" fill={CH.neck} />
 
       {/* jersey torso (profile) — broad shoulder + trap */}
       <path d="M42 108 Q42 88 52 84 Q60 82 66 84 Q76 84 82 92 Q86 100 84 108 L82 156 L46 156 Z" fill={CH.jersey} />
@@ -247,13 +253,14 @@ export function AvatarSide({ size = 240, className }: PoseProps) {
 
       {/* ── HEAD (profile, defined jaw, facing right) ── */}
       <path d="M30 42 Q27 12 56 9 Q83 12 83 41 Q82 53 78 59 Q73 67 64 70 L57 70 Q49 68 44 61 Q34 53 30 42 Z" fill={CH.skin} />
-      <path d="M40 60 Q54 71 70 65 Q66 70 60 70 Q52 70 44 61 Q41 60 40 60 Z" fill={CH.skinShade} opacity=".14" />
-      {/* under-chin shadow on the neck */}
-      <path d="M52 71 Q60 77 67 71 Q64 78 58 78 Q53 77 52 71 Z" fill={CH.skinShade} opacity=".4" />
+      <path d="M40 60 Q54 71 70 65 Q66 70 60 70 Q52 70 44 61 Q41 60 40 60 Z" fill={CH.skinShade} opacity=".12" />
 
-      {/* hair — full cap, hugs down the back/side to the ear (no gap) */}
-      <path d="M28 47 Q25 11 56 8 Q86 11 84 41 Q81 32 74 29 Q58 23 46 28 Q35 31 30 43 Q28 46 28 47 Z" fill={CH.hair} />
-      <path d="M40 17 Q58 12 76 18 Q58 16 40 17 Z" fill={CH.hairLit} opacity=".22" />
+      {/* hair — short hair: sideburn, sheen, soft edge (profile) */}
+      <path d="M46 40 L47 51 Q49 51 49.5 46 L48.5 40 Z" fill={CH.hair} />
+      <path d="M28 45 Q25 11 56 8 Q86 11 84 41 Q82 33 75 30 Q58 24 46 29 Q35 32 30 43 Q28 45 28 45 Z" fill={CH.hair} />
+      <path d="M50 30 Q52 27 55 30" stroke={CH.hair} strokeWidth="2.2" fill="none" strokeLinecap="round" />
+      <path d="M62 28 Q65 25 68 29" stroke={CH.hair} strokeWidth="2.2" fill="none" strokeLinecap="round" />
+      <path d="M40 16 Q57 11 74 17 Q57 16 40 18 Z" fill={CH.hairLit} opacity=".32" />
 
       {/* ear + nose (drawn over the hair) */}
       <ellipse cx="42" cy="47" rx="4.2" ry="6" fill={CH.skin} />
@@ -290,8 +297,8 @@ export function AvatarBack({ size = 240, className }: PoseProps) {
       <path d="M80 210 Q80 206 74 206 L62 206 L59 212 L59 215 Q59 218 64 218 L77 218 Q80 218 80 215 Z" fill={CH.shoe} />
       <path d="M80 216 L59 216 L59 218 Q59 219 61 219 L78 219 Q80 219 80 217 Z" fill={CH.shoeSole} />
 
-      {/* neck */}
-      <path d="M50 66 L70 66 L72 88 L48 88 Z" fill={CH.skin} />
+      {/* neck — a shade darker than the face */}
+      <path d="M50 66 L70 66 L72 88 L48 88 Z" fill={CH.neck} />
 
       {/* jersey back — broad shoulders + traps */}
       <path d="M23 108 Q22 91 35 86 Q45 82 53 84 Q60 82 67 84 Q75 82 85 86 Q98 91 97 108 L86 156 L34 156 Z" fill={CH.jersey} />
