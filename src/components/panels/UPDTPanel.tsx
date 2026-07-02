@@ -40,7 +40,7 @@ export function UPDTPanel({ width = 1280, height = 1300 }: PanelProps) {
             An AI platform that turns wide-angle match footage into scouting data.
           </div>
           <div style={{ font: '13px "JetBrains Mono", monospace', color: TEXT_DIM, letterSpacing: '.04em' }}>
-            Co-founder &amp; CTO · Jan 2026 — Present · Atlanta, GA
+            Co-founder &amp; CTO · Jan 2026 — June 2026 · Atlanta, GA
           </div>
         </div>
         <CreateXBadge />

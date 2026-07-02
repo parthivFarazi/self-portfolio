@@ -38,7 +38,7 @@ const DASH_BUILDINGS: DashboardTileData[] = [
     title: 'UPDT. Stadium',
     role: 'Co-founder & CTO',
     sub: 'AI soccer analytics platform',
-    tag: 'Company | 2026-present',
+    tag: 'Company | Jan-Jun 2026',
     chip: 'updt.pro',
     thumb: 'updt',
     panelId: 'updt',
